@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Agenda Universitaria</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600&display=swap');
 
@@ -144,10 +145,64 @@
 
   @media(max-width:700px){ .config-grid{grid-template-columns:1fr;} .share-grid{grid-template-columns:1fr;} .months-grid{grid-template-columns:repeat(2,1fr);} header h1{font-size:1.8rem;} }
   @media(max-width:480px){ .months-grid{grid-template-columns:1fr;} }
+
+  /* AUTH */
+  .auth-overlay { position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:100;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px); }
+  .auth-overlay.hidden { display:none; }
+  .auth-box { background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;width:100%;max-width:360px;box-shadow:0 8px 40px rgba(0,0,0,0.2); }
+  .auth-box h2 { font-family:var(--font-display);font-size:1.4rem;color:var(--accent);margin-bottom:0.3rem; }
+  .auth-box p  { font-size:0.8rem;color:var(--muted);margin-bottom:1.4rem; }
+  .auth-field  { margin-bottom:0.9rem; }
+  .auth-field label { display:block;font-size:0.73rem;font-weight:500;color:var(--muted);margin-bottom:0.25rem; }
+  .auth-field input { width:100%;padding:0.55rem 0.75rem;border:1px solid var(--border);border-radius:calc(var(--radius) - 2px);font-family:var(--font-body);font-size:0.88rem;background:var(--bg);color:var(--ink);outline:none;transition:border-color 0.2s; }
+  .auth-field input:focus { border-color:var(--accent); }
+  .btn-auth { width:100%;padding:0.75rem;background:var(--accent);color:white;border:none;border-radius:var(--radius);font-family:var(--font-body);font-size:0.9rem;font-weight:600;cursor:pointer;margin-top:0.4rem;transition:opacity 0.2s; }
+  .btn-auth:hover { opacity:0.88; }
+  body.tema-maximalista .btn-auth { background:linear-gradient(90deg,#FF3CAC,#784BA0); }
+  .auth-toggle { text-align:center;margin-top:1rem;font-size:0.78rem;color:var(--muted); }
+  .auth-toggle a { color:var(--accent);cursor:pointer;font-weight:600; }
+  .auth-error { font-size:0.78rem;color:#e05555;margin-top:0.5rem;min-height:1.1rem; }
+
+  /* USER BAR */
+  .user-bar { display:flex;align-items:center;justify-content:flex-end;gap:0.7rem;margin-bottom:1rem; }
+  .user-bar span { font-size:0.78rem;color:var(--muted); }
+  .btn-logout { padding:0.35rem 0.9rem;border:1.5px solid var(--border);border-radius:50px;background:transparent;color:var(--muted);font-size:0.75rem;font-weight:600;cursor:pointer;font-family:var(--font-body);transition:all 0.2s; }
+  .btn-logout:hover { border-color:var(--accent);color:var(--accent); }
+  .btn-login-top { padding:0.35rem 0.9rem;border:1.5px solid var(--accent);border-radius:50px;background:transparent;color:var(--accent);font-size:0.75rem;font-weight:600;cursor:pointer;font-family:var(--font-body);transition:all 0.2s; }
+  .btn-login-top:hover { background:var(--accent);color:white; }
 </style>
 </head>
 <body class="tema-femenino">
+
+<!-- AUTH MODAL -->
+<div class="auth-overlay hidden" id="auth-overlay">
+  <div class="auth-box">
+    <h2 id="auth-title">Iniciá sesión</h2>
+    <p id="auth-subtitle">Guardá tu configuración y accedé desde cualquier dispositivo.</p>
+    <div class="auth-field">
+      <label>Email</label>
+      <input type="email" id="auth-email" placeholder="tu@email.com" autocomplete="email">
+    </div>
+    <div class="auth-field">
+      <label>Contraseña</label>
+      <input type="password" id="auth-pass" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <div class="auth-error" id="auth-error"></div>
+    <button class="btn-auth" id="btn-auth-submit" onclick="submitAuth()">Entrar</button>
+    <div class="auth-toggle">
+      <span id="auth-toggle-text">¿No tenés cuenta?</span>
+      <a onclick="toggleAuthMode()"> Registrate</a>
+    </div>
+  </div>
+</div>
+
 <div class="container">
+  <!-- USER BAR -->
+  <div class="user-bar" id="user-bar">
+    <span id="user-email-label"></span>
+    <button class="btn-login-top hidden" id="btn-show-login" onclick="mostrarAuth()">Iniciar sesión</button>
+    <button class="btn-logout hidden" id="btn-logout" onclick="cerrarSesion()">Cerrar sesión</button>
+  </div>
 
   <header>
     <h1>Agenda Universitaria</h1>
@@ -251,6 +306,190 @@
 <div class="toast" id="toast">✓ Copiado al portapapeles</div>
 
 <script>
+// ── SUPABASE ──────────────────────────────────────────────────────────────────
+const SUPA_URL  = 'https://nsxdwaxduidqlliiogqp.supabase.co';
+const SUPA_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5zeGR3YXhkdWlkcWxsaWlvZ3FwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0OTU2NzIsImV4cCI6MjA5NzA3MTY3Mn0.CSK-8EdPhYUBHpVzxsg-dw7m7aRJc77bwhpz1lFIPok';
+const { createClient } = supabase;
+const db = createClient(SUPA_URL, SUPA_KEY);
+
+let currentUser = null;
+let authMode = 'login'; // 'login' | 'register'
+
+// ── AUTH UI ───────────────────────────────────────────────────────────────────
+function mostrarAuth() {
+  document.getElementById('auth-overlay').classList.remove('hidden');
+  document.getElementById('auth-email').focus();
+}
+function ocultarAuth() {
+  document.getElementById('auth-overlay').classList.add('hidden');
+  document.getElementById('auth-error').textContent = '';
+}
+function toggleAuthMode() {
+  authMode = authMode === 'login' ? 'register' : 'login';
+  const esLogin = authMode === 'login';
+  document.getElementById('auth-title').textContent     = esLogin ? 'Iniciá sesión' : 'Crear cuenta';
+  document.getElementById('auth-subtitle').textContent  = esLogin ? 'Guardá tu configuración y accedé desde cualquier dispositivo.' : 'Creá tu cuenta para sincronizar tu agenda.';
+  document.getElementById('btn-auth-submit').textContent= esLogin ? 'Entrar' : 'Registrarme';
+  document.getElementById('auth-toggle-text').textContent = esLogin ? '¿No tenés cuenta?' : '¿Ya tenés cuenta?';
+  document.querySelector('.auth-toggle a').textContent  = esLogin ? ' Registrate' : ' Iniciá sesión';
+  document.getElementById('auth-error').textContent = '';
+}
+
+async function submitAuth() {
+  const email = document.getElementById('auth-email').value.trim();
+  const pass  = document.getElementById('auth-pass').value;
+  const errEl = document.getElementById('auth-error');
+  errEl.textContent = '';
+  if (!email || !pass) { errEl.textContent = 'Completá todos los campos.'; return; }
+  const btn = document.getElementById('btn-auth-submit');
+  btn.textContent = '...'; btn.disabled = true;
+  try {
+    let result;
+    if (authMode === 'login') {
+      result = await db.auth.signInWithPassword({ email, password: pass });
+    } else {
+      result = await db.auth.signUp({ email, password: pass });
+    }
+    if (result.error) {
+      errEl.textContent = traducirError(result.error.message);
+    } else {
+      ocultarAuth();
+      // La sesión se actualiza via onAuthStateChange
+    }
+  } catch(e) {
+    errEl.textContent = 'Error de conexión. Intentá de nuevo.';
+  }
+  btn.textContent = authMode === 'login' ? 'Entrar' : 'Registrarme';
+  btn.disabled = false;
+}
+
+function traducirError(msg) {
+  if (msg.includes('Invalid login')) return 'Email o contraseña incorrectos.';
+  if (msg.includes('already registered')) return 'Este email ya tiene una cuenta. Iniciá sesión.';
+  if (msg.includes('Password should')) return 'La contraseña debe tener al menos 6 caracteres.';
+  if (msg.includes('valid email')) return 'Ingresá un email válido.';
+  return msg;
+}
+
+async function cerrarSesion() {
+  await db.auth.signOut();
+  localStorage.removeItem('agenda_config');
+  showToast('👋 Sesión cerrada');
+}
+
+function actualizarUserBar(user) {
+  const emailLabel  = document.getElementById('user-email-label');
+  const btnLogin    = document.getElementById('btn-show-login');
+  const btnLogout   = document.getElementById('btn-logout');
+  if (user) {
+    emailLabel.textContent = user.email;
+    btnLogin.classList.add('hidden');
+    btnLogout.classList.remove('hidden');
+  } else {
+    emailLabel.textContent = '';
+    btnLogin.classList.remove('hidden');
+    btnLogout.classList.add('hidden');
+  }
+}
+
+// Escuchar cambios de sesión
+db.auth.onAuthStateChange(async (event, session) => {
+  currentUser = session?.user ?? null;
+  actualizarUserBar(currentUser);
+  if (currentUser) {
+    await cargarConfig();
+    generateCalendar();
+  }
+});
+
+// Cerrar modal al hacer click fuera
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('auth-overlay').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('auth-overlay')) ocultarAuth();
+  });
+  document.getElementById('auth-pass').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') submitAuth();
+  });
+});
+
+// ── STORAGE ───────────────────────────────────────────────────────────────────
+function getUserId() {
+  let uid = localStorage.getItem('agenda_user_id');
+  if (!uid) { uid = crypto.randomUUID(); localStorage.setItem('agenda_user_id', uid); }
+  return uid;
+}
+
+function getStorageId() {
+  // Si hay usuario logueado, usar su ID de Supabase; si no, usar el anónimo local
+  return currentUser ? currentUser.id : getUserId();
+}
+
+async function guardarConfig() {
+  const config = {
+    tema: document.body.className.replace('tema-', ''),
+    anio: anioActual,
+    fechas: {
+      p1s:  document.getElementById('p1-start').value,
+      p1e:  document.getElementById('p1-end').value,
+      p1xs: document.getElementById('p1-exam-start').value,
+      p1xe: document.getElementById('p1-exam-end').value,
+      p2s:  document.getElementById('p2-start').value,
+      p2e:  document.getElementById('p2-end').value,
+      p2xs: document.getElementById('p2-exam-start').value,
+      p2xe: document.getElementById('p2-exam-end').value,
+    }
+  };
+  localStorage.setItem('agenda_config', JSON.stringify(config));
+  await db.from('agenda_config').upsert({
+    user_id: getStorageId(),
+    tema:    config.tema,
+    anio:    config.anio,
+    fechas:  config.fechas,
+    updated_at: new Date().toISOString()
+  }, { onConflict: 'user_id' });
+}
+
+async function cargarConfig() {
+  const local = localStorage.getItem('agenda_config');
+  if (local && !currentUser) { aplicarConfig(JSON.parse(local)); return; }
+  const { data } = await db.from('agenda_config').select('*').eq('user_id', getStorageId()).single();
+  if (data) {
+    const config = { tema: data.tema, anio: data.anio, fechas: data.fechas };
+    localStorage.setItem('agenda_config', JSON.stringify(config));
+    aplicarConfig(config);
+  } else if (local) {
+    aplicarConfig(JSON.parse(local));
+  }
+}
+
+function aplicarConfig(config) {
+  if (config.tema) {
+    document.body.className = 'tema-' + config.tema;
+    document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+    const btn = document.querySelector('.theme-btn.' + config.tema);
+    if (btn) btn.classList.add('active');
+  }
+  if (config.anio) {
+    anioActual = config.anio;
+    document.getElementById('anio-label').textContent = config.anio;
+    document.querySelectorAll('.year-btn').forEach(b => {
+      b.classList.toggle('active', parseInt(b.textContent) === config.anio);
+    });
+  }
+  if (config.fechas) {
+    const f = config.fechas;
+    document.getElementById('p1-start').value      = f.p1s  || '';
+    document.getElementById('p1-end').value        = f.p1e  || '';
+    document.getElementById('p1-exam-start').value = f.p1xs || '';
+    document.getElementById('p1-exam-end').value   = f.p1xe || '';
+    document.getElementById('p2-start').value      = f.p2s  || '';
+    document.getElementById('p2-end').value        = f.p2e  || '';
+    document.getElementById('p2-exam-start').value = f.p2xs || '';
+    document.getElementById('p2-exam-end').value   = f.p2xe || '';
+  }
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 const FERIADOS_BASE = [['01-01'],['05-01'],['05-25'],['07-09'],['12-08'],['12-25']];
 function getFeriados(y) {
   const f = new Set();
@@ -278,6 +517,7 @@ function setTema(tema) {
   document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
   document.querySelector('.theme-btn.' + tema).classList.add('active');
   if (document.getElementById('calendar-output').style.display !== 'none') generateCalendar();
+  guardarConfig();
 }
 
 function setAnio(y, btn) {
@@ -297,6 +537,7 @@ function setAnio(y, btn) {
     document.getElementById('p2-exam-end').value   = d.p2xe;
   }
   if (document.getElementById('calendar-output').style.display !== 'none') generateCalendar();
+  guardarConfig();
 }
 
 function parseDate(str) {
@@ -434,14 +675,18 @@ function generateCalendar() {
   const out=document.getElementById('calendar-output');
   out.innerHTML=html; out.style.display='block';
   out.scrollIntoView({behavior:'smooth',block:'start'});
+  guardarConfig();
 }
 
-window.onload = () => {
+window.onload = async () => {
+  // Cargar defaults del año actual primero
   const d=DEFAULTS[2027];
   document.getElementById('p1-start').value=d.p1s; document.getElementById('p1-end').value=d.p1e;
   document.getElementById('p1-exam-start').value=d.p1xs; document.getElementById('p1-exam-end').value=d.p1xe;
   document.getElementById('p2-start').value=d.p2s; document.getElementById('p2-end').value=d.p2e;
   document.getElementById('p2-exam-start').value=d.p2xs; document.getElementById('p2-exam-end').value=d.p2xe;
+  // Luego intentar cargar config guardada (localStorage o Supabase)
+  await cargarConfig();
   generateCalendar();
 };
 </script>
