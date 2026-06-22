@@ -1496,13 +1496,17 @@
     </div>
     <div class="event-field">
       <label>Tipo</label>
-      <select id="event-type-input">
+      <select id="event-type-input" onchange="toggleOtroField()">
         <option value="parcial">📝 Parcial</option>
         <option value="final">📋 Final</option>
         <option value="entrega">📦 Entrega / TP</option>
         <option value="clase">📚 Clase especial</option>
         <option value="otro">📌 Otro</option>
       </select>
+    </div>
+    <div class="event-field" id="otro-field" style="display:none;">
+      <label>Especificá el tipo</label>
+      <input type="text" id="event-otro-input" placeholder="ej: Reunión de grupo" maxlength="40">
     </div>
     <div class="event-field">
       <label>Horario (opcional)</label>
@@ -2836,6 +2840,26 @@ const EVENT_TYPE_LABEL = {
   clase:'📚 Clase especial', otro:'📌 Otro'
 };
 
+// Devuelve la etiqueta a mostrar para un evento: si es tipo "otro" y tiene
+// texto propio aclarado por el usuario, muestra ese texto en vez de "Otro".
+function tipoLabelDeEvento(ev) {
+  if (ev.type === 'otro' && ev.otro) return '📌 ' + ev.otro;
+  return EVENT_TYPE_LABEL[ev.type] || '📌';
+}
+
+// Muestra u oculta el campo para aclarar el tipo cuando se selecciona "Otro".
+function toggleOtroField() {
+  const tipo = document.getElementById('event-type-input').value;
+  const campo = document.getElementById('otro-field');
+  const input = document.getElementById('event-otro-input');
+  if (tipo === 'otro') {
+    campo.style.display = 'block';
+    setTimeout(() => input.focus(), 50);
+  } else {
+    campo.style.display = 'none';
+  }
+}
+
 function cargarEventos() {
   try { userEvents = JSON.parse(localStorage.getItem('agenda_events') || '{}'); } catch(e) { userEvents = {}; }
 }
@@ -2850,6 +2874,8 @@ function abrirModalEvento(key, dayNum) {
   document.getElementById('event-date-label').textContent = fmtLargo(fecha);
   document.getElementById('event-name-input').value = '';
   document.getElementById('event-type-input').value = 'parcial';
+  document.getElementById('event-otro-input').value = '';
+  document.getElementById('otro-field').style.display = 'none';
   document.getElementById('event-note-input').value = '';
   renderEventList(key);
   const overlay = document.getElementById('event-modal-overlay');
@@ -2871,7 +2897,7 @@ function renderEventList(key) {
   if (!list.length) { el.innerHTML=''; return; }
   el.innerHTML = list.map((ev,i)=>`
     <div class="event-item">
-      <span class="event-item-name">${EVENT_TYPE_LABEL[ev.type]||'📌'} ${ev.name}</span>
+      <span class="event-item-name">${tipoLabelDeEvento(ev)} ${ev.name}</span>
       <button class="event-item-del" onclick="eliminarEvento('${key}',${i})" title="Eliminar">✕</button>
     </div>
   `).join('');
@@ -2882,15 +2908,21 @@ function guardarEvento() {
   const name = document.getElementById('event-name-input').value.trim();
   if (!name) { document.getElementById('event-name-input').focus(); return; }
   const type = document.getElementById('event-type-input').value;
+  const otroInput = document.getElementById('event-otro-input');
+  const otro = type === 'otro' ? otroInput.value.trim() : '';
+  if (type === 'otro' && !otro) { otroInput.focus(); return; }
   const time = document.getElementById('event-time-input').value;
   const note = document.getElementById('event-note-input').value.trim();
   if (!userEvents[key]) userEvents[key] = [];
-  userEvents[key].push({name, type, time, note});
+  userEvents[key].push({name, type, otro, time, note});
   guardarEventos();
   renderEventList(key);
   document.getElementById('event-name-input').value='';
   document.getElementById('event-time-input').value='';
   document.getElementById('event-note-input').value='';
+  otroInput.value='';
+  document.getElementById('otro-field').style.display='none';
+  document.getElementById('event-type-input').value='parcial';
   refreshDayDot(key);
   renderResumen();
   showToast('✓ Evento guardado');
@@ -2911,7 +2943,7 @@ function renderEventList(key) {
   if (!list.length) { el.innerHTML=''; return; }
   el.innerHTML = list.map((ev,i)=>`
     <div class="event-item">
-      <span class="event-item-name">${EVENT_TYPE_LABEL[ev.type]||'📌'} ${ev.name}${ev.time ? ' · <b>'+fmtTime(ev.time)+'</b>' : ''}</span>
+      <span class="event-item-name">${tipoLabelDeEvento(ev)} ${ev.name}${ev.time ? ' · <b>'+fmtTime(ev.time)+'</b>' : ''}</span>
       <button class="event-item-del" onclick="eliminarEvento('${key}',${i})" title="Eliminar">✕</button>
     </div>
   `).join('');
@@ -2977,7 +3009,7 @@ function renderResumen() {
     const monthLabel = `${MESES[parseInt(m)-1]} ${y}`;
     const rows = evts.map(ev => {
       const [,, d] = ev.key.split('-');
-      const meta = [EVENT_TYPE_LABEL[ev.type]||'📌', ev.time ? fmtTime(ev.time) : '', ev.note].filter(Boolean).join(' · ');
+      const meta = [tipoLabelDeEvento(ev), ev.time ? fmtTime(ev.time) : '', ev.note].filter(Boolean).join(' · ');
       return `<div class="resumen-event-row">
         <span class="resumen-event-date">${parseInt(d)}</span>
         <div class="resumen-event-info">
