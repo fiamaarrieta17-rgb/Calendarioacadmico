@@ -10,49 +10,147 @@
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
-  body.tema-masculino {
-    --bg:#0F1923;--paper:#1A2533;--ink:#E8EDF2;--accent:#1E90FF;--accent-light:#0A2A4A;
-    --second:#FF6B35;--second-light:#3A1A0A;--muted:#7A8FA0;--border:#243344;
-    --summer:#0A2A3A;--winter:#0A1F2A;--exam:#2A1A0A;--holiday:#2A0A0A;--vac-color:#2AB5A0;
-    --font-display:'Inter',sans-serif;--font-body:'Inter',sans-serif;--radius:6px;
-  }
-  body.tema-femenino {
-    --bg:#FDF6F9;--paper:#FFFFFF;--ink:#3A2040;--accent:#C2507A;--accent-light:#FCE8F0;
-    --second:#A06AB0;--second-light:#F3E8FA;--muted:#B08098;--border:#F0D8E8;
-    --summer:#FDE8D0;--winter:#E8D0F8;--exam:#FEECD8;--holiday:#FCE0E0;--vac-color:#E08060;
-    --font-display:'Playfair Display',serif;--font-body:'DM Sans',sans-serif;--radius:16px;
-  }
-  body.tema-minimalista {
-    --bg:#F8F8F6;--paper:#FFFFFF;--ink:#111111;--accent:#111111;--accent-light:#F0F0EE;
-    --second:#555555;--second-light:#EBEBEB;--muted:#999999;--border:#E0E0E0;
-    --summer:#E8F4E8;--winter:#E8E8F4;--exam:#F4F0E8;--holiday:#F4E8E8;--vac-color:#555555;
+  /* ── TEMAS CLAROS ─────────────────────────────────────────────── */
+
+  /* Blanco limpio — minimalista claro */
+  body.tema-blanco {
+    --bg:#FAFAFA;--paper:#FFFFFF;--ink:#1A1A1A;--accent:#444444;--accent-light:#F0F0F0;
+    --second:#888888;--second-light:#EBEBEB;--muted:#AAAAAA;--border:#E2E2E2;
+    --summer:#F0F7F0;--winter:#F0F0F7;--exam:#F7F5F0;--holiday:#F7F0F0;--vac-color:#666666;
     --font-display:'DM Sans',sans-serif;--font-body:'DM Sans',sans-serif;--radius:4px;
   }
+
+  /* Rosa palo — suave y tranquilo */
+  body.tema-rosa {
+    --bg:#FEF6F7;--paper:#FFFFFF;--ink:#3D1A22;--accent:#D4748A;--accent-light:#FDEAED;
+    --second:#C490A8;--second-light:#F8EAF2;--muted:#C0909A;--border:#F2D8DE;
+    --summer:#FDE8D0;--winter:#F8EAF2;--exam:#FEF3E0;--holiday:#FDEAED;--vac-color:#B85A72;
+    --font-display:'Playfair Display',serif;--font-body:'DM Sans',sans-serif;--radius:14px;
+  }
+
+  /* Rojo y blanco — limpio y contrastado */
+  body.tema-rojo {
+    --bg:#FFFAFA;--paper:#FFFFFF;--ink:#1A0505;--accent:#C0392B;--accent-light:#FDECEA;
+    --second:#E74C3C;--second-light:#FEF0EF;--muted:#B07070;--border:#F5CFCF;
+    --summer:#FFF0F0;--winter:#FFF5F5;--exam:#FFF8E0;--holiday:#FDECEA;--vac-color:#922B21;
+    --font-display:'DM Sans',sans-serif;--font-body:'DM Sans',sans-serif;--radius:6px;
+  }
+
+  /* Celeste — muy suave, aéreo */
+  body.tema-celeste {
+    --bg:#F0F8FF;--paper:#FFFFFF;--ink:#0A2540;--accent:#3A9BD5;--accent-light:#DDF0FB;
+    --second:#5BC4E8;--second-light:#E0F6FC;--muted:#7AABCC;--border:#C8E8F5;
+    --summer:#E0F6FC;--winter:#DDF0FB;--exam:#FFF8E0;--holiday:#FFE8E0;--vac-color:#1A7FAA;
+    --font-display:'DM Sans',sans-serif;--font-body:'DM Sans',sans-serif;--radius:10px;
+  }
+
+  /* Azul — profundo pero claro */
+  body.tema-azul {
+    --bg:#EEF3FB;--paper:#FFFFFF;--ink:#0D1E3A;--accent:#1A56DB;--accent-light:#E1EAFD;
+    --second:#2D7DD2;--second-light:#DCEEFB;--muted:#6A8FC0;--border:#C5D8F5;
+    --summer:#DCEEFB;--winter:#E1EAFD;--exam:#FFF8E0;--holiday:#FFE8E0;--vac-color:#1040A0;
+    --font-display:'DM Sans',sans-serif;--font-body:'DM Sans',sans-serif;--radius:8px;
+  }
+
+  /* Violeta suave */
+  body.tema-violeta {
+    --bg:#F5F0FF;--paper:#FFFFFF;--ink:#200A40;--accent:#6D3FD0;--accent-light:#EDE5FF;
+    --second:#9B72E8;--second-light:#F0EAFF;--muted:#9A80C8;--border:#DDD0F5;
+    --summer:#F0EAFF;--winter:#EDE5FF;--exam:#FEF3C7;--holiday:#FFE4F0;--vac-color:#4A2A9A;
+    --font-display:'DM Serif Display',serif;--font-body:'DM Sans',sans-serif;--radius:12px;
+  }
+
+  /* Verde — fresco y tranquilo */
+  body.tema-verde {
+    --bg:#F2F8F4;--paper:#FFFFFF;--ink:#0A2010;--accent:#2A7D4F;--accent-light:#D8EFE2;
+    --second:#48A86D;--second-light:#DFF5E8;--muted:#6A9A78;--border:#C0DFC8;
+    --summer:#DFF5E8;--winter:#D8EFE2;--exam:#FFF8E0;--holiday:#FFE8E0;--vac-color:#1A6030;
+    --font-display:'DM Serif Display',serif;--font-body:'DM Sans',sans-serif;--radius:8px;
+  }
+
+  /* ── ESPECIALES ───────────────────────────────────────────────── */
+
+  /* Minimalista — sin color, solo estructura */
+  body.tema-minimalista {
+    --bg:#F8F8F6;--paper:#FFFFFF;--ink:#111111;--accent:#222222;--accent-light:#F0F0EE;
+    --second:#555555;--second-light:#EBEBEB;--muted:#999999;--border:#E0E0E0;
+    --summer:#EEF4EE;--winter:#EEEEEF;--exam:#F4F2EE;--holiday:#F4EEEE;--vac-color:#444444;
+    --font-display:'DM Sans',sans-serif;--font-body:'DM Sans',sans-serif;--radius:3px;
+  }
+
+  /* Maximalista — vibrante, colorido */
   body.tema-maximalista {
-    --bg:#1A0A2E;--paper:#2A1045;--ink:#F0E8FF;--accent:#FF3CAC;--accent-light:#3A0A2E;
-    --second:#FFDD00;--second-light:#2A2000;--muted:#9A80C0;--border:#3A1860;
-    --summer:rgba(255,107,0,0.15);--winter:rgba(0,180,255,0.15);--exam:rgba(255,221,0,0.15);--holiday:rgba(255,60,172,0.15);--vac-color:#00F5A0;
+    --bg:#FAF0FF;--paper:#FFFFFF;--ink:#1A0030;--accent:#8B2FC9;--accent-light:#F0E0FF;
+    --second:#E8359A;--second-light:#FFE0F5;--muted:#A070C0;--border:#E0C8F5;
+    --summer:#FFE8F0;--winter:#F0E0FF;--exam:#FFF3C0;--holiday:#FFE0F5;--vac-color:#6A20A0;
     --font-display:'Playfair Display',serif;--font-body:'DM Sans',sans-serif;--radius:20px;
+  }
+  body.tema-maximalista header h1 {
+    background:linear-gradient(90deg,#8B2FC9,#E8359A,#6A20A0);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  }
+
+  /* ── TEMAS OSCUROS ────────────────────────────────────────────── */
+
+  /* Oscuro azul — elegante */
+  body.tema-oscuro {
+    --bg:#0D1117;--paper:#161B22;--ink:#E6EDF3;--accent:#58A6FF;--accent-light:#0D2136;
+    --second:#BC8CFF;--second-light:#1A1030;--muted:#6E7681;--border:#21262D;
+    --summer:#0D2030;--winter:#1A1030;--exam:#201800;--holiday:#200010;--vac-color:#3DCFCF;
+    --font-display:'Inter',sans-serif;--font-body:'Inter',sans-serif;--radius:8px;
+  }
+
+  /* Oscuro cálido — marrón/carbón */
+  body.tema-oscuro-calido {
+    --bg:#181410;--paper:#231E18;--ink:#EDE0D0;--accent:#D4915A;--accent-light:#2A1A08;
+    --second:#A0C070;--second-light:#181E08;--muted:#907060;--border:#302820;
+    --summer:#251A08;--winter:#182008;--exam:#201800;--holiday:#200808;--vac-color:#C0804A;
+    --font-display:'DM Serif Display',serif;--font-body:'DM Sans',sans-serif;--radius:8px;
+  }
+
+  /* Oscuro violeta — noche profunda */
+  body.tema-oscuro-violeta {
+    --bg:#0E0B16;--paper:#17132A;--ink:#DDD0FF;--accent:#A078F0;--accent-light:#1E1040;
+    --second:#F070C0;--second-light:#280A30;--muted:#7060A0;--border:#261A44;
+    --summer:#1E1040;--winter:#280A30;--exam:#201800;--holiday:#300A18;--vac-color:#80D0C0;
+    --font-display:'Inter',sans-serif;--font-body:'Inter',sans-serif;--radius:10px;
+  }
+
+  /* Oscuro verde — terminal / bosque nocturno */
+  body.tema-oscuro-verde {
+    --bg:#0A100C;--paper:#111A12;--ink:#C8E8C0;--accent:#4ABF70;--accent-light:#082010;
+    --second:#80D8A0;--second-light:#102010;--muted:#508058;--border:#1A2E1A;
+    --summer:#0A2010;--winter:#0A1810;--exam:#181800;--holiday:#180808;--vac-color:#30A050;
+    --font-display:'Inter',sans-serif;--font-body:'Inter',sans-serif;--radius:6px;
+  }
+
+  /* COLOR SWATCHES */
+  .color-grid {
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:0.6rem;
+    margin-top:0.8rem;
+  }
+  .color-swatch {
+    border-radius:calc(var(--radius));overflow:hidden;cursor:pointer;
+    border:2px solid transparent;transition:transform 0.15s,box-shadow 0.15s,border-color 0.15s;
+    outline:none;background:none;padding:0;
+  }
+  .color-swatch:hover { transform:scale(1.06);box-shadow:0 4px 14px rgba(0,0,0,0.15); }
+  .color-swatch.active { border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light); }
+  .swatch-preview {
+    height:38px;display:flex;align-items:center;justify-content:center;gap:3px;
+  }
+  .swatch-dot { width:10px;height:10px;border-radius:50%; }
+  .swatch-label {
+    font-size:0.62rem;font-weight:600;text-align:center;padding:0.2rem 0.3rem;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   }
 
   body { font-family:var(--font-body,'DM Sans',sans-serif);background:var(--bg);color:var(--ink);min-height:100vh;padding:2rem 1rem;transition:background 0.4s,color 0.4s; }
-  .container { max-width:980px;margin:0 auto; }
-
-  /* THEME */
-  .theme-selector { display:flex;gap:0.6rem;justify-content:center;margin-bottom:1.5rem;flex-wrap:wrap; }
-  .theme-btn { padding:0.45rem 1rem;border:2px solid transparent;border-radius:50px;font-size:0.8rem;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:var(--font-body); }
-  .theme-btn.masculino   { background:#1E90FF22;color:#1E90FF;border-color:#1E90FF44; }
-  .theme-btn.femenino    { background:#C2507A22;color:#C2507A;border-color:#C2507A44; }
-  .theme-btn.minimalista { background:#11111111;color:#111;border-color:#11111133; }
-  .theme-btn.maximalista { background:#FF3CAC22;color:#FF3CAC;border-color:#FF3CAC44; }
-  .theme-btn.active      { opacity:1;transform:scale(1.07);box-shadow:0 2px 10px rgba(0,0,0,0.15); }
-  .theme-btn:not(.active){ opacity:0.55; }
-  .theme-btn:hover       { opacity:1; }
+  .container { max-width:980px;margin:0 auto;position:relative; }
 
   /* HEADER */
   header { text-align:center;margin-bottom:1.5rem; }
   header h1 { font-family:var(--font-display);font-size:2.5rem;color:var(--accent);letter-spacing:-0.5px; }
-  body.tema-maximalista header h1 { background:linear-gradient(90deg,#FF3CAC,#FFDD00,#00F5A0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
   header p { color:var(--muted);font-size:0.88rem;margin-top:0.35rem;font-weight:300; }
 
   /* YEAR */
@@ -64,7 +162,7 @@
 
   /* CONFIG */
   .config-panel { background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);padding:1.6rem;margin-bottom:1.4rem;box-shadow:0 2px 12px rgba(0,0,0,0.07);transition:background 0.4s,border-color 0.4s; }
-  body.tema-maximalista .config-panel { box-shadow:0 0 30px rgba(255,60,172,0.12);border-color:#FF3CAC44; }
+  body.tema-maximalista .config-panel { box-shadow:0 0 30px rgba(139,47,201,0.12);border-color:#8B2FC944; }
   .config-panel h2 { font-family:var(--font-display);font-size:1.1rem;color:var(--accent);margin-bottom:1.1rem; }
   .config-grid { display:grid;grid-template-columns:1fr 1fr;gap:1.1rem; }
   .config-section { background:var(--accent-light);border-radius:calc(var(--radius) - 2px);padding:1rem;border:1px solid var(--border); }
@@ -76,13 +174,13 @@
   .field input[type="date"] { width:100%;padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:calc(var(--radius) - 2px);font-family:var(--font-body);font-size:0.82rem;background:var(--bg);color:var(--ink);outline:none;transition:border-color 0.2s; }
   .field input[type="date"]:focus { border-color:var(--accent); }
   .btn-generate { display:block;width:100%;margin-top:1.1rem;padding:0.8rem;background:var(--accent);color:white;border:none;border-radius:var(--radius);font-family:var(--font-body);font-size:0.92rem;font-weight:600;cursor:pointer;transition:opacity 0.2s,transform 0.1s; }
-  body.tema-maximalista .btn-generate { background:linear-gradient(90deg,#FF3CAC,#784BA0,#2B86C5); }
+  body.tema-maximalista .btn-generate { background:linear-gradient(90deg,#8B2FC9,#E8359A,#6A20A0); }
   .btn-generate:hover { opacity:0.88; }
   .btn-generate:active { transform:scale(0.98); }
 
   /* SHARE PANEL */
   .share-panel { background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);padding:1.4rem 1.6rem;margin-bottom:1.4rem;transition:background 0.4s; }
-  body.tema-maximalista .share-panel { border-color:#FF3CAC44; }
+  body.tema-maximalista .share-panel { border-color:#8B2FC944; }
   .share-panel h2 { font-family:var(--font-display);font-size:1.1rem;color:var(--accent);margin-bottom:1rem; }
   .share-grid { display:grid;grid-template-columns:1fr 1fr;gap:1rem; }
   .share-block { background:var(--accent-light);border-radius:calc(var(--radius) - 2px);padding:1rem;border:1px solid var(--border); }
@@ -99,7 +197,7 @@
   }
   .btn-share { width:100%;padding:0.5rem;margin-top:0.4rem;background:var(--accent);color:white;border:none;border-radius:calc(var(--radius) - 2px);font-family:var(--font-body);font-size:0.8rem;font-weight:600;cursor:pointer;transition:opacity 0.2s; }
   .btn-share:hover { opacity:0.85; }
-  body.tema-maximalista .btn-share { background:linear-gradient(90deg,#FF3CAC,#784BA0); }
+  body.tema-maximalista .btn-share { background:linear-gradient(90deg,#8B2FC9,#E8359A); }
   .share-opts { display:flex;gap:0.4rem;margin-top:0.5rem;flex-wrap:wrap; }
   .btn-opt { flex:1;padding:0.42rem 0.3rem;border:1.5px solid var(--border);border-radius:calc(var(--radius) - 2px);background:var(--bg);color:var(--muted);font-size:0.73rem;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:var(--font-body);text-align:center; }
   .btn-opt:hover { border-color:var(--accent);color:var(--accent);background:var(--accent-light); }
@@ -115,17 +213,35 @@
 
   /* CALENDAR */
   #calendar-output { display:none; }
+  /* horizontal strip - all months in one scrollable row */
+  .months-strip {
+    display:flex;gap:0.85rem;overflow-x:auto;padding:0.3rem 0.1rem 1rem;
+    scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
+    scrollbar-width:thin;scrollbar-color:var(--border) transparent;
+  }
+  .months-strip::-webkit-scrollbar{height:5px;}
+  .months-strip::-webkit-scrollbar-track{background:transparent;}
+  .months-strip::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
   .months-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:1rem; }
-  .month-card { background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,0.05);transition:background 0.4s; }
-  body.tema-maximalista .month-card { box-shadow:0 0 15px rgba(255,60,172,0.08); }
+  .month-card {
+    background:var(--paper);border:1.5px solid var(--border);border-radius:var(--radius);
+    overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,0.05);transition:background 0.3s,box-shadow 0.18s,transform 0.18s;
+    flex:0 0 210px;scroll-snap-align:start;cursor:pointer;
+  }
+  body.tema-maximalista .month-card { box-shadow:0 0 15px rgba(139,47,201,0.08); }
+  .month-card:hover { transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.13); }
+  body.tema-maximalista .month-card:hover { box-shadow:0 0 25px rgba(139,47,201,0.2); }
+  .month-card.current-month { border-color:var(--accent);border-width:2px;box-shadow:0 0 0 3px var(--accent-light); }
   .month-header { background:var(--accent);color:white;text-align:center;padding:0.55rem;font-family:var(--font-display);font-size:0.9rem; }
   .month-header.second-sem { background:var(--second); }
   .month-header.vacation   { background:var(--vac-color); }
   .weekdays { display:grid;grid-template-columns:repeat(7,1fr);padding:0.32rem 0.38rem 0.12rem;gap:2px; }
   .weekday  { text-align:center;font-size:0.58rem;font-weight:600;color:var(--muted);text-transform:uppercase; }
   .days-grid { display:grid;grid-template-columns:repeat(7,1fr);padding:0 0.38rem 0.45rem;gap:2px; }
-  .day { aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:0.65rem;border-radius:calc(var(--radius) - 2px); }
-  .day.empty    { background:transparent; }
+  .day { aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:0.65rem;border-radius:calc(var(--radius) - 2px);cursor:pointer;transition:filter 0.12s; flex-direction:column; gap:1px; }
+  .day:not(.empty):hover { filter:brightness(0.88);transform:scale(1.08); }
+  .day.empty    { background:transparent;cursor:default; }
+  .day.empty:hover { filter:none;transform:none; }
   .day.normal   { color:var(--ink); }
   .day.weekend  { color:var(--muted); }
   .day.primer-sem  { background:var(--accent-light);color:var(--accent);font-weight:500; }
@@ -134,46 +250,374 @@
   .day.invierno    { background:var(--winter);color:var(--vac-color);font-weight:500; }
   .day.receso      { background:var(--holiday);color:#CC3333; }
   .day.examen      { background:var(--exam);color:var(--second);font-weight:600; }
+  .day.today       { box-shadow:inset 0 0 0 2px var(--accent);font-weight:700; }
+  /* event dot on day */
+  .day-dot { width:4px;height:4px;border-radius:50%;background:var(--second);flex-shrink:0; }
+  .day .day-num { line-height:1; }
 
-  .sem-label { font-family:var(--font-display);font-size:1.25rem;color:var(--accent);margin:1.5rem 0 0.6rem;padding-bottom:0.3rem;border-bottom:2px solid var(--border); }
+  /* NAVEGACIÓN DE MES */
+  .btn-mes-nav {
+    width:38px;height:38px;border-radius:50%;
+    background:var(--paper);border:1.5px solid var(--border);
+    color:var(--accent);font-size:1.4rem;line-height:1;
+    cursor:pointer;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 2px 8px rgba(0,0,0,0.07);
+    transition:background 0.15s,border-color 0.15s,box-shadow 0.15s;
+    font-family:var(--font-body);
+  }
+  .btn-mes-nav:hover { background:var(--accent-light);border-color:var(--accent);box-shadow:0 4px 14px rgba(0,0,0,0.13); }
+  .mes-nav-label {
+    font-family:var(--font-display);font-size:1.1rem;
+    color:var(--accent);font-weight:600;letter-spacing:0.3px;
+  }
+  .btn-mes-mini {
+    padding:0.25rem 0.55rem;border-radius:50px;border:1.5px solid var(--border);
+    background:var(--paper);color:var(--muted);font-size:0.7rem;font-weight:600;
+    cursor:pointer;font-family:var(--font-body);transition:all 0.15s;
+  }
+  .btn-mes-mini:hover { border-color:var(--accent);color:var(--accent);background:var(--accent-light); }
+  .btn-mes-mini.active { background:var(--accent);color:white;border-color:var(--accent); }
+
+  /* mes único grande */
+  #calendar-output .month-card {
+    flex:none;width:100%;max-width:420px;
+  }
+  #calendar-output .month-card .day { font-size:0.82rem; }
+  #calendar-output .month-card .month-header { display:none; } /* el título lo mostramos arriba */
+
+  .sem-label { font-family:var(--font-display);font-size:1.1rem;color:var(--accent);margin:1.2rem 0 0.4rem;padding-bottom:0.3rem;border-bottom:2px solid var(--border); }
   .sem-label.second { color:var(--second); }
   .sem-label.vac    { color:var(--vac-color); }
-  .info-banner { background:var(--accent-light);border:1px solid var(--border);border-radius:var(--radius);padding:0.6rem 0.9rem;margin-bottom:0.8rem;font-size:0.8rem;color:var(--accent); }
+  .info-banner { background:var(--accent-light);border:1px solid var(--border);border-radius:var(--radius);padding:0.5rem 0.9rem;margin-bottom:0.6rem;font-size:0.78rem;color:var(--accent); }
   .info-banner.second { background:var(--second-light);color:var(--second); }
   .info-banner.vac    { background:var(--winter);color:var(--vac-color); }
-  .year-divider { text-align:center;margin:2.5rem 0 1.5rem;font-family:var(--font-display);font-size:2rem;color:var(--accent);opacity:0.25;letter-spacing:4px; }
+  .year-divider { text-align:center;margin:1.5rem 0 1rem;font-family:var(--font-display);font-size:2rem;color:var(--accent);opacity:0.25;letter-spacing:4px; }
 
-  @media(max-width:700px){ .config-grid{grid-template-columns:1fr;} .share-grid{grid-template-columns:1fr;} .months-grid{grid-template-columns:repeat(2,1fr);} header h1{font-size:1.8rem;} }
-  @media(max-width:480px){ .months-grid{grid-template-columns:1fr;} }
+  /* EVENT MODAL */
+  .event-modal-overlay {
+    position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:400;
+    display:flex;align-items:center;justify-content:center;
+    backdrop-filter:blur(5px);opacity:0;pointer-events:none;transition:opacity 0.2s;
+  }
+  .event-modal-overlay.open { opacity:1;pointer-events:all; }
+  .event-modal {
+    background:var(--paper);border:1px solid var(--border);border-radius:calc(var(--radius)+4px);
+    padding:1.6rem;width:100%;max-width:360px;
+    box-shadow:0 12px 50px rgba(0,0,0,0.22);
+    transform:scale(0.93) translateY(10px);transition:transform 0.22s;
+  }
+  .event-modal-overlay.open .event-modal { transform:scale(1) translateY(0); }
+  body.tema-maximalista .event-modal { border-color:#8B2FC955;box-shadow:0 0 40px rgba(139,47,201,0.2); }
+  .event-modal-hdr { display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem; }
+  .event-modal-hdr h3 { font-family:var(--font-display);font-size:1.1rem;color:var(--accent); }
+  .event-modal-hdr button { background:none;border:none;cursor:pointer;font-size:1.2rem;color:var(--muted);padding:0.2rem 0.4rem;border-radius:6px;transition:color 0.15s; }
+  .event-modal-hdr button:hover { color:var(--ink); }
+  .event-date-label { font-size:0.78rem;color:var(--muted);margin-bottom:1rem;font-weight:500; }
+  .event-field { margin-bottom:0.8rem; }
+  .event-field label { display:block;font-size:0.72rem;font-weight:600;color:var(--muted);margin-bottom:0.25rem;text-transform:uppercase;letter-spacing:0.5px; }
+  .event-field input,.event-field select,.event-field textarea {
+    width:100%;padding:0.5rem 0.7rem;border:1px solid var(--border);border-radius:calc(var(--radius)-2px);
+    font-family:var(--font-body);font-size:0.85rem;background:var(--bg);color:var(--ink);outline:none;transition:border-color 0.2s;
+  }
+  .event-field textarea { resize:vertical;min-height:60px; }
+  .event-field input:focus,.event-field select:focus,.event-field textarea:focus { border-color:var(--accent); }
+  .event-btns { display:flex;gap:0.5rem;margin-top:1rem; }
+  .btn-event-save { flex:1;padding:0.6rem;background:var(--accent);color:white;border:none;border-radius:var(--radius);font-family:var(--font-body);font-size:0.88rem;font-weight:600;cursor:pointer;transition:opacity 0.2s; }
+  .btn-event-save:hover { opacity:0.88; }
+  body.tema-maximalista .btn-event-save { background:linear-gradient(90deg,#8B2FC9,#E8359A); }
+  .btn-event-cancel { padding:0.6rem 1rem;background:transparent;color:var(--muted);border:1.5px solid var(--border);border-radius:var(--radius);font-family:var(--font-body);font-size:0.88rem;font-weight:600;cursor:pointer;transition:all 0.2s; }
+  .btn-event-cancel:hover { border-color:var(--accent);color:var(--accent); }
+  /* event list below save */
+  .event-list { margin-top:1rem;display:flex;flex-direction:column;gap:0.4rem; }
+  .event-item { display:flex;align-items:center;justify-content:space-between;background:var(--accent-light);border:1px solid var(--border);border-radius:calc(var(--radius)-2px);padding:0.4rem 0.6rem;font-size:0.78rem; }
+  .event-item-name { color:var(--ink);font-weight:500; }
+  .event-item-del { background:none;border:none;cursor:pointer;color:var(--muted);font-size:0.85rem;padding:0 0.2rem;transition:color 0.15s; }
+  .event-item-del:hover { color:#e05555; }
+
+  @media(max-width:700px){ .config-grid{grid-template-columns:1fr;} .share-grid{grid-template-columns:1fr;} header h1{font-size:1.8rem;} }
+  @media(max-width:480px){ .month-card{flex:0 0 180px;} }
+
+  /* TOOLTIP */
+  .day { position:relative; cursor:default; }
+  .day[data-tip]:hover::after {
+    content: attr(data-tip);
+    position:absolute;
+    bottom:calc(100% + 6px);
+    left:50%;
+    transform:translateX(-50%);
+    background:var(--ink);
+    color:var(--bg);
+    font-size:0.62rem;
+    font-weight:500;
+    white-space:nowrap;
+    padding:0.28rem 0.55rem;
+    border-radius:6px;
+    pointer-events:none;
+    z-index:50;
+    box-shadow:0 2px 8px rgba(0,0,0,0.18);
+    letter-spacing:0.01em;
+  }
+  .day[data-tip]:hover::before {
+    content:'';
+    position:absolute;
+    bottom:calc(100% + 2px);
+    left:50%;
+    transform:translateX(-50%);
+    border:4px solid transparent;
+    border-top-color:var(--ink);
+    pointer-events:none;
+    z-index:50;
+  }
+
+  /* MONTH EXPAND MODAL */
+  .month-modal-overlay {
+    position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:300;
+    display:flex;align-items:center;justify-content:center;
+    backdrop-filter:blur(6px);
+    opacity:0;pointer-events:none;transition:opacity 0.2s;
+  }
+  .month-modal-overlay.open { opacity:1;pointer-events:all; }
+  .month-modal {
+    background:var(--paper);border:1px solid var(--border);
+    border-radius:calc(var(--radius) + 4px);
+    padding:1.8rem;width:100%;max-width:420px;
+    box-shadow:0 12px 50px rgba(0,0,0,0.25);
+    transform:scale(0.93);transition:transform 0.22s;
+    max-height:90vh;overflow-y:auto;
+  }
+  .month-modal-overlay.open .month-modal { transform:scale(1); }
+  body.tema-maximalista .month-modal { box-shadow:0 0 50px rgba(139,47,201,0.22);border-color:#8B2FC966; }
+  .month-modal-header {
+    display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:1.2rem;
+  }
+  .month-modal-title {
+    font-family:var(--font-display);font-size:1.4rem;color:var(--accent);
+  }
+  .month-modal-close {
+    background:none;border:none;cursor:pointer;font-size:1.3rem;
+    color:var(--muted);line-height:1;padding:0.2rem 0.4rem;border-radius:6px;
+    transition:color 0.15s,background 0.15s;
+  }
+  .month-modal-close:hover { color:var(--ink);background:var(--accent-light); }
+  .modal-weekdays { display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:6px; }
+  .modal-weekday { text-align:center;font-size:0.7rem;font-weight:600;color:var(--muted);text-transform:uppercase;padding:0.3rem 0; }
+  .modal-days-grid { display:grid;grid-template-columns:repeat(7,1fr);gap:4px; }
+  .modal-day {
+    aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+    font-size:0.85rem;border-radius:var(--radius);cursor:default;transition:opacity 0.1s;
+    position:relative;
+  }
+  .modal-day.empty { background:transparent; }
+  .modal-day.normal { color:var(--ink); }
+  .modal-day.weekend { color:var(--muted); }
+  .modal-day.primer-sem  { background:var(--accent-light);color:var(--accent);font-weight:500; }
+  .modal-day.segundo-sem { background:var(--second-light);color:var(--second);font-weight:500; }
+  .modal-day.verano      { background:var(--summer);color:var(--vac-color);font-weight:500; }
+  .modal-day.invierno    { background:var(--winter);color:var(--vac-color);font-weight:500; }
+  .modal-day.receso      { background:var(--holiday);color:#CC3333; }
+  .modal-day.examen      { background:var(--exam);color:var(--second);font-weight:600; }
+  .modal-day.today       { box-shadow:inset 0 0 0 2.5px var(--accent);font-weight:700; }
+  .modal-day[data-tip]:hover::after {
+    content: attr(data-tip);
+    position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);
+    background:var(--ink);color:var(--bg);font-size:0.62rem;font-weight:500;
+    white-space:nowrap;padding:0.28rem 0.55rem;border-radius:6px;
+    pointer-events:none;z-index:400;box-shadow:0 2px 8px rgba(0,0,0,0.18);
+  }
+  .month-card { cursor:pointer;transition:box-shadow 0.18s,transform 0.18s; }
+  .month-card:hover { transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.13); }
+  body.tema-maximalista .month-card:hover { box-shadow:0 0 25px rgba(139,47,201,0.2); }
+
+  /* PRINT BUTTON */
+  .btn-print {
+    display:inline-flex;align-items:center;gap:0.4rem;
+    padding:0.45rem 1rem;border:1.5px solid var(--border);
+    border-radius:50px;background:var(--paper);color:var(--muted);
+    font-size:0.8rem;font-weight:600;cursor:pointer;
+    font-family:var(--font-body);transition:all 0.2s;margin-bottom:1rem;
+  }
+  .btn-print:hover { border-color:var(--accent);color:var(--accent);background:var(--accent-light); }
+
+  /* PRINT STYLES */
+  @media print {
+    body { background:white !important;color:#111 !important;padding:0.5rem; }
+    .theme-selector,.year-selector,.config-panel,.share-panel,.legend,
+    .user-bar,.toast,.month-modal-overlay,.btn-print,.btn-config-toggle,.config-drawer,.config-drawer-overlay { display:none !important; }
+    header h1 { color:#111 !important;-webkit-text-fill-color:#111 !important; }
+    header p { color:#555 !important; }
+    .month-card { break-inside:avoid;box-shadow:none !important;border:1px solid #ddd !important; }
+    .month-header { background:#333 !important;color:white !important; }
+    .month-header.second-sem { background:#666 !important; }
+    .month-header.vacation { background:#999 !important; }
+    .months-grid { grid-template-columns:repeat(3,1fr) !important; }
+    .sem-label { color:#111 !important;border-color:#ddd !important; }
+    .info-banner { background:#f5f5f5 !important;color:#333 !important;border-color:#ddd !important; }
+    .day { color:#111 !important; }
+    .day.primer-sem { background:#e8f0ff !important;color:#1155cc !important; }
+    .day.segundo-sem { background:#e8ffe8 !important;color:#1a7a1a !important; }
+    .day.examen { background:#fff0d0 !important;color:#8a5000 !important; }
+    .day.verano,.day.invierno { background:#f0f0f0 !important;color:#555 !important; }
+    .day.receso { background:#ffe0e0 !important;color:#cc0000 !important; }
+    .day.weekend { color:#888 !important; }
+    .day.today { box-shadow:inset 0 0 0 2px #333 !important; }
+    #calendar-output { display:block !important; }
+  }
 
   /* AUTH */
   .auth-overlay { position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:100;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px); }
   .hidden { display:none !important; }
   .auth-overlay.hidden { display:none; }
-  .auth-box { background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;width:100%;max-width:360px;box-shadow:0 8px 40px rgba(0,0,0,0.2); }
+  .auth-box { background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;width:100%;max-width:360px;max-height:90vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,0.2); }
   .auth-box h2 { font-family:var(--font-display);font-size:1.4rem;color:var(--accent);margin-bottom:0.3rem; }
   .auth-box p  { font-size:0.8rem;color:var(--muted);margin-bottom:1.4rem; }
   .auth-field  { margin-bottom:0.9rem; }
   .auth-field label { display:block;font-size:0.73rem;font-weight:500;color:var(--muted);margin-bottom:0.25rem; }
   .auth-field input { width:100%;padding:0.55rem 0.75rem;border:1px solid var(--border);border-radius:calc(var(--radius) - 2px);font-family:var(--font-body);font-size:0.88rem;background:var(--bg);color:var(--ink);outline:none;transition:border-color 0.2s; }
   .auth-field input:focus { border-color:var(--accent); }
+  .auth-field input.invalid { border-color:#e05555; }
+  .auth-field input.invalid:focus { border-color:#e05555; }
   .btn-auth { width:100%;padding:0.75rem;background:var(--accent);color:white;border:none;border-radius:var(--radius);font-family:var(--font-body);font-size:0.9rem;font-weight:600;cursor:pointer;margin-top:0.4rem;transition:opacity 0.2s; }
   .btn-auth:hover { opacity:0.88; }
-  body.tema-maximalista .btn-auth { background:linear-gradient(90deg,#FF3CAC,#784BA0); }
+  .btn-auth:disabled { opacity:0.6;cursor:default; }
+  body.tema-maximalista .btn-auth { background:linear-gradient(90deg,#8B2FC9,#E8359A); }
   .auth-toggle { text-align:center;margin-top:1rem;font-size:0.78rem;color:var(--muted); }
   .auth-toggle a { color:var(--accent);cursor:pointer;font-weight:600; }
   .auth-error { font-size:0.78rem;color:#e05555;margin-top:0.5rem;min-height:1.1rem; }
+  .auth-hint { font-size:0.68rem;color:var(--muted);margin-top:0.25rem;line-height:1.3; }
+  .auth-forgot { text-align:center;margin-top:0.6rem; }
+  .auth-forgot a { font-size:0.74rem;color:var(--muted);cursor:pointer;text-decoration:underline; }
+  .auth-forgot a:hover { color:var(--accent); }
+  .auth-back { text-align:center;margin-top:1rem;font-size:0.78rem; }
+  .auth-back a { color:var(--accent);cursor:pointer;font-weight:600; }
 
-  /* USER BAR */
-  .user-bar { display:flex;align-items:center;justify-content:flex-end;gap:0.7rem;margin-bottom:1rem; }
-  .user-bar span { font-size:0.78rem;color:var(--muted); }
+  /* LOADING */
+  .loading-overlay { position:fixed;inset:0;background:var(--bg);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;transition:opacity 0.3s; }
+  .loading-overlay.hidden { opacity:0;pointer-events:none;display:none; }
+  .spinner { width:34px;height:34px;border-radius:50%;border:3px solid var(--border);border-top-color:var(--accent);animation:spin 0.8s linear infinite; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .loading-overlay p { font-size:0.85rem;color:var(--muted);font-family:var(--font-body); }
+
+  /* USER BAR top-right */
+  .user-bar {
+    position:absolute;top:1.2rem;right:1.2rem;
+    display:flex;align-items:center;gap:0.5rem;
+  }
+  .user-bar span {
+    font-size:0.73rem;color:var(--muted);font-weight:500;
+    background:var(--paper);border:1.5px solid var(--border);
+    border-radius:50px;padding:0.3rem 0.75rem;
+    box-shadow:0 2px 8px rgba(0,0,0,0.06);
+  }
   .btn-logout { padding:0.35rem 0.9rem;border:1.5px solid var(--border);border-radius:50px;background:transparent;color:var(--muted);font-size:0.75rem;font-weight:600;cursor:pointer;font-family:var(--font-body);transition:all 0.2s; }
   .btn-logout:hover { border-color:var(--accent);color:var(--accent); }
   .btn-login-top { padding:0.35rem 0.9rem;border:1.5px solid var(--accent);border-radius:50px;background:transparent;color:var(--accent);font-size:0.75rem;font-weight:600;cursor:pointer;font-family:var(--font-body);transition:all 0.2s; }
   .btn-login-top:hover { background:var(--accent);color:white; }
+
+  /* CONFIG TOGGLE BUTTON */
+  .btn-config-toggle {
+    position:absolute;top:1.2rem;left:1.2rem;z-index:50;
+    display:flex;align-items:center;justify-content:center;
+    width:40px;height:40px;
+    background:var(--paper);border:1.5px solid var(--border);
+    border-radius:50%;
+    color:var(--muted);font-size:1.15rem;
+    font-family:var(--font-body);cursor:pointer;
+    box-shadow:0 2px 10px rgba(0,0,0,0.08);
+    transition:background 0.2s,border-color 0.2s,color 0.2s,box-shadow 0.2s;
+  }
+  .btn-config-toggle .cfg-icon {
+    transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);
+    display:inline-block;line-height:1;
+  }
+  .btn-config-toggle:hover {
+    background:var(--accent-light);border-color:var(--accent);
+    color:var(--accent);box-shadow:0 4px 16px rgba(0,0,0,0.13);
+  }
+  .btn-config-toggle.open {
+    background:var(--accent);border-color:var(--accent);color:white;
+  }
+  .btn-config-toggle.open .cfg-icon { transform:rotate(60deg); }
+
+  /* CONFIG DRAWER */
+  .config-drawer-overlay {
+    position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:200;
+    backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity 0.25s;
+  }
+  .config-drawer-overlay.open { opacity:1;pointer-events:all; }
+  .config-drawer {
+    position:fixed;top:0;left:0;bottom:0;z-index:220;
+    width:min(400px, 92vw);background:var(--bg);
+    border-right:1px solid var(--border);
+    box-shadow:4px 0 30px rgba(0,0,0,0.2);
+    transform:translateX(-100%);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    overflow-y:auto;padding:1.2rem;padding-top:4.5rem;
+    display:flex;flex-direction:column;gap:1rem;
+  }
+  .config-drawer.open { transform:translateX(0); }
+  body.tema-maximalista .config-drawer { box-shadow:4px 0 40px rgba(139,47,201,0.15);border-color:#8B2FC944; }
+  .config-drawer .config-panel,
+  .config-drawer .share-panel { margin-bottom:0; }
+  .config-drawer-title {
+    font-family:var(--font-display);font-size:1.2rem;color:var(--accent);
+    margin-bottom:0.5rem;padding-bottom:0.6rem;border-bottom:2px solid var(--border);
+  }
+
+  /* RESUMEN DE EVENTOS */
+  .resumen-panel {
+    background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);
+    padding:1.4rem 1.6rem;margin-bottom:1.4rem;transition:background 0.4s;
+  }
+  body.tema-maximalista .resumen-panel { border-color:#8B2FC944; }
+  .resumen-panel-hdr {
+    display:flex;align-items:center;justify-content:space-between;
+    cursor:pointer;user-select:none;
+  }
+  .resumen-panel-hdr h2 { font-family:var(--font-display);font-size:1.1rem;color:var(--accent); }
+  .resumen-toggle-icon { font-size:0.9rem;color:var(--muted);transition:transform 0.2s; }
+  .resumen-toggle-icon.open { transform:rotate(180deg); }
+  .resumen-body { margin-top:1rem; }
+  .resumen-empty { font-size:0.82rem;color:var(--muted);text-align:center;padding:1.2rem 0; }
+  .resumen-month-group { margin-bottom:1.2rem; }
+  .resumen-month-title {
+    font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;
+    color:var(--muted);margin-bottom:0.5rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border);
+  }
+  .resumen-event-row {
+    display:flex;align-items:flex-start;gap:0.7rem;padding:0.5rem 0.6rem;
+    border-radius:calc(var(--radius) - 2px);margin-bottom:0.3rem;
+    background:var(--accent-light);border:1px solid var(--border);
+    transition:background 0.15s;
+  }
+  .resumen-event-row:hover { background:var(--second-light); }
+  .resumen-event-date {
+    flex-shrink:0;font-size:0.72rem;font-weight:700;color:var(--accent);
+    min-width:36px;text-align:center;
+    background:var(--paper);border-radius:6px;padding:0.2rem 0.4rem;
+  }
+  .resumen-event-info { flex:1;min-width:0; }
+  .resumen-event-name { font-size:0.82rem;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+  .resumen-event-meta { font-size:0.72rem;color:var(--muted);margin-top:0.1rem; }
+  .resumen-event-del {
+    background:none;border:none;cursor:pointer;color:var(--muted);
+    font-size:0.8rem;padding:0.1rem 0.3rem;border-radius:4px;
+    transition:color 0.15s;flex-shrink:0;align-self:center;
+  }
+  .resumen-event-del:hover { color:#e05555; }
+  .resumen-badge {
+    display:inline-flex;align-items:center;justify-content:center;
+    background:var(--accent);color:white;font-size:0.65rem;font-weight:700;
+    border-radius:50%;width:18px;height:18px;margin-left:0.4rem;vertical-align:middle;
+  }
 </style>
 </head>
-<body class="tema-femenino">
+<body class="tema-rosa">
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loading-overlay">
+  <div class="spinner"></div>
+  <p>Cargando tu agenda...</p>
+</div>
 
 <!-- AUTH MODAL -->
 <div class="auth-overlay hidden" id="auth-overlay">
@@ -196,8 +640,20 @@
       <label>Contraseña</label>
       <input type="password" id="auth-pass" placeholder="••••••••" autocomplete="current-password">
     </div>
+    <div class="auth-field hidden" id="auth-pass-confirm-wrap">
+      <label>Confirmar contraseña</label>
+      <input type="password" id="auth-pass-confirm" placeholder="••••••••" autocomplete="new-password">
+    </div>
+    <div class="auth-field hidden" id="auth-respuesta-wrap">
+      <label>Respuesta secreta</label>
+      <input type="text" id="auth-respuesta" placeholder="ej: el nombre de tu primera mascota" autocomplete="off">
+      <p class="auth-hint">La vas a necesitar para recuperar tu cuenta si te olvidás la contraseña.</p>
+    </div>
     <div class="auth-error" id="auth-error"></div>
     <button class="btn-auth" id="btn-auth-submit" onclick="submitAuth()">Entrar</button>
+    <div class="auth-forgot" id="auth-forgot-link">
+      <a onclick="mostrarRecuperar()">¿Olvidaste tu contraseña?</a>
+    </div>
     <div class="auth-toggle">
       <span id="auth-toggle-text">¿No tenés cuenta?</span>
       <a onclick="toggleAuthMode()"> Registrate</a>
@@ -205,29 +661,45 @@
   </div>
 </div>
 
+<!-- RECOVERY MODAL -->
+<div class="auth-overlay hidden" id="recovery-overlay">
+  <div class="auth-box">
+    <h2>Recuperar contraseña</h2>
+    <p>Ingresá tu celular y la respuesta secreta que elegiste al registrarte.</p>
+    <div class="auth-field">
+      <label>Número de celular</label>
+      <input type="tel" id="rec-celular" placeholder="ej: 1123456789" autocomplete="tel">
+    </div>
+    <div class="auth-field">
+      <label>Respuesta secreta</label>
+      <input type="text" id="rec-respuesta" placeholder="La que elegiste al registrarte" autocomplete="off">
+    </div>
+    <div class="auth-field">
+      <label>Nueva contraseña</label>
+      <input type="password" id="rec-pass" placeholder="••••••••" autocomplete="new-password">
+    </div>
+    <div class="auth-field">
+      <label>Confirmar nueva contraseña</label>
+      <input type="password" id="rec-pass-confirm" placeholder="••••••••" autocomplete="new-password">
+    </div>
+    <div class="auth-error" id="rec-error"></div>
+    <button class="btn-auth" id="btn-rec-submit" onclick="submitRecuperar()">Cambiar contraseña</button>
+    <div class="auth-back">
+      <a onclick="ocultarRecuperar(); mostrarAuth();">← Volver a iniciar sesión</a>
+    </div>
+  </div>
+</div>
+
 <div class="container">
-  <!-- USER BAR -->
-  <div class="user-bar" id="user-bar">
-    <span id="user-name-label"></span>
-    <button class="btn-login-top hidden" id="btn-show-login" onclick="mostrarAuth()">Iniciar sesión</button>
-    <button class="btn-logout hidden" id="btn-logout" onclick="cerrarSesion()">Cerrar sesión</button>
-  </div>
+<!-- CONFIG DRAWER OVERLAY -->
+<div class="config-drawer-overlay" id="config-drawer-overlay" onclick="cerrarConfigDrawer()"></div>
 
-  <header>
-    <h1>Agenda Universitaria</h1>
-    <p>Argentina · Elegí tu año, tema y fechas del cuatrimestre</p>
-  </header>
+<!-- CONFIG DRAWER -->
+<div class="config-drawer" id="config-drawer">
+  <div class="config-drawer-title">⚙️ Configuración</div>
 
-  <!-- TEMA -->
-  <div class="theme-selector">
-    <button class="theme-btn masculino"       onclick="setTema('masculino')">🌑 Oscuro</button>
-    <button class="theme-btn femenino active" onclick="setTema('femenino')">🌸 Claro</button>
-    <button class="theme-btn minimalista"     onclick="setTema('minimalista')">◻️ Neutro</button>
-    <button class="theme-btn maximalista"     onclick="setTema('maximalista')">⚡ Neón</button>
-  </div>
-
-  <!-- AÑO -->
-  <div class="year-selector">
+  <!-- AÑO SELECTOR INSIDE DRAWER -->
+  <div class="year-selector" id="year-selector-drawer" style="justify-content:flex-start;margin-bottom:0;">
     <span>Año:</span>
     <button class="year-btn" onclick="setAnio(2026,this)">2026</button>
     <button class="year-btn active" onclick="setAnio(2027,this)">2027</button>
@@ -237,9 +709,13 @@
     <button class="year-btn" onclick="setAnio(2031,this)">2031</button>
   </div>
 
-  <!-- CONFIG -->
-  <div class="config-panel">
-    <h2>Configurar fechas — <span id="anio-label">2027</span></h2>
+  <!-- CONFIG INSIDE DRAWER -->
+  <div class="config-panel" style="margin-bottom:0;">
+    <h2>Configurar — <span id="anio-label">2027</span></h2>
+    <div style="margin-bottom:1.2rem;">
+      <div style="font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:0.5rem;">🎨 Estilo visual</div>
+      <div class="color-grid" id="color-grid"></div>
+    </div>
     <div class="config-grid">
       <div class="config-section">
         <h3>📘 Primer Semestre</h3>
@@ -256,15 +732,13 @@
         <div class="field"><label>Fin turno de exámenes</label><input type="date" id="p2-exam-end"></div>
       </div>
     </div>
-    <button class="btn-generate" onclick="generateCalendar()">Generar calendario</button>
+    <button class="btn-generate" onclick="generateCalendar();cerrarConfigDrawer();">Generar calendario</button>
   </div>
 
-  <!-- COMPARTIR -->
-  <div class="share-panel">
+  <!-- COMPARTIR INSIDE DRAWER -->
+  <div class="share-panel" style="margin-bottom:0;">
     <h2>📤 Compartir</h2>
     <div class="share-grid">
-
-      <!-- Compartir calendario completo -->
       <div class="share-block">
         <h3>Calendario completo</h3>
         <p style="font-size:0.78rem;color:var(--muted);margin-bottom:0.8rem;">Copiá el resumen del año con todas las fechas configuradas para enviarlo por WhatsApp, mail o donde quieras.</p>
@@ -275,8 +749,6 @@
         </div>
         <input type="text" id="share-url" style="margin-top:0.6rem;width:100%;padding:0.38rem 0.5rem;border:1px solid var(--border);border-radius:calc(var(--radius) - 2px);font-size:0.72rem;background:var(--bg);color:var(--muted);font-family:var(--font-body);cursor:pointer;" placeholder="El resumen aparecerá acá..." readonly onclick="this.select()">
       </div>
-
-      <!-- Compartir fecha específica -->
       <div class="share-block second">
         <h3>Fecha específica</h3>
         <div class="share-row">
@@ -295,9 +767,27 @@
         </div>
         <input type="text" id="fecha-output" style="margin-top:0.6rem;width:100%;padding:0.38rem 0.5rem;border:1px solid var(--border);border-radius:calc(var(--radius) - 2px);font-size:0.72rem;background:var(--bg);color:var(--muted);font-family:var(--font-body);cursor:pointer;" placeholder="El mensaje aparecerá acá..." readonly onclick="this.select()">
       </div>
-
     </div>
   </div>
+</div><!-- end config-drawer -->
+
+<div class="container">
+  <!-- CONFIG TOGGLE BUTTON -->
+  <button class="btn-config-toggle" id="btn-config-toggle" onclick="toggleConfigDrawer()" title="Configuración">
+    <span class="cfg-icon">⚙️</span>
+  </button>
+
+  <!-- USER BAR top-right -->
+  <div class="user-bar" id="user-bar">
+    <span id="user-name-label"></span>
+    <button class="btn-login-top hidden" id="btn-show-login" onclick="mostrarAuth()">Iniciar sesión</button>
+    <button class="btn-logout hidden" id="btn-logout" onclick="cerrarSesion()">Cerrar sesión</button>
+  </div>
+
+  <header style="padding-top:2.8rem;">
+    <h1>Agenda Universitaria</h1>
+    <p>Argentina · Configurá las fechas y elegí tu estilo</p>
+  </header>
 
   <!-- LEYENDA -->
   <div class="legend">
@@ -309,7 +799,69 @@
     <div class="legend-item"><div class="legend-dot" style="background:var(--holiday)"></div> Feriado nacional</div>
   </div>
 
+  <!-- RESUMEN DE EVENTOS -->
+  <div class="resumen-panel" id="resumen-panel">
+    <div class="resumen-panel-hdr" onclick="toggleResumen()">
+      <h2>📋 Eventos agendados <span class="resumen-badge" id="resumen-badge" style="display:none">0</span></h2>
+      <span class="resumen-toggle-icon" id="resumen-toggle-icon">▼</span>
+    </div>
+    <div class="resumen-body hidden" id="resumen-body">
+      <div class="resumen-empty" id="resumen-empty">Todavía no tenés eventos agendados.<br>Tocá cualquier día del calendario para agregar uno.</div>
+      <div id="resumen-list"></div>
+    </div>
+  </div>
+
   <div id="calendar-output"></div>
+</div>
+
+<!-- MONTH EXPAND MODAL -->
+<div class="month-modal-overlay" id="month-modal-overlay" onclick="cerrarModalMes(event)">
+  <div class="month-modal">
+    <div class="month-modal-header">
+      <span class="month-modal-title" id="modal-month-title"></span>
+      <button class="month-modal-close" onclick="cerrarModalMes()">✕</button>
+    </div>
+    <div class="modal-weekdays" id="modal-weekdays"></div>
+    <div class="modal-days-grid" id="modal-days-grid"></div>
+  </div>
+</div>
+
+<!-- EVENT MODAL -->
+<div class="event-modal-overlay" id="event-modal-overlay" onclick="cerrarModalEvento(event)">
+  <div class="event-modal">
+    <div class="event-modal-hdr">
+      <h3>📌 Agregar evento</h3>
+      <button onclick="cerrarModalEvento()">✕</button>
+    </div>
+    <p class="event-date-label" id="event-date-label"></p>
+    <div class="event-field">
+      <label>Nombre del evento</label>
+      <input type="text" id="event-name-input" placeholder="ej: Parcial de Sociología" maxlength="60">
+    </div>
+    <div class="event-field">
+      <label>Tipo</label>
+      <select id="event-type-input">
+        <option value="parcial">📝 Parcial</option>
+        <option value="final">📋 Final</option>
+        <option value="entrega">📦 Entrega / TP</option>
+        <option value="clase">📚 Clase especial</option>
+        <option value="otro">📌 Otro</option>
+      </select>
+    </div>
+    <div class="event-field">
+      <label>Horario (opcional)</label>
+      <input type="time" id="event-time-input">
+    </div>
+    <div class="event-field">
+      <label>Nota (opcional)</label>
+      <textarea id="event-note-input" placeholder="Aula, profesor, info extra..."></textarea>
+    </div>
+    <div class="event-btns">
+      <button class="btn-event-cancel" onclick="cerrarModalEvento()">Cancelar</button>
+      <button class="btn-event-save" onclick="guardarEvento()">Guardar</button>
+    </div>
+    <div class="event-list" id="event-list-day"></div>
+  </div>
 </div>
 
 <div class="toast" id="toast">✓ Copiado al portapapeles</div>
@@ -323,6 +875,7 @@ const db = createClient(SUPA_URL, SUPA_KEY);
 
 let currentUser = null;
 let authMode = 'login'; // 'login' | 'register'
+let yaInicializado = false; // evita doble carga entre window.onload y onAuthStateChange
 
 // ── AUTH UI ───────────────────────────────────────────────────────────────────
 function mostrarAuth() {
@@ -332,7 +885,7 @@ function mostrarAuth() {
 }
 function ocultarAuth() {
   document.getElementById('auth-overlay').classList.add('hidden');
-  document.getElementById('auth-error').textContent = '';
+  limpiarErrorAuth();
 }
 function toggleAuthMode() {
   authMode = authMode === 'login' ? 'register' : 'login';
@@ -342,9 +895,26 @@ function toggleAuthMode() {
   document.getElementById('btn-auth-submit').textContent= esLogin ? 'Entrar' : 'Registrarme';
   document.getElementById('auth-toggle-text').textContent = esLogin ? '¿No tenés cuenta?' : '¿Ya tenés cuenta?';
   document.querySelector('.auth-toggle a').textContent  = esLogin ? ' Registrate' : ' Iniciá sesión';
-  document.getElementById('auth-error').textContent = '';
   document.getElementById('auth-nombre-wrap').classList.toggle('hidden', esLogin);
   document.getElementById('auth-apellido-wrap').classList.toggle('hidden', esLogin);
+  document.getElementById('auth-pass-confirm-wrap').classList.toggle('hidden', esLogin);
+  document.getElementById('auth-respuesta-wrap').classList.toggle('hidden', esLogin);
+  document.getElementById('auth-forgot-link').classList.toggle('hidden', !esLogin);
+  limpiarErrorAuth();
+}
+
+function limpiarErrorAuth() {
+  document.getElementById('auth-error').textContent = '';
+  ['auth-nombre','auth-apellido','auth-celular','auth-pass','auth-pass-confirm','auth-respuesta'].forEach(id => {
+    document.getElementById(id).classList.remove('invalid');
+  });
+}
+function marcarInvalido(...ids) {
+  ids.forEach(id => document.getElementById(id).classList.add('invalid'));
+}
+function mostrarErrorAuth(msg, ...idsInvalidos) {
+  document.getElementById('auth-error').textContent = msg;
+  marcarInvalido(...idsInvalidos);
 }
 
 // Convierte "María José" -> "maria.jose" (sin tildes, sin espacios extra)
@@ -367,7 +937,7 @@ function normalizarCelular(cel) {
 // Supabase Auth requiere un email por dentro; lo armamos solos a partir
 // del celular (que es único por persona) para que el usuario nunca lo vea.
 function construirEmail(celular) {
-  return `cel${normalizarCelular(celular)}@agenda.app`;
+  return `cel${normalizarCelular(celular)}@gmail.com`;
 }
 
 async function submitAuth() {
@@ -375,12 +945,21 @@ async function submitAuth() {
   const apellido = document.getElementById('auth-apellido').value.trim();
   const celular  = document.getElementById('auth-celular').value.trim();
   const pass     = document.getElementById('auth-pass').value;
-  const errEl = document.getElementById('auth-error');
-  errEl.textContent = '';
+  const passConfirm = document.getElementById('auth-pass-confirm').value;
+  const respuesta = document.getElementById('auth-respuesta').value.trim();
+  limpiarErrorAuth();
 
-  if (!celular || !pass) { errEl.textContent = 'Completá todos los campos.'; return; }
-  if (normalizarCelular(celular).length < 8) { errEl.textContent = 'Ingresá un número de celular válido (con código de área).'; return; }
-  if (authMode === 'register' && (!nombre || !apellido)) { errEl.textContent = 'Completá todos los campos.'; return; }
+  if (!celular) { mostrarErrorAuth('Ingresá tu número de celular.', 'auth-celular'); return; }
+  if (normalizarCelular(celular).length < 8) { mostrarErrorAuth('Ese celular no parece válido. Incluí el código de área.', 'auth-celular'); return; }
+  if (!pass) { mostrarErrorAuth('Ingresá tu contraseña.', 'auth-pass'); return; }
+  if (pass.length < 6) { mostrarErrorAuth('La contraseña debe tener al menos 6 caracteres.', 'auth-pass'); return; }
+
+  if (authMode === 'register') {
+    if (!nombre)   { mostrarErrorAuth('Ingresá tu nombre.', 'auth-nombre'); return; }
+    if (!apellido) { mostrarErrorAuth('Ingresá tu apellido.', 'auth-apellido'); return; }
+    if (pass !== passConfirm) { mostrarErrorAuth('Las contraseñas no coinciden.', 'auth-pass', 'auth-pass-confirm'); return; }
+    if (!respuesta) { mostrarErrorAuth('Elegí una respuesta secreta para poder recuperar tu cuenta.', 'auth-respuesta'); return; }
+  }
 
   const email = construirEmail(celular);
   const btn = document.getElementById('btn-auth-submit');
@@ -389,20 +968,36 @@ async function submitAuth() {
     let result;
     if (authMode === 'login') {
       result = await db.auth.signInWithPassword({ email, password: pass });
+      if (result.error) {
+        mostrarErrorAuth(traducirError(result.error.message), 'auth-celular', 'auth-pass');
+      } else {
+        ocultarAuth();
+      }
     } else {
       result = await db.auth.signUp({
         email, password: pass,
-        options: { data: { nombre, apellido, celular: normalizarCelular(celular) } }
+        options: {
+          emailRedirectTo: null,
+          data: { nombre, apellido, celular: normalizarCelular(celular), respuesta_seguridad: respuesta.toLowerCase() }
+        }
       });
-    }
-    if (result.error) {
-      errEl.textContent = traducirError(result.error.message);
-    } else {
-      ocultarAuth();
-      // La sesión se actualiza via onAuthStateChange
+      if (result.error) {
+        mostrarErrorAuth(traducirError(result.error.message), 'auth-celular', 'auth-pass');
+      } else {
+        // Si "Confirm email" está desactivado en Supabase, session ya existe.
+        // Si está activado, session es null pero el usuario quedó creado.
+        if (result.data?.session) {
+          // Sesión inmediata — confirmación desactivada ✓
+          ocultarAuth();
+          showToast('✓ Cuenta creada. ¡Bienvenida!');
+        } else {
+          // Supabase envió email de confirmación (activado en el dashboard)
+          mostrarErrorAuth('Cuenta creada. Revisá tu email para confirmar antes de ingresar.');
+        }
+      }
     }
   } catch(e) {
-    errEl.textContent = 'Error de conexión. Intentá de nuevo.';
+    mostrarErrorAuth('Error de conexión. Intentá de nuevo.');
   }
   btn.textContent = authMode === 'login' ? 'Entrar' : 'Registrarme';
   btn.disabled = false;
@@ -413,7 +1008,67 @@ function traducirError(msg) {
   if (msg.includes('already registered')) return 'Ya existe una cuenta con ese número de celular. Iniciá sesión.';
   if (msg.includes('Password should')) return 'La contraseña debe tener al menos 6 caracteres.';
   if (msg.includes('valid email')) return 'Revisá el número de celular ingresado.';
+  if (msg.includes('rate limit') || msg.includes('email rate')) return 'Demasiados intentos. Esperá unos minutos y volvé a intentarlo.';
+  if (msg.includes('User already registered')) return 'Ya existe una cuenta con ese número. Iniciá sesión.';
   return msg;
+}
+
+// ── RECUPERAR CONTRASEÑA ────────────────────────────────────────────────────
+function mostrarRecuperar() {
+  ocultarAuth();
+  document.getElementById('recovery-overlay').classList.remove('hidden');
+  document.getElementById('rec-error').textContent = '';
+  document.getElementById('rec-celular').focus();
+}
+function ocultarRecuperar() {
+  document.getElementById('recovery-overlay').classList.add('hidden');
+  document.getElementById('rec-error').textContent = '';
+  ['rec-celular','rec-respuesta','rec-pass','rec-pass-confirm'].forEach(id => {
+    document.getElementById(id).value = '';
+    document.getElementById(id).classList.remove('invalid');
+  });
+}
+
+async function submitRecuperar() {
+  const celular   = document.getElementById('rec-celular').value.trim();
+  const respuesta = document.getElementById('rec-respuesta').value.trim();
+  const pass      = document.getElementById('rec-pass').value;
+  const passConf  = document.getElementById('rec-pass-confirm').value;
+  const errEl = document.getElementById('rec-error');
+  errEl.textContent = '';
+  ['rec-celular','rec-respuesta','rec-pass','rec-pass-confirm'].forEach(id => document.getElementById(id).classList.remove('invalid'));
+
+  if (!celular || normalizarCelular(celular).length < 8) { errEl.textContent = 'Ingresá el celular con el que te registraste.'; document.getElementById('rec-celular').classList.add('invalid'); return; }
+  if (!respuesta) { errEl.textContent = 'Ingresá tu respuesta secreta.'; document.getElementById('rec-respuesta').classList.add('invalid'); return; }
+  if (pass.length < 6) { errEl.textContent = 'La nueva contraseña debe tener al menos 6 caracteres.'; document.getElementById('rec-pass').classList.add('invalid'); return; }
+  if (pass !== passConf) { errEl.textContent = 'Las contraseñas no coinciden.'; document.getElementById('rec-pass').classList.add('invalid'); document.getElementById('rec-pass-confirm').classList.add('invalid'); return; }
+
+  const btn = document.getElementById('btn-rec-submit');
+  btn.textContent = '...'; btn.disabled = true;
+  try {
+    const { data, error } = await db.rpc('reset_password_with_security_answer', {
+      p_celular: normalizarCelular(celular),
+      p_respuesta: respuesta.toLowerCase(),
+      p_nueva_password: pass
+    });
+    if (error) {
+      errEl.textContent = 'No se pudo cambiar la contraseña. Intentá de nuevo más tarde.';
+    } else if (data === true) {
+      ocultarRecuperar();
+      authMode = 'login';
+      mostrarAuth();
+      document.getElementById('auth-celular').value = celular;
+      showToast('✓ Contraseña actualizada, ya podés iniciar sesión');
+    } else {
+      errEl.textContent = 'Celular o respuesta secreta incorrectos.';
+      document.getElementById('rec-celular').classList.add('invalid');
+      document.getElementById('rec-respuesta').classList.add('invalid');
+    }
+  } catch(e) {
+    errEl.textContent = 'Error de conexión. Intentá de nuevo.';
+  }
+  btn.textContent = 'Cambiar contraseña';
+  btn.disabled = false;
 }
 
 async function cerrarSesion() {
@@ -438,11 +1093,11 @@ function actualizarUserBar(user) {
   }
 }
 
-// Escuchar cambios de sesión
+// Escuchar cambios de sesión (login/logout posteriores a la carga inicial)
 db.auth.onAuthStateChange(async (event, session) => {
   currentUser = session?.user ?? null;
   actualizarUserBar(currentUser);
-  if (currentUser) {
+  if (yaInicializado && currentUser) {
     await cargarConfig();
     generateCalendar();
   }
@@ -464,6 +1119,25 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   document.getElementById('auth-pass').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') submitAuth();
+  });
+  document.getElementById('auth-pass-confirm').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') submitAuth();
+  });
+  document.getElementById('auth-respuesta').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') submitAuth();
+  });
+  // Limpiar el resaltado de "inválido" en cuanto el usuario corrige el campo
+  ['auth-nombre','auth-apellido','auth-celular','auth-pass','auth-pass-confirm','auth-respuesta'].forEach(id => {
+    document.getElementById(id).addEventListener('input', () => document.getElementById(id).classList.remove('invalid'));
+  });
+
+  document.getElementById('recovery-overlay').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('recovery-overlay')) ocultarRecuperar();
+  });
+  ['rec-celular','rec-respuesta','rec-pass','rec-pass-confirm'].forEach(id => {
+    const el = document.getElementById(id);
+    el.addEventListener('keydown', (e) => { if (e.key === 'Enter') submitRecuperar(); });
+    el.addEventListener('input', () => el.classList.remove('invalid'));
   });
 });
 
@@ -520,9 +1194,7 @@ async function cargarConfig() {
 function aplicarConfig(config) {
   if (config.tema) {
     document.body.className = 'tema-' + config.tema;
-    document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
-    const btn = document.querySelector('.theme-btn.' + config.tema);
-    if (btn) btn.classList.add('active');
+    renderColorGrid();
   }
   if (config.anio) {
     anioActual = config.anio;
@@ -567,10 +1239,42 @@ const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto'
 const DIAS  = ['Do','Lu','Ma','Mi','Ju','Vi','Sa'];
 let anioActual = 2027;
 
+const TEMAS = [
+  // ── Claros ──
+  { id:'blanco',         label:'Blanco',       bg:'#FAFAFA', accent:'#444444', second:'#888888' },
+  { id:'rosa',           label:'Rosa',         bg:'#FEF6F7', accent:'#D4748A', second:'#C490A8' },
+  { id:'rojo',           label:'Rojo',         bg:'#FFFAFA', accent:'#C0392B', second:'#E74C3C' },
+  { id:'celeste',        label:'Celeste',      bg:'#F0F8FF', accent:'#3A9BD5', second:'#5BC4E8' },
+  { id:'azul',           label:'Azul',         bg:'#EEF3FB', accent:'#1A56DB', second:'#2D7DD2' },
+  { id:'violeta',        label:'Violeta',      bg:'#F5F0FF', accent:'#6D3FD0', second:'#9B72E8' },
+  { id:'verde',          label:'Verde',        bg:'#F2F8F4', accent:'#2A7D4F', second:'#48A86D' },
+  // ── Especiales ──
+  { id:'minimalista',    label:'Minimal',      bg:'#F8F8F6', accent:'#222222', second:'#555555' },
+  { id:'maximalista',    label:'Maximal',      bg:'#FAF0FF', accent:'#8B2FC9', second:'#E8359A' },
+  // ── Oscuros ──
+  { id:'oscuro',         label:'Oscuro',       bg:'#0D1117', accent:'#58A6FF', second:'#BC8CFF' },
+  { id:'oscuro-calido',  label:'Noche cálida', bg:'#181410', accent:'#D4915A', second:'#A0C070' },
+  { id:'oscuro-violeta', label:'Noche violeta',bg:'#0E0B16', accent:'#A078F0', second:'#F070C0' },
+  { id:'oscuro-verde',   label:'Noche verde',  bg:'#0A100C', accent:'#4ABF70', second:'#80D8A0' },
+];
+
+function renderColorGrid() {
+  const grid = document.getElementById('color-grid');
+  const temaActual = document.body.className.replace('tema-','');
+  grid.innerHTML = TEMAS.map(t => `
+    <button class="color-swatch${t.id===temaActual?' active':''}" onclick="setTema('${t.id}')" title="${t.label}" aria-label="${t.label}">
+      <div class="swatch-preview" style="background:${t.bg}">
+        <div class="swatch-dot" style="background:${t.accent}"></div>
+        <div class="swatch-dot" style="background:${t.second}"></div>
+      </div>
+      <div class="swatch-label" style="background:${t.bg};color:${t.accent}">${t.label}</div>
+    </button>
+  `).join('');
+}
+
 function setTema(tema) {
   document.body.className = 'tema-' + tema;
-  document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
-  document.querySelector('.theme-btn.' + tema).classList.add('active');
+  renderColorGrid();
   if (document.getElementById('calendar-output').style.display !== 'none') generateCalendar();
   guardarConfig();
 }
@@ -680,6 +1384,21 @@ function copiarFecha() {
   navigator.clipboard.writeText(msg).then(() => showToast('✓ Fecha copiada')).catch(() => showToast('✓ Listo'));
 }
 
+function getDayLabel(date, r, feriados) {
+  const key = toKey(date);
+  if (feriados.has(key)) return 'Feriado nacional';
+  if (inRange(date, r.p1ExamStart, r.p1ExamEnd)) return 'Turno de exámenes';
+  if (inRange(date, r.p2ExamStart, r.p2ExamEnd)) return 'Turno de exámenes';
+  if (inRange(date, r.p1Start, r.p1End)) return 'Primer semestre';
+  if (inRange(date, r.p2Start, r.p2End)) return 'Segundo semestre';
+  const m = date.getMonth();
+  if (m===0||m===1) return 'Receso de verano';
+  if (m===11) return 'Receso de verano';
+  if (m===6) return 'Receso de invierno';
+  const dow = date.getDay();
+  return (dow===0||dow===6) ? 'Fin de semana' : '';
+}
+
 function getDayClass(date, r, feriados) {
   const key = toKey(date);
   if (feriados.has(key)) return 'receso';
@@ -694,18 +1413,42 @@ function getDayClass(date, r, feriados) {
   return (dow===0||dow===6) ? 'weekend' : 'normal';
 }
 
-function renderMonth(year, month, r, feriados) {
+function esHoy(date) {
+  const hoy = new Date();
+  return date.getFullYear() === hoy.getFullYear() &&
+         date.getMonth() === hoy.getMonth() &&
+         date.getDate() === hoy.getDate();
+}
+
+function renderMonth(year, month, r, feriados, opts={}) {
   const first=new Date(year,month,1), last=new Date(year,month+1,0), mid=new Date(year,month,15);
+  const hoy = new Date();
+  const isCurrentMonth = (year===hoy.getFullYear() && month===hoy.getMonth());
   let hClass='';
   if (inRange(mid,r.p2Start,r.p2End)||inRange(mid,r.p2ExamStart,r.p2ExamEnd)) hClass='second-sem';
   else if (month===0||month===1||month===11||month===6) hClass='vacation';
-  let h=`<div class="month-card"><div class="month-header ${hClass}">${MESES[month]} ${year}</div><div class="weekdays">`;
+  const currentCls = isCurrentMonth ? ' current-month' : '';
+  const dataId = `month-card-${year}-${month}`;
+  let h=`<div class="month-card${currentCls}" id="${dataId}"><div class="month-header ${hClass}">${MESES[month]} ${year}</div><div class="weekdays">`;
   DIAS.forEach(d=>h+=`<div class="weekday">${d}</div>`);
   h+=`</div><div class="days-grid">`;
   for(let i=0;i<first.getDay();i++) h+=`<div class="day empty"></div>`;
-  for(let d=1;d<=last.getDate();d++){const date=new Date(year,month,d);h+=`<div class="day ${getDayClass(date,r,feriados)}">${d}</div>`;}
+  for(let d=1;d<=last.getDate();d++){
+    const date=new Date(year,month,d);
+    const key=toKey(date);
+    const cls = getDayClass(date,r,feriados) + (esHoy(date) ? ' today' : '');
+    const tip = getDayLabel(date,r,feriados);
+    const tipAttr = tip ? ` data-tip="${tip}"` : '';
+    const hasEvt = (userEvents[key] && userEvents[key].length>0);
+    const dot = hasEvt ? `<span class="day-dot"></span>` : '';
+    h+=`<div class="day ${cls}"${tipAttr} onclick="event.stopPropagation();abrirModalEvento('${key}',${d})"><span class="day-num">${d}</span>${dot}</div>`;
+  }
   return h+`</div></div>`;
 }
+
+// ── CALENDARIO: mes visible ────────────────────────────────────────────────
+let mesVisible = new Date().getMonth();   // 0-11
+let anioVisible = new Date().getFullYear();
 
 function generateCalendar() {
   const y=anioActual, feriados=getFeriados(y);
@@ -719,30 +1462,344 @@ function generateCalendar() {
     p2ExamStart:parseDate(document.getElementById('p2-exam-start').value),
     p2ExamEnd:parseDate(document.getElementById('p2-exam-end').value),
   };
-  let html=`<div class="year-divider">— ${y} —</div>`;
-  html+=`<p class="sem-label vac">☀️ Receso de verano</p><div class="info-banner vac">Enero y febrero · Período de materias de verano si tu universidad las ofrece</div><div class="months-grid">${renderMonth(y,0,r,feriados)}${renderMonth(y,1,r,feriados)}</div>`;
-  html+=`<p class="sem-label">📘 Primer Semestre</p><div class="info-banner">Del ${fmt(r.p1Start)} al ${fmt(r.p1End)} · Exámenes: ${fmt(r.p1ExamStart)} al ${fmt(r.p1ExamEnd)}</div><div class="months-grid">`;
-  for(let m=2;m<=6;m++) html+=renderMonth(y,m,r,feriados);
-  html+=`</div><p class="sem-label vac">❄️ Receso de invierno</p><div class="info-banner vac">Julio · Exámenes de fin del primer semestre y período de materias de invierno</div>`;
-  html+=`<p class="sem-label second">📗 Segundo Semestre</p><div class="info-banner second">Del ${fmt(r.p2Start)} al ${fmt(r.p2End)} · Exámenes: ${fmt(r.p2ExamStart)} al ${fmt(r.p2ExamEnd)}</div><div class="months-grid">`;
-  for(let m=7;m<=10;m++) html+=renderMonth(y,m,r,feriados);
-  html+=`</div><p class="sem-label vac">☀️ Fin de año · Verano ${y}-${y+1}</p><div class="info-banner vac">Noviembre y diciembre · Exámenes finales y comienzo del receso de verano</div><div class="months-grid">${renderMonth(y,10,r,feriados)}${renderMonth(y,11,r,feriados)}</div>`;
-  const out=document.getElementById('calendar-output');
-  out.innerHTML=html; out.style.display='block';
-  out.scrollIntoView({behavior:'smooth',block:'start'});
+  _modalR = r; _modalFeriados = feriados;
+  _lastR = r; _lastFeriados = feriados;
+
+  // Resetear al mes actual del año seleccionado al generar
+  mesVisible = (y === new Date().getFullYear()) ? new Date().getMonth() : 0;
+  anioVisible = y;
+
+  renderMesVisible();
   guardarConfig();
 }
 
+function renderMesVisible() {
+  const y = anioVisible, m = mesVisible;
+  const feriados = _lastFeriados || getFeriados(y);
+  const r = _lastR || {};
+  const monthHtml = renderMonth(y, m, r, feriados);
+  const out = document.getElementById('calendar-output');
+  out.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.6rem;">
+      <button class="btn-mes-nav" onclick="cambiarMes(-1)" title="Mes anterior">‹</button>
+      <span class="mes-nav-label">${MESES[m]} ${y}</span>
+      <button class="btn-mes-nav" onclick="cambiarMes(1)" title="Mes siguiente">›</button>
+    </div>
+    <div style="display:flex;justify-content:center;">
+      ${monthHtml}
+    </div>
+    <div style="display:flex;justify-content:center;gap:0.5rem;margin-top:0.8rem;flex-wrap:wrap;">
+      ${MESES.map((nombre,i)=>`<button class="btn-mes-mini${i===m?' active':''}" onclick="irAMes(${i})">${nombre.slice(0,3)}</button>`).join('')}
+    </div>
+    <div style="text-align:center;margin-top:0.8rem;">
+      <button class="btn-print" onclick="window.print()">🖨️ Imprimir</button>
+    </div>
+  `;
+  out.style.display = 'block';
+}
+
+function cambiarMes(delta) {
+  mesVisible += delta;
+  if (mesVisible < 0) { mesVisible = 11; anioVisible--; }
+  if (mesVisible > 11) { mesVisible = 0; anioVisible++; }
+  // reload feriados if year changed
+  if (anioVisible !== anioActual) _lastFeriados = getFeriados(anioVisible);
+  renderMesVisible();
+}
+
+function irAMes(m) {
+  mesVisible = m;
+  anioVisible = anioActual;
+  renderMesVisible();
+}
+
+let _lastR = null, _lastFeriados = null;
+
+// ── MONTH MODAL ───────────────────────────────────────────────────────────────
+let _modalR = null, _modalFeriados = null;
+
+function abrirModalMes(year, month) {
+  if (!_modalR || !_modalFeriados) return;
+  const r = _modalR, feriados = _modalFeriados;
+  document.getElementById('modal-month-title').textContent = `${MESES[month]} ${year}`;
+  // weekdays header
+  const wdEl = document.getElementById('modal-weekdays');
+  wdEl.innerHTML = DIAS.map(d=>`<div class="modal-weekday">${d}</div>`).join('');
+  // days
+  const first = new Date(year,month,1), last = new Date(year,month+1,0);
+  let html = '';
+  for(let i=0;i<first.getDay();i++) html+=`<div class="modal-day empty"></div>`;
+  for(let d=1;d<=last.getDate();d++){
+    const date=new Date(year,month,d);
+    const cls = getDayClass(date,r,feriados) + (esHoy(date)?' today':'');
+    const tip = getDayLabel(date,r,feriados);
+    const tipAttr = tip ? ` data-tip="${tip}"` : '';
+    html+=`<div class="modal-day ${cls}"${tipAttr}>${d}</div>`;
+  }
+  document.getElementById('modal-days-grid').innerHTML = html;
+  const overlay = document.getElementById('month-modal-overlay');
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function cerrarModalMes(e) {
+  if (e && e.target !== document.getElementById('month-modal-overlay') && e.type !== 'click') return;
+  if (e && e.currentTarget !== e.target && e.target.closest('.month-modal')) return;
+  document.getElementById('month-modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ── EVENTS STORAGE ────────────────────────────────────────────────────────────
+let userEvents = {}; // { 'YYYY-MM-DD': [{name, type, note},...] }
+let _eventModalKey = null;
+
+const EVENT_TYPE_LABEL = {
+  parcial:'📝 Parcial', final:'📋 Final', entrega:'📦 Entrega/TP',
+  clase:'📚 Clase especial', otro:'📌 Otro'
+};
+
+function cargarEventos() {
+  try { userEvents = JSON.parse(localStorage.getItem('agenda_events') || '{}'); } catch(e) { userEvents = {}; }
+}
+function guardarEventos() {
+  localStorage.setItem('agenda_events', JSON.stringify(userEvents));
+}
+
+function abrirModalEvento(key, dayNum) {
+  _eventModalKey = key;
+  const [y,m,d] = key.split('-').map(Number);
+  const fecha = new Date(y, m-1, d);
+  document.getElementById('event-date-label').textContent = fmtLargo(fecha);
+  document.getElementById('event-name-input').value = '';
+  document.getElementById('event-type-input').value = 'parcial';
+  document.getElementById('event-note-input').value = '';
+  renderEventList(key);
+  const overlay = document.getElementById('event-modal-overlay');
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => document.getElementById('event-name-input').focus(), 100);
+}
+
+function cerrarModalEvento(e) {
+  if (e && e.target !== document.getElementById('event-modal-overlay')) return;
+  document.getElementById('event-modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+  _eventModalKey = null;
+}
+
+function renderEventList(key) {
+  const list = userEvents[key] || [];
+  const el = document.getElementById('event-list-day');
+  if (!list.length) { el.innerHTML=''; return; }
+  el.innerHTML = list.map((ev,i)=>`
+    <div class="event-item">
+      <span class="event-item-name">${EVENT_TYPE_LABEL[ev.type]||'📌'} ${ev.name}</span>
+      <button class="event-item-del" onclick="eliminarEvento('${key}',${i})" title="Eliminar">✕</button>
+    </div>
+  `).join('');
+}
+
+function guardarEvento() {
+  const key = _eventModalKey;
+  const name = document.getElementById('event-name-input').value.trim();
+  if (!name) { document.getElementById('event-name-input').focus(); return; }
+  const type = document.getElementById('event-type-input').value;
+  const time = document.getElementById('event-time-input').value;
+  const note = document.getElementById('event-note-input').value.trim();
+  if (!userEvents[key]) userEvents[key] = [];
+  userEvents[key].push({name, type, time, note});
+  guardarEventos();
+  renderEventList(key);
+  document.getElementById('event-name-input').value='';
+  document.getElementById('event-time-input').value='';
+  document.getElementById('event-note-input').value='';
+  refreshDayDot(key);
+  renderResumen();
+  showToast('✓ Evento guardado');
+}
+
+function eliminarEvento(key, idx) {
+  userEvents[key].splice(idx,1);
+  if (!userEvents[key].length) delete userEvents[key];
+  guardarEventos();
+  renderEventList(key);
+  refreshDayDot(key);
+  renderResumen();
+}
+
+function renderEventList(key) {
+  const list = userEvents[key] || [];
+  const el = document.getElementById('event-list-day');
+  if (!list.length) { el.innerHTML=''; return; }
+  el.innerHTML = list.map((ev,i)=>`
+    <div class="event-item">
+      <span class="event-item-name">${EVENT_TYPE_LABEL[ev.type]||'📌'} ${ev.name}${ev.time ? ' · <b>'+fmtTime(ev.time)+'</b>' : ''}</span>
+      <button class="event-item-del" onclick="eliminarEvento('${key}',${i})" title="Eliminar">✕</button>
+    </div>
+  `).join('');
+}
+
+function fmtTime(t) {
+  if (!t) return '';
+  const [h,m] = t.split(':').map(Number);
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  const h12 = h % 12 || 12;
+  return `${h12}:${String(m).padStart(2,'0')} ${ampm}`;
+}
+
+// ── RESUMEN ────────────────────────────────────────────────────────────────────
+let resumenAbierto = false;
+
+function toggleResumen() {
+  resumenAbierto = !resumenAbierto;
+  document.getElementById('resumen-body').classList.toggle('hidden', !resumenAbierto);
+  document.getElementById('resumen-toggle-icon').classList.toggle('open', resumenAbierto);
+  if (resumenAbierto) renderResumen();
+}
+
+function renderResumen() {
+  const badge = document.getElementById('resumen-badge');
+  const empty = document.getElementById('resumen-empty');
+  const list = document.getElementById('resumen-list');
+
+  // Flatten and sort all events
+  const allEvents = [];
+  Object.entries(userEvents).forEach(([key, evts]) => {
+    evts.forEach((ev, idx) => allEvents.push({key, idx, ...ev}));
+  });
+  allEvents.sort((a,b) => {
+    if (a.key !== b.key) return a.key.localeCompare(b.key);
+    if (a.time && b.time) return a.time.localeCompare(b.time);
+    if (a.time) return -1; if (b.time) return 1;
+    return 0;
+  });
+
+  const total = allEvents.length;
+  badge.style.display = total ? 'inline-flex' : 'none';
+  badge.textContent = total;
+
+  if (!total) {
+    empty.style.display = 'block';
+    list.innerHTML = '';
+    return;
+  }
+  empty.style.display = 'none';
+
+  // Group by month
+  const byMonth = {};
+  allEvents.forEach(ev => {
+    const [y,m] = ev.key.split('-');
+    const monthKey = `${y}-${m}`;
+    if (!byMonth[monthKey]) byMonth[monthKey] = [];
+    byMonth[monthKey].push(ev);
+  });
+
+  list.innerHTML = Object.entries(byMonth).map(([mk, evts]) => {
+    const [y,m] = mk.split('-');
+    const monthLabel = `${MESES[parseInt(m)-1]} ${y}`;
+    const rows = evts.map(ev => {
+      const [,, d] = ev.key.split('-');
+      const meta = [EVENT_TYPE_LABEL[ev.type]||'📌', ev.time ? fmtTime(ev.time) : '', ev.note].filter(Boolean).join(' · ');
+      return `<div class="resumen-event-row">
+        <span class="resumen-event-date">${parseInt(d)}</span>
+        <div class="resumen-event-info">
+          <div class="resumen-event-name">${ev.name}</div>
+          ${meta ? `<div class="resumen-event-meta">${meta}</div>` : ''}
+        </div>
+        <button class="resumen-event-del" onclick="eliminarDesdeResumen('${ev.key}',${ev.idx})" title="Eliminar">✕</button>
+      </div>`;
+    }).join('');
+    return `<div class="resumen-month-group"><div class="resumen-month-title">${monthLabel}</div>${rows}</div>`;
+  }).join('');
+}
+
+function eliminarDesdeResumen(key, idx) {
+  // idx may shift after previous deletes, recalculate safely
+  if (!userEvents[key]) return;
+  userEvents[key].splice(idx, 1);
+  if (!userEvents[key].length) delete userEvents[key];
+  guardarEventos();
+  refreshDayDot(key);
+  renderResumen();
+  showToast('✓ Evento eliminado');
+}
+
+function refreshDayDot(key) {
+  // update dot on visible day cells matching this key
+  document.querySelectorAll(`.day[onclick*="'${key}'"]`).forEach(el => {
+    const existing = el.querySelector('.day-dot');
+    const hasEvt = (userEvents[key] && userEvents[key].length>0);
+    if (hasEvt && !existing) el.insertAdjacentHTML('beforeend','<span class="day-dot"></span>');
+    if (!hasEvt && existing) existing.remove();
+  });
+}
+
+window.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    cerrarModalMes();
+    document.getElementById('event-modal-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+    cerrarConfigDrawer();
+  }
+  if (e.key === 'Enter' && document.getElementById('event-modal-overlay').classList.contains('open')) {
+    guardarEvento();
+  }
+});
+
+// ── CONFIG DRAWER ─────────────────────────────────────────────────────────────
+function toggleConfigDrawer() {
+  const drawer = document.getElementById('config-drawer');
+  const overlay = document.getElementById('config-drawer-overlay');
+  const btn = document.getElementById('btn-config-toggle');
+  const isOpen = drawer.classList.contains('open');
+  if (isOpen) {
+    cerrarConfigDrawer();
+  } else {
+    drawer.classList.add('open');
+    overlay.classList.add('open');
+    btn.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+}
+function cerrarConfigDrawer() {
+  document.getElementById('config-drawer').classList.remove('open');
+  document.getElementById('config-drawer-overlay').classList.remove('open');
+  document.getElementById('btn-config-toggle').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
 window.onload = async () => {
-  // Cargar defaults del año actual primero
-  const d=DEFAULTS[2027];
-  document.getElementById('p1-start').value=d.p1s; document.getElementById('p1-end').value=d.p1e;
-  document.getElementById('p1-exam-start').value=d.p1xs; document.getElementById('p1-exam-end').value=d.p1xe;
-  document.getElementById('p2-start').value=d.p2s; document.getElementById('p2-end').value=d.p2e;
-  document.getElementById('p2-exam-start').value=d.p2xs; document.getElementById('p2-exam-end').value=d.p2xe;
-  // Luego intentar cargar config guardada (localStorage o Supabase)
-  await cargarConfig();
-  generateCalendar();
+  cargarEventos();
+  renderResumen();
+  renderColorGrid();
+  try {
+    // Default to current year
+    const hoy = new Date();
+    const añoDefault = hoy.getFullYear();
+    anioActual = añoDefault;
+    document.getElementById('anio-label').textContent = añoDefault;
+    document.querySelectorAll('.year-btn').forEach(b => {
+      b.classList.toggle('active', parseInt(b.textContent) === añoDefault);
+    });
+    const d = DEFAULTS[añoDefault] || DEFAULTS[2027];
+    document.getElementById('p1-start').value=d.p1s; document.getElementById('p1-end').value=d.p1e;
+    document.getElementById('p1-exam-start').value=d.p1xs; document.getElementById('p1-exam-end').value=d.p1xe;
+    document.getElementById('p2-start').value=d.p2s; document.getElementById('p2-end').value=d.p2e;
+    document.getElementById('p2-exam-start').value=d.p2xs; document.getElementById('p2-exam-end').value=d.p2xe;
+    // Resolver la sesión actual de Supabase ANTES de cargar config, para
+    // no usar el id anónimo por error si la persona ya tenía sesión iniciada
+    const { data: { session } } = await db.auth.getSession();
+    currentUser = session?.user ?? null;
+    actualizarUserBar(currentUser);
+    // Luego intentar cargar config guardada (localStorage o Supabase)
+    await cargarConfig();
+    generateCalendar();
+  } catch (e) {
+    generateCalendar();
+  } finally {
+    yaInicializado = true;
+    document.getElementById('loading-overlay').classList.add('hidden');
+  }
 };
 </script>
 </body>
