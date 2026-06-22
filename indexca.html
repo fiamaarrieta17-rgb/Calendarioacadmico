@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agenda Universitaria</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body.tema-masculino {
+    --bg:#0F1923;--paper:#1A2533;--ink:#E8EDF2;--accent:#1E90FF;--accent-light:#0A2A4A;
+    --second:#FF6B35;--second-light:#3A1A0A;--muted:#7A8FA0;--border:#243344;
+    --summer:#0A2A3A;--winter:#0A1F2A;--exam:#2A1A0A;--holiday:#2A0A0A;--vac-color:#2AB5A0;
+    --font-display:'Inter',sans-serif;--font-body:'Inter',sans-serif;--radius:6px;
+  }
+  body.tema-femenino {
+    --bg:#FDF6F9;--paper:#FFFFFF;--ink:#3A2040;--accent:#C2507A;--accent-light:#FCE8F0;
+    --second:#A06AB0;--second-light:#F3E8FA;--muted:#B08098;--border:#F0D8E8;
+    --summer:#FDE8D0;--winter:#E8D0F8;--exam:#FEECD8;--holiday:#FCE0E0;--vac-color:#E08060;
+    --font-display:'Playfair Display',serif;--font-body:'DM Sans',sans-serif;--radius:16px;
+  }
+  body.tema-minimalista {
+    --bg:#F8F8F6;--paper:#FFFFFF;--ink:#111111;--accent:#111111;--accent-light:#F0F0EE;
+    --second:#555555;--second-light:#EBEBEB;--muted:#999999;--border:#E0E0E0;
+    --summer:#E8F4E8;--winter:#E8E8F4;--exam:#F4F0E8;--holiday:#F4E8E8;--vac-color:#555555;
+    --font-display:'DM Sans',sans-serif;--font-body:'DM Sans',sans-serif;--radius:4px;
+  }
+  body.tema-maximalista {
+    --bg:#1A0A2E;--paper:#2A1045;--ink:#F0E8FF;--accent:#FF3CAC;--accent-light:#3A0A2E;
+    --second:#FFDD00;--second-light:#2A2000;--muted:#9A80C0;--border:#3A1860;
+    --summer:rgba(255,107,0,0.15);--winter:rgba(0,180,255,0.15);--exam:rgba(255,221,0,0.15);--holiday:rgba(255,60,172,0.15);--vac-color:#00F5A0;
+    --font-display:'Playfair Display',serif;--font-body:'DM Sans',sans-serif;--radius:20px;
+  }
+
+  body { font-family:var(--font-body,'DM Sans',sans-serif);background:var(--bg);color:var(--ink);min-height:100vh;padding:2rem 1rem;transition:background 0.4s,color 0.4s; }
+  .container { max-width:980px;margin:0 auto; }
+
+  /* THEME */
+  .theme-selector { display:flex;gap:0.6rem;justify-content:center;margin-bottom:1.5rem;flex-wrap:wrap; }
+  .theme-btn { padding:0.45rem 1rem;border:2px solid transparent;border-radius:50px;font-size:0.8rem;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:var(--font-body); }
+  .theme-btn.masculino   { background:#1E90FF22;color:#1E90FF;border-color:#1E90FF44; }
+  .theme-btn.femenino    { background:#C2507A22;color:#C2507A;border-color:#C2507A44; }
+  .theme-btn.minimalista { background:#11111111;color:#111;border-color:#11111133; }
+  .theme-btn.maximalista { background:#FF3CAC22;color:#FF3CAC;border-color:#FF3CAC44; }
+  .theme-btn.active      { opacity:1;transform:scale(1.07);box-shadow:0 2px 10px rgba(0,0,0,0.15); }
+  .theme-btn:not(.active){ opacity:0.55; }
+  .theme-btn:hover       { opacity:1; }
+
+  /* HEADER */
+  header { text-align:center;margin-bottom:1.5rem; }
+  header h1 { font-family:var(--font-display);font-size:2.5rem;color:var(--accent);letter-spacing:-0.5px; }
+  body.tema-maximalista header h1 { background:linear-gradient(90deg,#FF3CAC,#FFDD00,#00F5A0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+  header p { color:var(--muted);font-size:0.88rem;margin-top:0.35rem;font-weight:300; }
+
+  /* YEAR */
+  .year-selector { display:flex;gap:0.5rem;justify-content:center;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center; }
+  .year-selector span { font-size:0.78rem;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:0.8px;margin-right:0.3rem; }
+  .year-btn { padding:0.4rem 0.9rem;border:1.5px solid var(--border);border-radius:50px;background:var(--paper);color:var(--muted);font-size:0.82rem;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:var(--font-body); }
+  .year-btn:hover  { border-color:var(--accent);color:var(--accent); }
+  .year-btn.active { background:var(--accent);color:white;border-color:var(--accent); }
+
+  /* CONFIG */
+  .config-panel { background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);padding:1.6rem;margin-bottom:1.4rem;box-shadow:0 2px 12px rgba(0,0,0,0.07);transition:background 0.4s,border-color 0.4s; }
+  body.tema-maximalista .config-panel { box-shadow:0 0 30px rgba(255,60,172,0.12);border-color:#FF3CAC44; }
+  .config-panel h2 { font-family:var(--font-display);font-size:1.1rem;color:var(--accent);margin-bottom:1.1rem; }
+  .config-grid { display:grid;grid-template-columns:1fr 1fr;gap:1.1rem; }
+  .config-section { background:var(--accent-light);border-radius:calc(var(--radius) - 2px);padding:1rem;border:1px solid var(--border); }
+  .config-section.second { background:var(--second-light); }
+  .config-section h3 { font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin-bottom:0.8rem; }
+  .config-section.second h3 { color:var(--second); }
+  .field { margin-bottom:0.65rem; }
+  .field label { display:block;font-size:0.73rem;font-weight:500;color:var(--muted);margin-bottom:0.2rem; }
+  .field input[type="date"] { width:100%;padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:calc(var(--radius) - 2px);font-family:var(--font-body);font-size:0.82rem;background:var(--bg);color:var(--ink);outline:none;transition:border-color 0.2s; }
+  .field input[type="date"]:focus { border-color:var(--accent); }
+  .btn-generate { display:block;width:100%;margin-top:1.1rem;padding:0.8rem;background:var(--accent);color:white;border:none;border-radius:var(--radius);font-family:var(--font-body);font-size:0.92rem;font-weight:600;cursor:pointer;transition:opacity 0.2s,transform 0.1s; }
+  body.tema-maximalista .btn-generate { background:linear-gradient(90deg,#FF3CAC,#784BA0,#2B86C5); }
+  .btn-generate:hover { opacity:0.88; }
+  .btn-generate:active { transform:scale(0.98); }
+
+  /* SHARE PANEL */
+  .share-panel { background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);padding:1.4rem 1.6rem;margin-bottom:1.4rem;transition:background 0.4s; }
+  body.tema-maximalista .share-panel { border-color:#FF3CAC44; }
+  .share-panel h2 { font-family:var(--font-display);font-size:1.1rem;color:var(--accent);margin-bottom:1rem; }
+  .share-grid { display:grid;grid-template-columns:1fr 1fr;gap:1rem; }
+  .share-block { background:var(--accent-light);border-radius:calc(var(--radius) - 2px);padding:1rem;border:1px solid var(--border); }
+  .share-block.second { background:var(--second-light); }
+  .share-block h3 { font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin-bottom:0.8rem; }
+  .share-block.second h3 { color:var(--second); }
+  .share-row { display:flex;gap:0.5rem;align-items:center;margin-bottom:0.55rem;flex-wrap:wrap; }
+  .share-row label { font-size:0.73rem;color:var(--muted);font-weight:500;white-space:nowrap;min-width:60px; }
+  .share-row input[type="date"], .share-row select {
+    flex:1;min-width:0;padding:0.38rem 0.5rem;border:1px solid var(--border);border-radius:calc(var(--radius) - 2px);font-family:var(--font-body);font-size:0.78rem;background:var(--bg);color:var(--ink);outline:none;
+  }
+  .share-row input[type="text"] {
+    flex:1;min-width:0;padding:0.38rem 0.5rem;border:1px solid var(--border);border-radius:calc(var(--radius) - 2px);font-family:var(--font-body);font-size:0.72rem;background:var(--bg);color:var(--muted);outline:none;cursor:pointer;
+  }
+  .btn-share { width:100%;padding:0.5rem;margin-top:0.4rem;background:var(--accent);color:white;border:none;border-radius:calc(var(--radius) - 2px);font-family:var(--font-body);font-size:0.8rem;font-weight:600;cursor:pointer;transition:opacity 0.2s; }
+  .btn-share:hover { opacity:0.85; }
+  body.tema-maximalista .btn-share { background:linear-gradient(90deg,#FF3CAC,#784BA0); }
+  .share-opts { display:flex;gap:0.4rem;margin-top:0.5rem;flex-wrap:wrap; }
+  .btn-opt { flex:1;padding:0.42rem 0.3rem;border:1.5px solid var(--border);border-radius:calc(var(--radius) - 2px);background:var(--bg);color:var(--muted);font-size:0.73rem;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:var(--font-body);text-align:center; }
+  .btn-opt:hover { border-color:var(--accent);color:var(--accent);background:var(--accent-light); }
+
+  /* TOAST */
+  .toast { position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:var(--bg);padding:0.6rem 1.4rem;border-radius:50px;font-size:0.82rem;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,0.25);transition:transform 0.3s ease;z-index:999;pointer-events:none;white-space:nowrap; }
+  .toast.show { transform:translateX(-50%) translateY(0); }
+
+  /* LEGEND */
+  .legend { display:flex;gap:0.7rem;flex-wrap:wrap;margin-bottom:1.4rem;background:var(--paper);padding:0.8rem 1rem;border-radius:var(--radius);border:1px solid var(--border); }
+  .legend-item { display:flex;align-items:center;gap:0.3rem;font-size:0.73rem;color:var(--muted); }
+  .legend-dot  { width:10px;height:10px;border-radius:3px;flex-shrink:0; }
+
+  /* CALENDAR */
+  #calendar-output { display:none; }
+  .months-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:1rem; }
+  .month-card { background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,0.05);transition:background 0.4s; }
+  body.tema-maximalista .month-card { box-shadow:0 0 15px rgba(255,60,172,0.08); }
+  .month-header { background:var(--accent);color:white;text-align:center;padding:0.55rem;font-family:var(--font-display);font-size:0.9rem; }
+  .month-header.second-sem { background:var(--second); }
+  .month-header.vacation   { background:var(--vac-color); }
+  .weekdays { display:grid;grid-template-columns:repeat(7,1fr);padding:0.32rem 0.38rem 0.12rem;gap:2px; }
+  .weekday  { text-align:center;font-size:0.58rem;font-weight:600;color:var(--muted);text-transform:uppercase; }
+  .days-grid { display:grid;grid-template-columns:repeat(7,1fr);padding:0 0.38rem 0.45rem;gap:2px; }
+  .day { aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:0.65rem;border-radius:calc(var(--radius) - 2px); }
+  .day.empty    { background:transparent; }
+  .day.normal   { color:var(--ink); }
+  .day.weekend  { color:var(--muted); }
+  .day.primer-sem  { background:var(--accent-light);color:var(--accent);font-weight:500; }
+  .day.segundo-sem { background:var(--second-light);color:var(--second);font-weight:500; }
+  .day.verano      { background:var(--summer);color:var(--vac-color);font-weight:500; }
+  .day.invierno    { background:var(--winter);color:var(--vac-color);font-weight:500; }
+  .day.receso      { background:var(--holiday);color:#CC3333; }
+  .day.examen      { background:var(--exam);color:var(--second);font-weight:600; }
+
+  .sem-label { font-family:var(--font-display);font-size:1.25rem;color:var(--accent);margin:1.5rem 0 0.6rem;padding-bottom:0.3rem;border-bottom:2px solid var(--border); }
+  .sem-label.second { color:var(--second); }
+  .sem-label.vac    { color:var(--vac-color); }
+  .info-banner { background:var(--accent-light);border:1px solid var(--border);border-radius:var(--radius);padding:0.6rem 0.9rem;margin-bottom:0.8rem;font-size:0.8rem;color:var(--accent); }
+  .info-banner.second { background:var(--second-light);color:var(--second); }
+  .info-banner.vac    { background:var(--winter);color:var(--vac-color); }
+  .year-divider { text-align:center;margin:2.5rem 0 1.5rem;font-family:var(--font-display);font-size:2rem;color:var(--accent);opacity:0.25;letter-spacing:4px; }
+
+  @media(max-width:700px){ .config-grid{grid-template-columns:1fr;} .share-grid{grid-template-columns:1fr;} .months-grid{grid-template-columns:repeat(2,1fr);} header h1{font-size:1.8rem;} }
+  @media(max-width:480px){ .months-grid{grid-template-columns:1fr;} }
+
+  /* AUTH */
+  .auth-overlay { position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:100;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px); }
+  .hidden { display:none !important; }
+  .auth-overlay.hidden { display:none; }
+  .auth-box { background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;width:100%;max-width:360px;box-shadow:0 8px 40px rgba(0,0,0,0.2); }
+  .auth-box h2 { font-family:var(--font-display);font-size:1.4rem;color:var(--accent);margin-bottom:0.3rem; }
+  .auth-box p  { font-size:0.8rem;color:var(--muted);margin-bottom:1.4rem; }
+  .auth-field  { margin-bottom:0.9rem; }
+  .auth-field label { display:block;font-size:0.73rem;font-weight:500;color:var(--muted);margin-bottom:0.25rem; }
+  .auth-field input { width:100%;padding:0.55rem 0.75rem;border:1px solid var(--border);border-radius:calc(var(--radius) - 2px);font-family:var(--font-body);font-size:0.88rem;background:var(--bg);color:var(--ink);outline:none;transition:border-color 0.2s; }
+  .auth-field input:focus { border-color:var(--accent); }
+  .btn-auth { width:100%;padding:0.75rem;background:var(--accent);color:white;border:none;border-radius:var(--radius);font-family:var(--font-body);font-size:0.9rem;font-weight:600;cursor:pointer;margin-top:0.4rem;transition:opacity 0.2s; }
+  .btn-auth:hover { opacity:0.88; }
+  body.tema-maximalista .btn-auth { background:linear-gradient(90deg,#FF3CAC,#784BA0); }
+  .auth-toggle { text-align:center;margin-top:1rem;font-size:0.78rem;color:var(--muted); }
+  .auth-toggle a { color:var(--accent);cursor:pointer;font-weight:600; }
+  .auth-error { font-size:0.78rem;color:#e05555;margin-top:0.5rem;min-height:1.1rem; }
+
+  /* USER BAR */
+  .user-bar { display:flex;align-items:center;justify-content:flex-end;gap:0.7rem;margin-bottom:1rem; }
+  .user-bar span { font-size:0.78rem;color:var(--muted); }
+  .btn-logout { padding:0.35rem 0.9rem;border:1.5px solid var(--border);border-radius:50px;background:transparent;color:var(--muted);font-size:0.75rem;font-weight:600;cursor:pointer;font-family:var(--font-body);transition:all 0.2s; }
+  .btn-logout:hover { border-color:var(--accent);color:var(--accent); }
+  .btn-login-top { padding:0.35rem 0.9rem;border:1.5px solid var(--accent);border-radius:50px;background:transparent;color:var(--accent);font-size:0.75rem;font-weight:600;cursor:pointer;font-family:var(--font-body);transition:all 0.2s; }
+  .btn-login-top:hover { background:var(--accent);color:white; }
+</style>
+</head>
+<body class="tema-femenino">
+
+<!-- AUTH MODAL -->
+<div class="auth-overlay hidden" id="auth-overlay">
+  <div class="auth-box">
+    <h2 id="auth-title">Iniciá sesión</h2>
+    <p id="auth-subtitle">Guardá tu configuración y accedé desde cualquier dispositivo.</p>
+    <div class="auth-field hidden" id="auth-nombre-wrap">
+      <label>Nombre</label>
+      <input type="text" id="auth-nombre" placeholder="Tu nombre" autocomplete="given-name">
+    </div>
+    <div class="auth-field hidden" id="auth-apellido-wrap">
+      <label>Apellido</label>
+      <input type="text" id="auth-apellido" placeholder="Tu apellido" autocomplete="family-name">
+    </div>
+    <div class="auth-field">
+      <label>Número de celular</label>
+      <input type="tel" id="auth-celular" placeholder="ej: 1123456789" autocomplete="tel">
+    </div>
+    <div class="auth-field">
+      <label>Contraseña</label>
+      <input type="password" id="auth-pass" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <div class="auth-error" id="auth-error"></div>
+    <button class="btn-auth" id="btn-auth-submit" onclick="submitAuth()">Entrar</button>
+    <div class="auth-toggle">
+      <span id="auth-toggle-text">¿No tenés cuenta?</span>
+      <a onclick="toggleAuthMode()"> Registrate</a>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <!-- USER BAR -->
+  <div class="user-bar" id="user-bar">
+    <span id="user-name-label"></span>
+    <button class="btn-login-top hidden" id="btn-show-login" onclick="mostrarAuth()">Iniciar sesión</button>
+    <button class="btn-logout hidden" id="btn-logout" onclick="cerrarSesion()">Cerrar sesión</button>
+  </div>
+
+  <header>
+    <h1>Agenda Universitaria</h1>
+    <p>Argentina · Elegí tu año, tema y fechas del cuatrimestre</p>
+  </header>
+
+  <!-- TEMA -->
+  <div class="theme-selector">
+    <button class="theme-btn masculino"       onclick="setTema('masculino')">🌑 Oscuro</button>
+    <button class="theme-btn femenino active" onclick="setTema('femenino')">🌸 Claro</button>
+    <button class="theme-btn minimalista"     onclick="setTema('minimalista')">◻️ Neutro</button>
+    <button class="theme-btn maximalista"     onclick="setTema('maximalista')">⚡ Neón</button>
+  </div>
+
+  <!-- AÑO -->
+  <div class="year-selector">
+    <span>Año:</span>
+    <button class="year-btn" onclick="setAnio(2026,this)">2026</button>
+    <button class="year-btn active" onclick="setAnio(2027,this)">2027</button>
+    <button class="year-btn" onclick="setAnio(2028,this)">2028</button>
+    <button class="year-btn" onclick="setAnio(2029,this)">2029</button>
+    <button class="year-btn" onclick="setAnio(2030,this)">2030</button>
+    <button class="year-btn" onclick="setAnio(2031,this)">2031</button>
+  </div>
+
+  <!-- CONFIG -->
+  <div class="config-panel">
+    <h2>Configurar fechas — <span id="anio-label">2027</span></h2>
+    <div class="config-grid">
+      <div class="config-section">
+        <h3>📘 Primer Semestre</h3>
+        <div class="field"><label>Inicio del semestre</label><input type="date" id="p1-start"></div>
+        <div class="field"><label>Fin del semestre</label><input type="date" id="p1-end"></div>
+        <div class="field"><label>Inicio turno de exámenes</label><input type="date" id="p1-exam-start"></div>
+        <div class="field"><label>Fin turno de exámenes</label><input type="date" id="p1-exam-end"></div>
+      </div>
+      <div class="config-section second">
+        <h3>📗 Segundo Semestre</h3>
+        <div class="field"><label>Inicio del semestre</label><input type="date" id="p2-start"></div>
+        <div class="field"><label>Fin del semestre</label><input type="date" id="p2-end"></div>
+        <div class="field"><label>Inicio turno de exámenes</label><input type="date" id="p2-exam-start"></div>
+        <div class="field"><label>Fin turno de exámenes</label><input type="date" id="p2-exam-end"></div>
+      </div>
+    </div>
+    <button class="btn-generate" onclick="generateCalendar()">Generar calendario</button>
+  </div>
+
+  <!-- COMPARTIR -->
+  <div class="share-panel">
+    <h2>📤 Compartir</h2>
+    <div class="share-grid">
+
+      <!-- Compartir calendario completo -->
+      <div class="share-block">
+        <h3>Calendario completo</h3>
+        <p style="font-size:0.78rem;color:var(--muted);margin-bottom:0.8rem;">Copiá el resumen del año con todas las fechas configuradas para enviarlo por WhatsApp, mail o donde quieras.</p>
+        <div class="share-opts">
+          <button class="btn-opt" onclick="copiarTexto()">📋 Copiar texto</button>
+          <button class="btn-opt" onclick="compartirWhatsApp()">💬 WhatsApp</button>
+          <button class="btn-opt" onclick="compartirMail()">✉️ Mail</button>
+        </div>
+        <input type="text" id="share-url" style="margin-top:0.6rem;width:100%;padding:0.38rem 0.5rem;border:1px solid var(--border);border-radius:calc(var(--radius) - 2px);font-size:0.72rem;background:var(--bg);color:var(--muted);font-family:var(--font-body);cursor:pointer;" placeholder="El resumen aparecerá acá..." readonly onclick="this.select()">
+      </div>
+
+      <!-- Compartir fecha específica -->
+      <div class="share-block second">
+        <h3>Fecha específica</h3>
+        <div class="share-row">
+          <label>Fecha</label>
+          <input type="date" id="fecha-especifica">
+        </div>
+        <div class="share-row">
+          <label>Descripción</label>
+          <input type="text" id="desc-especifica" placeholder="ej: Parcial de Sociología" style="background:var(--bg);color:var(--ink);">
+        </div>
+        <button class="btn-share" onclick="compartirFecha()">Generar mensaje</button>
+        <div class="share-opts" style="margin-top:0.5rem;">
+          <button class="btn-opt" onclick="compartirFechaWhatsApp()">💬 WhatsApp</button>
+          <button class="btn-opt" onclick="compartirFechaMail()">✉️ Mail</button>
+          <button class="btn-opt" onclick="copiarFecha()">📋 Copiar</button>
+        </div>
+        <input type="text" id="fecha-output" style="margin-top:0.6rem;width:100%;padding:0.38rem 0.5rem;border:1px solid var(--border);border-radius:calc(var(--radius) - 2px);font-size:0.72rem;background:var(--bg);color:var(--muted);font-family:var(--font-body);cursor:pointer;" placeholder="El mensaje aparecerá acá..." readonly onclick="this.select()">
+      </div>
+
+    </div>
+  </div>
+
+  <!-- LEYENDA -->
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent-light);border:1px solid var(--accent)"></div> Primer semestre</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--second-light);border:1px solid var(--second)"></div> Segundo semestre</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--exam)"></div> Exámenes</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--summer)"></div> Receso de verano</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--winter)"></div> Receso de invierno</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--holiday)"></div> Feriado nacional</div>
+  </div>
+
+  <div id="calendar-output"></div>
+</div>
+
+<div class="toast" id="toast">✓ Copiado al portapapeles</div>
+
+<script>
+// ── SUPABASE ──────────────────────────────────────────────────────────────────
+const SUPA_URL  = 'https://nsxdwaxduidqlliiogqp.supabase.co';
+const SUPA_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5zeGR3YXhkdWlkcWxsaWlvZ3FwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0OTU2NzIsImV4cCI6MjA5NzA3MTY3Mn0.CSK-8EdPhYUBHpVzxsg-dw7m7aRJc77bwhpz1lFIPok';
+const { createClient } = supabase;
+const db = createClient(SUPA_URL, SUPA_KEY);
+
+let currentUser = null;
+let authMode = 'login'; // 'login' | 'register'
+
+// ── AUTH UI ───────────────────────────────────────────────────────────────────
+function mostrarAuth() {
+  document.getElementById('auth-overlay').classList.remove('hidden');
+  const campo = authMode === 'login' ? 'auth-celular' : 'auth-nombre';
+  document.getElementById(campo).focus();
+}
+function ocultarAuth() {
+  document.getElementById('auth-overlay').classList.add('hidden');
+  document.getElementById('auth-error').textContent = '';
+}
+function toggleAuthMode() {
+  authMode = authMode === 'login' ? 'register' : 'login';
+  const esLogin = authMode === 'login';
+  document.getElementById('auth-title').textContent     = esLogin ? 'Iniciá sesión' : 'Crear cuenta';
+  document.getElementById('auth-subtitle').textContent  = esLogin ? 'Guardá tu configuración y accedé desde cualquier dispositivo.' : 'Creá tu cuenta para sincronizar tu agenda.';
+  document.getElementById('btn-auth-submit').textContent= esLogin ? 'Entrar' : 'Registrarme';
+  document.getElementById('auth-toggle-text').textContent = esLogin ? '¿No tenés cuenta?' : '¿Ya tenés cuenta?';
+  document.querySelector('.auth-toggle a').textContent  = esLogin ? ' Registrate' : ' Iniciá sesión';
+  document.getElementById('auth-error').textContent = '';
+  document.getElementById('auth-nombre-wrap').classList.toggle('hidden', esLogin);
+  document.getElementById('auth-apellido-wrap').classList.toggle('hidden', esLogin);
+}
+
+// Convierte "María José" -> "maria.jose" (sin tildes, sin espacios extra)
+function normalizar(str) {
+  return str
+    .trim()
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // quita tildes
+    .replace(/[^a-z0-9\s]/g, '')                       // quita signos raros
+    .replace(/\s+/g, '.')                               // espacios -> punto
+    .replace(/\.+/g, '.')
+    .replace(/^\.|\.$/g, '');
+}
+
+// Solo deja los dígitos del número de celular (sirve de identificador único)
+function normalizarCelular(cel) {
+  return cel.replace(/\D/g, '');
+}
+
+// Supabase Auth requiere un email por dentro; lo armamos solos a partir
+// del celular (que es único por persona) para que el usuario nunca lo vea.
+function construirEmail(celular) {
+  return `cel${normalizarCelular(celular)}@agenda.app`;
+}
+
+async function submitAuth() {
+  const nombre   = document.getElementById('auth-nombre').value.trim();
+  const apellido = document.getElementById('auth-apellido').value.trim();
+  const celular  = document.getElementById('auth-celular').value.trim();
+  const pass     = document.getElementById('auth-pass').value;
+  const errEl = document.getElementById('auth-error');
+  errEl.textContent = '';
+
+  if (!celular || !pass) { errEl.textContent = 'Completá todos los campos.'; return; }
+  if (normalizarCelular(celular).length < 8) { errEl.textContent = 'Ingresá un número de celular válido (con código de área).'; return; }
+  if (authMode === 'register' && (!nombre || !apellido)) { errEl.textContent = 'Completá todos los campos.'; return; }
+
+  const email = construirEmail(celular);
+  const btn = document.getElementById('btn-auth-submit');
+  btn.textContent = '...'; btn.disabled = true;
+  try {
+    let result;
+    if (authMode === 'login') {
+      result = await db.auth.signInWithPassword({ email, password: pass });
+    } else {
+      result = await db.auth.signUp({
+        email, password: pass,
+        options: { data: { nombre, apellido, celular: normalizarCelular(celular) } }
+      });
+    }
+    if (result.error) {
+      errEl.textContent = traducirError(result.error.message);
+    } else {
+      ocultarAuth();
+      // La sesión se actualiza via onAuthStateChange
+    }
+  } catch(e) {
+    errEl.textContent = 'Error de conexión. Intentá de nuevo.';
+  }
+  btn.textContent = authMode === 'login' ? 'Entrar' : 'Registrarme';
+  btn.disabled = false;
+}
+
+function traducirError(msg) {
+  if (msg.includes('Invalid login')) return 'Celular o contraseña incorrectos.';
+  if (msg.includes('already registered')) return 'Ya existe una cuenta con ese número de celular. Iniciá sesión.';
+  if (msg.includes('Password should')) return 'La contraseña debe tener al menos 6 caracteres.';
+  if (msg.includes('valid email')) return 'Revisá el número de celular ingresado.';
+  return msg;
+}
+
+async function cerrarSesion() {
+  await db.auth.signOut();
+  localStorage.removeItem('agenda_config');
+  showToast('👋 Sesión cerrada');
+}
+
+function actualizarUserBar(user) {
+  const nameLabel   = document.getElementById('user-name-label');
+  const btnLogin    = document.getElementById('btn-show-login');
+  const btnLogout   = document.getElementById('btn-logout');
+  if (user) {
+    const meta = user.user_metadata || {};
+    nameLabel.textContent = (meta.nombre || meta.apellido) ? `${meta.nombre || ''} ${meta.apellido || ''}`.trim() : 'Mi cuenta';
+    btnLogin.classList.add('hidden');
+    btnLogout.classList.remove('hidden');
+  } else {
+    nameLabel.textContent = '';
+    btnLogin.classList.remove('hidden');
+    btnLogout.classList.add('hidden');
+  }
+}
+
+// Escuchar cambios de sesión
+db.auth.onAuthStateChange(async (event, session) => {
+  currentUser = session?.user ?? null;
+  actualizarUserBar(currentUser);
+  if (currentUser) {
+    await cargarConfig();
+    generateCalendar();
+  }
+});
+
+// Cerrar modal al hacer click fuera
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('auth-overlay').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('auth-overlay')) ocultarAuth();
+  });
+  document.getElementById('auth-nombre').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') submitAuth();
+  });
+  document.getElementById('auth-apellido').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') submitAuth();
+  });
+  document.getElementById('auth-celular').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') submitAuth();
+  });
+  document.getElementById('auth-pass').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') submitAuth();
+  });
+});
+
+// ── STORAGE ───────────────────────────────────────────────────────────────────
+function getUserId() {
+  let uid = localStorage.getItem('agenda_user_id');
+  if (!uid) { uid = crypto.randomUUID(); localStorage.setItem('agenda_user_id', uid); }
+  return uid;
+}
+
+function getStorageId() {
+  // Si hay usuario logueado, usar su ID de Supabase; si no, usar el anónimo local
+  return currentUser ? currentUser.id : getUserId();
+}
+
+async function guardarConfig() {
+  const config = {
+    tema: document.body.className.replace('tema-', ''),
+    anio: anioActual,
+    fechas: {
+      p1s:  document.getElementById('p1-start').value,
+      p1e:  document.getElementById('p1-end').value,
+      p1xs: document.getElementById('p1-exam-start').value,
+      p1xe: document.getElementById('p1-exam-end').value,
+      p2s:  document.getElementById('p2-start').value,
+      p2e:  document.getElementById('p2-end').value,
+      p2xs: document.getElementById('p2-exam-start').value,
+      p2xe: document.getElementById('p2-exam-end').value,
+    }
+  };
+  localStorage.setItem('agenda_config', JSON.stringify(config));
+  await db.from('agenda_config').upsert({
+    user_id: getStorageId(),
+    tema:    config.tema,
+    anio:    config.anio,
+    fechas:  config.fechas,
+    updated_at: new Date().toISOString()
+  }, { onConflict: 'user_id' });
+}
+
+async function cargarConfig() {
+  const local = localStorage.getItem('agenda_config');
+  if (local && !currentUser) { aplicarConfig(JSON.parse(local)); return; }
+  const { data } = await db.from('agenda_config').select('*').eq('user_id', getStorageId()).single();
+  if (data) {
+    const config = { tema: data.tema, anio: data.anio, fechas: data.fechas };
+    localStorage.setItem('agenda_config', JSON.stringify(config));
+    aplicarConfig(config);
+  } else if (local) {
+    aplicarConfig(JSON.parse(local));
+  }
+}
+
+function aplicarConfig(config) {
+  if (config.tema) {
+    document.body.className = 'tema-' + config.tema;
+    document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+    const btn = document.querySelector('.theme-btn.' + config.tema);
+    if (btn) btn.classList.add('active');
+  }
+  if (config.anio) {
+    anioActual = config.anio;
+    document.getElementById('anio-label').textContent = config.anio;
+    document.querySelectorAll('.year-btn').forEach(b => {
+      b.classList.toggle('active', parseInt(b.textContent) === config.anio);
+    });
+  }
+  if (config.fechas) {
+    const f = config.fechas;
+    document.getElementById('p1-start').value      = f.p1s  || '';
+    document.getElementById('p1-end').value        = f.p1e  || '';
+    document.getElementById('p1-exam-start').value = f.p1xs || '';
+    document.getElementById('p1-exam-end').value   = f.p1xe || '';
+    document.getElementById('p2-start').value      = f.p2s  || '';
+    document.getElementById('p2-end').value        = f.p2e  || '';
+    document.getElementById('p2-exam-start').value = f.p2xs || '';
+    document.getElementById('p2-exam-end').value   = f.p2xe || '';
+  }
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
+const FERIADOS_BASE = [['01-01'],['05-01'],['05-25'],['07-09'],['12-08'],['12-25']];
+function getFeriados(y) {
+  const f = new Set();
+  FERIADOS_BASE.forEach(([d]) => f.add(`${y}-${d}`));
+  f.add(`${y}-03-24`);f.add(`${y}-04-02`);f.add(`${y}-06-17`);
+  f.add(`${y}-06-20`);f.add(`${y}-08-17`);f.add(`${y}-10-12`);f.add(`${y}-11-20`);
+  return f;
+}
+
+const DEFAULTS = {
+  2026:{p1s:'2026-03-09',p1e:'2026-07-10',p1xs:'2026-07-13',p1xe:'2026-07-31',p2s:'2026-08-10',p2e:'2026-11-27',p2xs:'2026-11-30',p2xe:'2026-12-18'},
+  2027:{p1s:'2027-03-08',p1e:'2027-07-09',p1xs:'2027-07-12',p1xe:'2027-07-30',p2s:'2027-08-09',p2e:'2027-11-26',p2xs:'2027-11-29',p2xe:'2027-12-17'},
+  2028:{p1s:'2028-03-06',p1e:'2028-07-07',p1xs:'2028-07-10',p1xe:'2028-07-28',p2s:'2028-08-07',p2e:'2028-11-24',p2xs:'2028-11-27',p2xe:'2028-12-15'},
+  2029:{p1s:'2029-03-05',p1e:'2029-07-06',p1xs:'2029-07-09',p1xe:'2029-07-27',p2s:'2029-08-06',p2e:'2029-11-23',p2xs:'2029-11-26',p2xe:'2029-12-14'},
+  2030:{p1s:'2030-03-04',p1e:'2030-07-05',p1xs:'2030-07-08',p1xe:'2030-07-26',p2s:'2030-08-05',p2e:'2030-11-22',p2xs:'2030-11-25',p2xe:'2030-12-13'},
+  2031:{p1s:'2031-03-03',p1e:'2031-07-04',p1xs:'2031-07-07',p1xe:'2031-07-25',p2s:'2031-08-04',p2e:'2031-11-21',p2xs:'2031-11-24',p2xe:'2031-12-12'},
+};
+
+const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const DIAS  = ['Do','Lu','Ma','Mi','Ju','Vi','Sa'];
+let anioActual = 2027;
+
+function setTema(tema) {
+  document.body.className = 'tema-' + tema;
+  document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.theme-btn.' + tema).classList.add('active');
+  if (document.getElementById('calendar-output').style.display !== 'none') generateCalendar();
+  guardarConfig();
+}
+
+function setAnio(y, btn) {
+  anioActual = y;
+  document.querySelectorAll('.year-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('anio-label').textContent = y;
+  const d = DEFAULTS[y];
+  if (d) {
+    document.getElementById('p1-start').value      = d.p1s;
+    document.getElementById('p1-end').value        = d.p1e;
+    document.getElementById('p1-exam-start').value = d.p1xs;
+    document.getElementById('p1-exam-end').value   = d.p1xe;
+    document.getElementById('p2-start').value      = d.p2s;
+    document.getElementById('p2-end').value        = d.p2e;
+    document.getElementById('p2-exam-start').value = d.p2xs;
+    document.getElementById('p2-exam-end').value   = d.p2xe;
+  }
+  if (document.getElementById('calendar-output').style.display !== 'none') generateCalendar();
+  guardarConfig();
+}
+
+function parseDate(str) {
+  if (!str) return null;
+  const [y,m,d] = str.split('-').map(Number);
+  return new Date(y, m-1, d);
+}
+function toKey(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+function inRange(date, s, e) { return s && e && date >= s && date <= e; }
+function fmt(d) { return d ? d.toLocaleDateString('es-AR',{day:'numeric',month:'long'}) : '—'; }
+function fmtLargo(d) { return d ? d.toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long',year:'numeric'}) : '—'; }
+
+function getTextoResumen() {
+  const y = anioActual;
+  const p1s = fmt(parseDate(document.getElementById('p1-start').value));
+  const p1e = fmt(parseDate(document.getElementById('p1-end').value));
+  const p1xs= fmt(parseDate(document.getElementById('p1-exam-start').value));
+  const p1xe= fmt(parseDate(document.getElementById('p1-exam-end').value));
+  const p2s = fmt(parseDate(document.getElementById('p2-start').value));
+  const p2e = fmt(parseDate(document.getElementById('p2-end').value));
+  const p2xs= fmt(parseDate(document.getElementById('p2-exam-start').value));
+  const p2xe= fmt(parseDate(document.getElementById('p2-exam-end').value));
+  return `📅 Agenda Universitaria ${y}\n\n📘 Primer Semestre\n   Clases: ${p1s} → ${p1e}\n   Exámenes: ${p1xs} → ${p1xe}\n\n📗 Segundo Semestre\n   Clases: ${p2s} → ${p2e}\n   Exámenes: ${p2xs} → ${p2xe}`;
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg || '✓ Copiado';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function copiarTexto() {
+  const txt = getTextoResumen();
+  document.getElementById('share-url').value = txt.replace(/\n/g,' | ');
+  navigator.clipboard.writeText(txt).then(() => showToast('✓ Resumen copiado')).catch(() => showToast('✓ Listo, copiá el campo'));
+}
+
+function compartirWhatsApp() {
+  const txt = encodeURIComponent(getTextoResumen());
+  window.open(`https://wa.me/?text=${txt}`, '_blank');
+}
+
+function compartirMail() {
+  const txt = getTextoResumen();
+  const sub = encodeURIComponent(`Agenda Universitaria ${anioActual}`);
+  const bod = encodeURIComponent(txt);
+  window.open(`mailto:?subject=${sub}&body=${bod}`, '_blank');
+}
+
+function getMensajeFecha() {
+  const fecha = parseDate(document.getElementById('fecha-especifica').value);
+  const desc  = document.getElementById('desc-especifica').value.trim();
+  if (!fecha) return '';
+  const fechaStr = fmtLargo(fecha);
+  return desc
+    ? `📌 ${desc}\n📅 ${fechaStr}`
+    : `📅 ${fechaStr}`;
+}
+
+function compartirFecha() {
+  const msg = getMensajeFecha();
+  if (!msg) { showToast('⚠️ Seleccioná una fecha'); return; }
+  document.getElementById('fecha-output').value = msg.replace(/\n/g,' — ');
+  showToast('✓ Mensaje generado');
+}
+
+function compartirFechaWhatsApp() {
+  const msg = getMensajeFecha();
+  if (!msg) { showToast('⚠️ Seleccioná una fecha'); return; }
+  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+function compartirFechaMail() {
+  const msg = getMensajeFecha();
+  if (!msg) { showToast('⚠️ Seleccioná una fecha'); return; }
+  const desc = document.getElementById('desc-especifica').value.trim() || 'Fecha importante';
+  window.open(`mailto:?subject=${encodeURIComponent(desc)}&body=${encodeURIComponent(msg)}`, '_blank');
+}
+
+function copiarFecha() {
+  const msg = getMensajeFecha();
+  if (!msg) { showToast('⚠️ Seleccioná una fecha'); return; }
+  document.getElementById('fecha-output').value = msg.replace(/\n/g,' — ');
+  navigator.clipboard.writeText(msg).then(() => showToast('✓ Fecha copiada')).catch(() => showToast('✓ Listo'));
+}
+
+function getDayClass(date, r, feriados) {
+  const key = toKey(date);
+  if (feriados.has(key)) return 'receso';
+  if (inRange(date, r.p1ExamStart, r.p1ExamEnd)) return 'examen';
+  if (inRange(date, r.p2ExamStart, r.p2ExamEnd)) return 'examen';
+  if (inRange(date, r.p1Start, r.p1End)) return 'primer-sem';
+  if (inRange(date, r.p2Start, r.p2End)) return 'segundo-sem';
+  const m = date.getMonth();
+  if (m===0||m===1||m===11) return 'verano';
+  if (m===6) return 'invierno';
+  const dow = date.getDay();
+  return (dow===0||dow===6) ? 'weekend' : 'normal';
+}
+
+function renderMonth(year, month, r, feriados) {
+  const first=new Date(year,month,1), last=new Date(year,month+1,0), mid=new Date(year,month,15);
+  let hClass='';
+  if (inRange(mid,r.p2Start,r.p2End)||inRange(mid,r.p2ExamStart,r.p2ExamEnd)) hClass='second-sem';
+  else if (month===0||month===1||month===11||month===6) hClass='vacation';
+  let h=`<div class="month-card"><div class="month-header ${hClass}">${MESES[month]} ${year}</div><div class="weekdays">`;
+  DIAS.forEach(d=>h+=`<div class="weekday">${d}</div>`);
+  h+=`</div><div class="days-grid">`;
+  for(let i=0;i<first.getDay();i++) h+=`<div class="day empty"></div>`;
+  for(let d=1;d<=last.getDate();d++){const date=new Date(year,month,d);h+=`<div class="day ${getDayClass(date,r,feriados)}">${d}</div>`;}
+  return h+`</div></div>`;
+}
+
+function generateCalendar() {
+  const y=anioActual, feriados=getFeriados(y);
+  const r={
+    p1Start:parseDate(document.getElementById('p1-start').value),
+    p1End:parseDate(document.getElementById('p1-end').value),
+    p1ExamStart:parseDate(document.getElementById('p1-exam-start').value),
+    p1ExamEnd:parseDate(document.getElementById('p1-exam-end').value),
+    p2Start:parseDate(document.getElementById('p2-start').value),
+    p2End:parseDate(document.getElementById('p2-end').value),
+    p2ExamStart:parseDate(document.getElementById('p2-exam-start').value),
+    p2ExamEnd:parseDate(document.getElementById('p2-exam-end').value),
+  };
+  let html=`<div class="year-divider">— ${y} —</div>`;
+  html+=`<p class="sem-label vac">☀️ Receso de verano</p><div class="info-banner vac">Enero y febrero · Período de materias de verano si tu universidad las ofrece</div><div class="months-grid">${renderMonth(y,0,r,feriados)}${renderMonth(y,1,r,feriados)}</div>`;
+  html+=`<p class="sem-label">📘 Primer Semestre</p><div class="info-banner">Del ${fmt(r.p1Start)} al ${fmt(r.p1End)} · Exámenes: ${fmt(r.p1ExamStart)} al ${fmt(r.p1ExamEnd)}</div><div class="months-grid">`;
+  for(let m=2;m<=6;m++) html+=renderMonth(y,m,r,feriados);
+  html+=`</div><p class="sem-label vac">❄️ Receso de invierno</p><div class="info-banner vac">Julio · Exámenes de fin del primer semestre y período de materias de invierno</div>`;
+  html+=`<p class="sem-label second">📗 Segundo Semestre</p><div class="info-banner second">Del ${fmt(r.p2Start)} al ${fmt(r.p2End)} · Exámenes: ${fmt(r.p2ExamStart)} al ${fmt(r.p2ExamEnd)}</div><div class="months-grid">`;
+  for(let m=7;m<=10;m++) html+=renderMonth(y,m,r,feriados);
+  html+=`</div><p class="sem-label vac">☀️ Fin de año · Verano ${y}-${y+1}</p><div class="info-banner vac">Noviembre y diciembre · Exámenes finales y comienzo del receso de verano</div><div class="months-grid">${renderMonth(y,10,r,feriados)}${renderMonth(y,11,r,feriados)}</div>`;
+  const out=document.getElementById('calendar-output');
+  out.innerHTML=html; out.style.display='block';
+  out.scrollIntoView({behavior:'smooth',block:'start'});
+  guardarConfig();
+}
+
+window.onload = async () => {
+  // Cargar defaults del año actual primero
+  const d=DEFAULTS[2027];
+  document.getElementById('p1-start').value=d.p1s; document.getElementById('p1-end').value=d.p1e;
+  document.getElementById('p1-exam-start').value=d.p1xs; document.getElementById('p1-exam-end').value=d.p1xe;
+  document.getElementById('p2-start').value=d.p2s; document.getElementById('p2-end').value=d.p2e;
+  document.getElementById('p2-exam-start').value=d.p2xs; document.getElementById('p2-exam-end').value=d.p2xe;
+  // Luego intentar cargar config guardada (localStorage o Supabase)
+  await cargarConfig();
+  generateCalendar();
+};
+</script>
+</body>
+</html>
