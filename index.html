@@ -148,6 +148,7 @@
 
   /* AUTH */
   .auth-overlay { position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:100;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px); }
+  .hidden { display:none !important; }
   .auth-overlay.hidden { display:none; }
   .auth-box { background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;width:100%;max-width:360px;box-shadow:0 8px 40px rgba(0,0,0,0.2); }
   .auth-box h2 { font-family:var(--font-display);font-size:1.4rem;color:var(--accent);margin-bottom:0.3rem; }
@@ -179,9 +180,17 @@
   <div class="auth-box">
     <h2 id="auth-title">Iniciá sesión</h2>
     <p id="auth-subtitle">Guardá tu configuración y accedé desde cualquier dispositivo.</p>
+    <div class="auth-field hidden" id="auth-nombre-wrap">
+      <label>Nombre</label>
+      <input type="text" id="auth-nombre" placeholder="Tu nombre" autocomplete="given-name">
+    </div>
+    <div class="auth-field hidden" id="auth-apellido-wrap">
+      <label>Apellido</label>
+      <input type="text" id="auth-apellido" placeholder="Tu apellido" autocomplete="family-name">
+    </div>
     <div class="auth-field">
-      <label>Email</label>
-      <input type="email" id="auth-email" placeholder="tu@email.com" autocomplete="email">
+      <label>Número de celular</label>
+      <input type="tel" id="auth-celular" placeholder="ej: 1123456789" autocomplete="tel">
     </div>
     <div class="auth-field">
       <label>Contraseña</label>
@@ -199,7 +208,7 @@
 <div class="container">
   <!-- USER BAR -->
   <div class="user-bar" id="user-bar">
-    <span id="user-email-label"></span>
+    <span id="user-name-label"></span>
     <button class="btn-login-top hidden" id="btn-show-login" onclick="mostrarAuth()">Iniciar sesión</button>
     <button class="btn-logout hidden" id="btn-logout" onclick="cerrarSesion()">Cerrar sesión</button>
   </div>
@@ -318,7 +327,8 @@ let authMode = 'login'; // 'login' | 'register'
 // ── AUTH UI ───────────────────────────────────────────────────────────────────
 function mostrarAuth() {
   document.getElementById('auth-overlay').classList.remove('hidden');
-  document.getElementById('auth-email').focus();
+  const campo = authMode === 'login' ? 'auth-celular' : 'auth-nombre';
+  document.getElementById(campo).focus();
 }
 function ocultarAuth() {
   document.getElementById('auth-overlay').classList.add('hidden');
@@ -333,14 +343,46 @@ function toggleAuthMode() {
   document.getElementById('auth-toggle-text').textContent = esLogin ? '¿No tenés cuenta?' : '¿Ya tenés cuenta?';
   document.querySelector('.auth-toggle a').textContent  = esLogin ? ' Registrate' : ' Iniciá sesión';
   document.getElementById('auth-error').textContent = '';
+  document.getElementById('auth-nombre-wrap').classList.toggle('hidden', esLogin);
+  document.getElementById('auth-apellido-wrap').classList.toggle('hidden', esLogin);
+}
+
+// Convierte "María José" -> "maria.jose" (sin tildes, sin espacios extra)
+function normalizar(str) {
+  return str
+    .trim()
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // quita tildes
+    .replace(/[^a-z0-9\s]/g, '')                       // quita signos raros
+    .replace(/\s+/g, '.')                               // espacios -> punto
+    .replace(/\.+/g, '.')
+    .replace(/^\.|\.$/g, '');
+}
+
+// Solo deja los dígitos del número de celular (sirve de identificador único)
+function normalizarCelular(cel) {
+  return cel.replace(/\D/g, '');
+}
+
+// Supabase Auth requiere un email por dentro; lo armamos solos a partir
+// del celular (que es único por persona) para que el usuario nunca lo vea.
+function construirEmail(celular) {
+  return `cel${normalizarCelular(celular)}@agenda.app`;
 }
 
 async function submitAuth() {
-  const email = document.getElementById('auth-email').value.trim();
-  const pass  = document.getElementById('auth-pass').value;
+  const nombre   = document.getElementById('auth-nombre').value.trim();
+  const apellido = document.getElementById('auth-apellido').value.trim();
+  const celular  = document.getElementById('auth-celular').value.trim();
+  const pass     = document.getElementById('auth-pass').value;
   const errEl = document.getElementById('auth-error');
   errEl.textContent = '';
-  if (!email || !pass) { errEl.textContent = 'Completá todos los campos.'; return; }
+
+  if (!celular || !pass) { errEl.textContent = 'Completá todos los campos.'; return; }
+  if (normalizarCelular(celular).length < 8) { errEl.textContent = 'Ingresá un número de celular válido (con código de área).'; return; }
+  if (authMode === 'register' && (!nombre || !apellido)) { errEl.textContent = 'Completá todos los campos.'; return; }
+
+  const email = construirEmail(celular);
   const btn = document.getElementById('btn-auth-submit');
   btn.textContent = '...'; btn.disabled = true;
   try {
@@ -348,7 +390,10 @@ async function submitAuth() {
     if (authMode === 'login') {
       result = await db.auth.signInWithPassword({ email, password: pass });
     } else {
-      result = await db.auth.signUp({ email, password: pass });
+      result = await db.auth.signUp({
+        email, password: pass,
+        options: { data: { nombre, apellido, celular: normalizarCelular(celular) } }
+      });
     }
     if (result.error) {
       errEl.textContent = traducirError(result.error.message);
@@ -364,10 +409,10 @@ async function submitAuth() {
 }
 
 function traducirError(msg) {
-  if (msg.includes('Invalid login')) return 'Email o contraseña incorrectos.';
-  if (msg.includes('already registered')) return 'Este email ya tiene una cuenta. Iniciá sesión.';
+  if (msg.includes('Invalid login')) return 'Celular o contraseña incorrectos.';
+  if (msg.includes('already registered')) return 'Ya existe una cuenta con ese número de celular. Iniciá sesión.';
   if (msg.includes('Password should')) return 'La contraseña debe tener al menos 6 caracteres.';
-  if (msg.includes('valid email')) return 'Ingresá un email válido.';
+  if (msg.includes('valid email')) return 'Revisá el número de celular ingresado.';
   return msg;
 }
 
@@ -378,15 +423,16 @@ async function cerrarSesion() {
 }
 
 function actualizarUserBar(user) {
-  const emailLabel  = document.getElementById('user-email-label');
+  const nameLabel   = document.getElementById('user-name-label');
   const btnLogin    = document.getElementById('btn-show-login');
   const btnLogout   = document.getElementById('btn-logout');
   if (user) {
-    emailLabel.textContent = user.email;
+    const meta = user.user_metadata || {};
+    nameLabel.textContent = (meta.nombre || meta.apellido) ? `${meta.nombre || ''} ${meta.apellido || ''}`.trim() : 'Mi cuenta';
     btnLogin.classList.add('hidden');
     btnLogout.classList.remove('hidden');
   } else {
-    emailLabel.textContent = '';
+    nameLabel.textContent = '';
     btnLogin.classList.remove('hidden');
     btnLogout.classList.add('hidden');
   }
@@ -406,6 +452,15 @@ db.auth.onAuthStateChange(async (event, session) => {
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('auth-overlay').addEventListener('click', (e) => {
     if (e.target === document.getElementById('auth-overlay')) ocultarAuth();
+  });
+  document.getElementById('auth-nombre').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') submitAuth();
+  });
+  document.getElementById('auth-apellido').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') submitAuth();
+  });
+  document.getElementById('auth-celular').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') submitAuth();
   });
   document.getElementById('auth-pass').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') submitAuth();
