@@ -2064,22 +2064,34 @@ function renderPerfilPreview(base64) {
 
 async function guardarFotoPerfil() {
   const foto = _perfilFotoTemporal;
-  // Guardar en localStorage
+  // Guardar en localStorage (esto siempre funciona, es lo que ves en este dispositivo)
   const key = 'agenda_foto_perfil_' + getStorageId();
   if (foto) {
     localStorage.setItem(key, foto);
   } else {
     localStorage.removeItem(key);
   }
-  // Guardar en Supabase si hay sesión
+  // Guardar en Supabase si hay sesión, incluyendo el resto de la config actual
+  // (tema/año/fechas) para no pisar esas columnas con un upsert parcial.
   if (currentUser) {
     try {
-      await db.from('agenda_config').upsert({
+      const config = construirConfigActual();
+      const { error } = await db.from('agenda_config').upsert({
         user_id: getStorageId(),
+        tema:    config.tema,
+        anio:    config.anio,
+        fechas:  config.fechas,
         foto_perfil: foto || null,
         updated_at: new Date().toISOString()
       }, { onConflict: 'user_id' });
-    } catch(e) { /* columna puede no existir todavía, no es crítico */ }
+      if (error) {
+        console.error('No se pudo sincronizar la foto de perfil con la cuenta:', error);
+        showToast('⚠️ Foto guardada en este dispositivo, pero no se sincronizó con tu cuenta');
+      }
+    } catch(e) {
+      console.error('No se pudo sincronizar la foto de perfil con la cuenta:', e);
+      showToast('⚠️ Foto guardada en este dispositivo, pero no se sincronizó con tu cuenta');
+    }
   }
   cargarFotoEnAvatar();
   cerrarPerfilModal();
@@ -2135,8 +2147,8 @@ function getStorageId() {
   return currentUser ? currentUser.id : getUserId();
 }
 
-async function guardarConfig() {
-  const config = {
+function construirConfigActual() {
+  return {
     tema: document.body.className.replace('tema-', ''),
     anio: anioActual,
     fechas: {
@@ -2150,6 +2162,10 @@ async function guardarConfig() {
       p2xe: document.getElementById('p2-exam-end').value,
     }
   };
+}
+
+async function guardarConfig() {
+  const config = construirConfigActual();
   localStorage.setItem('agenda_config', JSON.stringify(config));
   await db.from('agenda_config').upsert({
     user_id: getStorageId(),
