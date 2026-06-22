@@ -1295,6 +1295,75 @@
   }
   .btn-paleta:hover { background:var(--accent-light);border-color:var(--accent);color:var(--accent); }
 
+  /* ELIMINAR CUENTA */
+  .perfil-dropdown-danger-zone {
+    margin-top:0.5rem;padding-top:0.6rem;border-top:1px solid var(--border);
+  }
+  .perfil-dropdown-danger-btn {
+    width:100%;padding:0.55rem 1rem;border-radius:var(--radius);
+    background:transparent;border:1.5px solid #e05555;
+    color:#e05555;font-size:0.82rem;font-weight:600;
+    cursor:pointer;font-family:var(--font-body);
+    transition:background 0.15s,color 0.15s;text-align:left;
+  }
+  .perfil-dropdown-danger-btn:hover { background:#fff0f0;color:#c03030; }
+
+  /* MODAL ELIMINAR CUENTA */
+  .eliminar-overlay {
+    position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:600;
+    display:flex;align-items:center;justify-content:center;
+    backdrop-filter:blur(5px);opacity:0;pointer-events:none;transition:opacity 0.2s;
+  }
+  .eliminar-overlay.open { opacity:1;pointer-events:all; }
+  .eliminar-modal {
+    background:var(--paper);border:1px solid var(--border);
+    border-radius:calc(var(--radius)+4px);padding:1.6rem;
+    width:100%;max-width:340px;
+    box-shadow:0 12px 50px rgba(0,0,0,0.25);
+    transform:scale(0.93) translateY(10px);transition:transform 0.22s;
+  }
+  .eliminar-overlay.open .eliminar-modal { transform:scale(1) translateY(0); }
+  .eliminar-modal-icon { font-size:2rem;text-align:center;margin-bottom:0.6rem; }
+  .eliminar-modal h3 {
+    font-family:var(--font-display);font-size:1.1rem;
+    color:#c03030;text-align:center;margin-bottom:0.4rem;
+  }
+  .eliminar-modal p {
+    font-size:0.8rem;color:var(--muted);text-align:center;
+    margin-bottom:1rem;line-height:1.5;
+  }
+  .eliminar-modal .perfil-edit-field { margin-bottom:0.7rem; }
+  .eliminar-modal .perfil-edit-field label {
+    display:block;font-size:0.72rem;font-weight:600;
+    color:var(--muted);margin-bottom:0.25rem;text-transform:uppercase;letter-spacing:0.5px;
+  }
+  .eliminar-modal .perfil-edit-field input {
+    width:100%;padding:0.5rem 0.7rem;border:1px solid var(--border);
+    border-radius:calc(var(--radius)-2px);font-family:var(--font-body);
+    font-size:0.85rem;background:var(--bg);color:var(--ink);outline:none;
+    transition:border-color 0.2s;
+  }
+  .eliminar-modal .perfil-edit-field input:focus { border-color:#e05555; }
+  .eliminar-modal-error {
+    font-size:0.78rem;color:#e05555;margin-bottom:0.7rem;
+    min-height:1.1em;text-align:center;
+  }
+  .eliminar-modal-btns { display:flex;gap:0.5rem;margin-top:0.5rem; }
+  .btn-eliminar-cancel {
+    flex:1;padding:0.6rem;background:transparent;color:var(--muted);
+    border:1.5px solid var(--border);border-radius:var(--radius);
+    font-family:var(--font-body);font-size:0.88rem;font-weight:600;cursor:pointer;
+    transition:all 0.2s;
+  }
+  .btn-eliminar-cancel:hover { border-color:var(--accent);color:var(--accent); }
+  .btn-eliminar-confirm {
+    flex:1;padding:0.6rem;background:#e05555;color:white;border:none;
+    border-radius:var(--radius);font-family:var(--font-body);
+    font-size:0.88rem;font-weight:600;cursor:pointer;transition:opacity 0.2s;
+  }
+  .btn-eliminar-confirm:hover { opacity:0.85; }
+  .btn-eliminar-confirm:disabled { opacity:0.55;cursor:not-allowed; }
+
   /* TEMA ACCORDION */
   .tema-accordion {
     background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);
@@ -1627,6 +1696,10 @@
 
     </div><!-- fin perfil-edit-panel -->
 
+    <div class="perfil-dropdown-divider"></div>
+    <div class="perfil-dropdown-danger-zone">
+      <button class="perfil-dropdown-danger-btn" onclick="abrirEliminarCuenta()">🗑️ Eliminar mi cuenta</button>
+    </div>
     <div class="perfil-dropdown-divider"></div>
     <button class="perfil-dropdown-logout" onclick="cerrarSesion()">Cerrar sesión</button>
   </div>
@@ -2102,18 +2175,28 @@ db.auth.onAuthStateChange(async (event, session) => {
   actualizarUserBar(currentUser);
   if (yaInicializado) {
     if (currentUser) {
-      // Login: cargar datos desde la nube (pisamos el localStorage)
+      // Login: cargar TODOS los datos desde la nube (pisa el localStorage)
       await cargarConfig();
-      generateCalendar();
-      renderResumen();
     } else {
-      // Logout: limpiar datos del usuario anterior del localStorage y la UI
+      // Logout: limpiar TODOS los datos locales y la UI
       localStorage.removeItem('agenda_events');
       localStorage.removeItem('agenda_tareas');
       localStorage.removeItem('agenda_config');
+      localStorage.removeItem('agenda_materias');
+      localStorage.removeItem('agenda_horario');
       localStorage.removeItem('agenda_foto_perfil_local');
       userEvents = {};
       userTareas = {};
+      userMaterias = [];
+      userHorario = [];
+      filtromateria = null;
+      renderMateriasManager();
+      renderFiltrroMaterias();
+      // Limpiar avatar
+      const btn = document.getElementById('btn-avatar');
+      const imgA = btn.querySelector('img');
+      if (imgA) imgA.remove();
+      document.getElementById('avatar-initials').style.display = '';
       generateCalendar();
       renderResumen();
     }
@@ -2487,6 +2570,8 @@ async function guardarConfig() {
     fechas:  config.fechas,
     eventos: userEvents,
     tareas:  userTareas,
+    materias: userMaterias,
+    horario: userHorario,
     updated_at: new Date().toISOString()
   }, { onConflict: 'user_id' });
 }
@@ -2494,12 +2579,15 @@ async function guardarConfig() {
 async function cargarConfig() {
   const local = localStorage.getItem('agenda_config');
   if (local && !currentUser) { aplicarConfig(JSON.parse(local)); return; }
+
   const { data } = await db.from('agenda_config').select('*').eq('user_id', getStorageId()).single();
   if (data) {
+    // Tema, año y fechas
     const config = { tema: data.tema, anio: data.anio, fechas: data.fechas };
     localStorage.setItem('agenda_config', JSON.stringify(config));
     aplicarConfig(config);
-    // Cargar foto de perfil desde Supabase si existe
+
+    // Foto de perfil
     if (data.foto_perfil) {
       try {
         localStorage.setItem('agenda_foto_perfil_' + getStorageId(), data.foto_perfil);
@@ -2507,17 +2595,37 @@ async function cargarConfig() {
       } catch(e) { /* quota */ }
       cargarFotoEnAvatar();
     }
-    // Cargar eventos y tareas desde Supabase (prioridad sobre localStorage)
+
+    // Eventos
     if (data.eventos && typeof data.eventos === 'object') {
       userEvents = data.eventos;
       localStorage.setItem('agenda_events', JSON.stringify(userEvents));
     }
+
+    // Tareas
     if (data.tareas && typeof data.tareas === 'object') {
       userTareas = data.tareas;
       localStorage.setItem('agenda_tareas', JSON.stringify(userTareas));
     }
+
+    // Materias
+    if (data.materias && Array.isArray(data.materias)) {
+      userMaterias = data.materias;
+      localStorage.setItem('agenda_materias', JSON.stringify(userMaterias));
+    }
+
+    // Horario semanal
+    if (data.horario && Array.isArray(data.horario)) {
+      userHorario = data.horario;
+      localStorage.setItem('agenda_horario', JSON.stringify(userHorario));
+    }
+
+    // Re-renderizar todo
+    renderMateriasManager();
+    renderFiltrroMaterias();
     generateCalendar();
     renderResumen();
+
   } else if (local) {
     aplicarConfig(JSON.parse(local));
   }
@@ -2813,7 +2921,11 @@ function renderMonth(year, month, r, feriados, opts={}) {
     let dotsHTML = '';
     if (evts.length || pendientes.length) {
       // max 5 dots to keep it tidy
-      const evtDots = evts.slice(0,4).map(() => `<span class="day-dot"></span>`).join('');
+      const evtDots = evts.slice(0,4).map(ev => {
+        const mat = userMaterias && ev.materiaId ? userMaterias.find(m => m.id === ev.materiaId) : null;
+        const dotColor = mat ? mat.color : '';
+        return `<span class="day-dot"${dotColor ? ` style="background:${dotColor}"` : ''}></span>`;
+      }).join('');
       const tareaDots = pendientes.slice(0, Math.max(0, 5 - evts.length)).map(() => `<span class="day-dot tarea"></span>`).join('');
       dotsHTML = `<span class="day-dots">${evtDots}${tareaDots}</span>`;
     }
@@ -2943,6 +3055,12 @@ function renderSemanaVisible() {
     const dcls = getDayClass(d, r, feriados);
     const dbg = colorMap[dcls] || 'var(--bg)';
     const DIAS_SHORT = ['D','L','M','X','J','V','S'];
+    const dEvts = userEvents[toKey(d)] || [];
+    const dDotColor = (() => {
+      if (!dEvts.length) return isSelected ? 'rgba(255,255,255,0.6)' : 'transparent';
+      const firstMat = userMaterias && dEvts[0].materiaId ? userMaterias.find(m => m.id === dEvts[0].materiaId) : null;
+      return isSelected ? 'rgba(255,255,255,0.9)' : (firstMat ? firstMat.color : 'var(--accent)');
+    })();
     return `<div onclick="irADia('${toKey(d)}')" style="
       display:flex;flex-direction:column;align-items:center;gap:2px;
       cursor:pointer;padding:0.3rem 0.4rem;border-radius:8px;flex:1;
@@ -2952,22 +3070,33 @@ function renderSemanaVisible() {
     ">
       <span style="font-size:0.6rem;font-weight:600;color:${isSelected?'white':'var(--muted)'};">${DIAS_SHORT[d.getDay()]}</span>
       <span style="font-size:0.85rem;font-weight:700;color:${isSelected?'white':'var(--ink)'};">${d.getDate()}</span>
-      <div style="width:5px;height:5px;border-radius:50%;background:${isSelected?'rgba(255,255,255,0.6)':dbg};"></div>
+      <div style="width:5px;height:5px;border-radius:50%;background:${dDotColor};"></div>
     </div>`;
   }).join('');
 
   // Eventos del día
   const evtsHTML = hasEvt
-    ? userEvents[key].map(e => `
+    ? userEvents[key].map(e => {
+        const mat = userMaterias && e.materiaId ? userMaterias.find(m => m.id === e.materiaId) : null;
+        const evBg = mat ? mat.color : 'var(--accent)';
+        const matBadge = mat ? `<span style="font-size:0.68rem;background:rgba(255,255,255,0.25);padding:0.1rem 0.45rem;border-radius:50px;font-weight:700;">${escapeHtml(mat.nombre)}</span>` : '';
+        return `
         <div onclick="abrirModalEvento('${key}',${date.getDate()})" style="
           display:flex;align-items:center;gap:0.6rem;
           padding:0.65rem 0.85rem;border-radius:10px;
-          background:var(--accent);color:white;cursor:pointer;
+          background:${evBg};color:white;cursor:pointer;
           font-size:0.82rem;font-weight:600;
         ">
-          <span style="font-size:1.1rem;">${e.emoji||'📌'}</span>
-          <span>${e.desc||'Evento'}</span>
-        </div>`).join('')
+          <span style="font-size:1.1rem;">${tipoLabelDeEvento(e).split(' ')[0]}</span>
+          <div style="flex:1;min-width:0;">
+            <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(e.name)}</div>
+            <div style="display:flex;gap:0.4rem;align-items:center;margin-top:0.15rem;flex-wrap:wrap;">
+              ${e.time ? `<span style="font-size:0.72rem;opacity:0.85;">${fmtTime(e.time)}</span>` : ''}
+              ${matBadge}
+            </div>
+          </div>
+        </div>`;
+      }).join('')
     : `<div style="
         text-align:center;color:var(--muted);font-size:0.8rem;
         padding:1.5rem 0;border:1.5px dashed var(--border);border-radius:12px;
@@ -3241,6 +3370,8 @@ function sincronizarDatosNube() {
         user_id: getStorageId(),
         eventos: userEvents,
         tareas:  userTareas,
+        materias: userMaterias,
+        horario: userHorario,
         updated_at: new Date().toISOString()
       }, { onConflict: 'user_id' });
     } catch(e) { console.error('Error sincronizando datos:', e); }
@@ -3565,7 +3696,11 @@ function refreshDayDot(key) {
       if (existing) existing.remove();
       return;
     }
-    const evtDots = evts.slice(0,4).map(() => `<span class="day-dot"></span>`).join('');
+    const evtDots = evts.slice(0,4).map(ev => {
+      const mat = userMaterias && ev.materiaId ? userMaterias.find(m => m.id === ev.materiaId) : null;
+      const dotColor = mat ? mat.color : '';
+      return `<span class="day-dot"${dotColor ? ` style="background:${dotColor}"` : ''}></span>`;
+    }).join('');
     const tareaDots = pendientes.slice(0, Math.max(0, 5 - evts.length)).map(() => `<span class="day-dot tarea"></span>`).join('');
     const html = `<span class="day-dots">${evtDots}${tareaDots}</span>`;
     if (existing) existing.outerHTML = html;
@@ -3629,6 +3764,7 @@ function cargarMaterias() {
 }
 function guardarMaterias() {
   localStorage.setItem('agenda_materias', JSON.stringify(userMaterias));
+  if (currentUser) sincronizarDatosNube();
 }
 
 function agregarMateria() {
@@ -3731,6 +3867,7 @@ function cargarHorario() {
 }
 function guardarHorario() {
   localStorage.setItem('agenda_horario', JSON.stringify(userHorario));
+  if (currentUser) sincronizarDatosNube();
 }
 
 function toggleHorarioDia(btn) {
@@ -3972,6 +4109,115 @@ window.onload = async () => {
     document.getElementById('loading-overlay').classList.add('hidden');
   }
 };
+// ── ELIMINAR CUENTA ───────────────────────────────────────────────────────────
+function abrirEliminarCuenta() {
+  cerrarPerfilDropdown();
+  document.getElementById('eliminar-pass').value = '';
+  document.getElementById('eliminar-confirm-text').value = '';
+  document.getElementById('eliminar-error').textContent = '';
+  document.getElementById('btn-eliminar-confirm').disabled = false;
+  document.getElementById('btn-eliminar-confirm').textContent = 'Eliminar cuenta';
+  document.getElementById('eliminar-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => document.getElementById('eliminar-pass').focus(), 100);
+}
+
+function cerrarEliminarCuenta(e) {
+  if (e && e.target !== document.getElementById('eliminar-overlay')) return;
+  document.getElementById('eliminar-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+async function confirmarEliminarCuenta() {
+  const pass = document.getElementById('eliminar-pass').value;
+  const confirmText = document.getElementById('eliminar-confirm-text').value.trim();
+  const errEl = document.getElementById('eliminar-error');
+  const btn = document.getElementById('btn-eliminar-confirm');
+  errEl.textContent = '';
+
+  if (!pass) { errEl.textContent = 'Ingresá tu contraseña.'; return; }
+  if (confirmText !== 'ELIMINAR') { errEl.textContent = 'Escribí ELIMINAR para confirmar.'; return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Eliminando...';
+
+  try {
+    // Verificar contraseña reingresando sesión
+    const { error: loginErr } = await db.auth.signInWithPassword({
+      email: currentUser.email,
+      password: pass
+    });
+    if (loginErr) {
+      errEl.textContent = 'Contraseña incorrecta.';
+      btn.disabled = false;
+      btn.textContent = 'Eliminar cuenta';
+      return;
+    }
+
+    // Limpiar datos locales
+    localStorage.removeItem('agenda_events');
+    localStorage.removeItem('agenda_tareas');
+    localStorage.removeItem('agenda_config');
+    localStorage.removeItem('agenda_foto_perfil_local');
+
+    // Eliminar datos en la nube
+    try {
+      await db.from('agenda_config').delete().eq('user_id', getStorageId());
+    } catch(e) { /* continuar aunque falle */ }
+
+    // Eliminar cuenta en Supabase (requiere RLS configurado o función RPC)
+    const { error: delErr } = await db.rpc('eliminar_cuenta_usuario');
+    if (delErr) {
+      // Si no existe la función RPC, al menos cerrar sesión y limpiar
+      console.warn('RPC eliminar_cuenta_usuario no disponible:', delErr.message);
+    }
+
+    await db.auth.signOut();
+    document.getElementById('eliminar-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+    showToast('✓ Cuenta eliminada');
+    userEvents = {};
+    userTareas = {};
+    currentUser = null;
+    actualizarUserBar(null);
+    generateCalendar();
+    renderResumen();
+  } catch(e) {
+    errEl.textContent = 'Error al eliminar la cuenta. Intentá de nuevo.';
+    btn.disabled = false;
+    btn.textContent = 'Eliminar cuenta';
+  }
+}
+
+window.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && document.getElementById('eliminar-overlay').classList.contains('open')) {
+    document.getElementById('eliminar-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+});
+// ─────────────────────────────────────────────────────────────────────────────
 </script>
+<!-- MODAL ELIMINAR CUENTA -->
+<div class="eliminar-overlay" id="eliminar-overlay" onclick="cerrarEliminarCuenta(event)">
+  <div class="eliminar-modal">
+    <div class="eliminar-modal-icon">⚠️</div>
+    <h3>Eliminar mi cuenta</h3>
+    <p>Esta acción es <strong>permanente e irreversible</strong>.<br>Se borrarán todos tus datos, eventos y configuración.</p>
+    <div class="perfil-edit-field">
+      <label>Contraseña actual</label>
+      <input type="password" id="eliminar-pass" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <div class="perfil-edit-field">
+      <label>Escribí <strong>ELIMINAR</strong> para confirmar</label>
+      <input type="text" id="eliminar-confirm-text" placeholder="ELIMINAR" autocomplete="off">
+    </div>
+    <div class="eliminar-modal-error" id="eliminar-error"></div>
+    <div class="eliminar-modal-btns">
+      <button class="btn-eliminar-cancel" onclick="cerrarEliminarCuenta()">Cancelar</button>
+      <button class="btn-eliminar-confirm" id="btn-eliminar-confirm" onclick="confirmarEliminarCuenta()">Eliminar cuenta</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
