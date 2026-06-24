@@ -6,6 +6,7 @@
 <title>Agenda Universitaria</title>
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#D4748A">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1273,6 +1274,79 @@
     border-radius:50%;width:18px;height:18px;margin-left:0.4rem;vertical-align:middle;
   }
 
+  /* ── BOTÓN FILTRO TAREAS EN PANEL ──────────────────────────────────── */
+  .resumen-panel-hdr-actions {
+    display:flex;align-items:center;gap:0.5rem;
+  }
+  .btn-tareas-modal {
+    background:none;border:1px solid var(--border);border-radius:20px;
+    padding:0.2rem 0.6rem;font-size:0.72rem;color:var(--muted);
+    cursor:pointer;font-family:var(--font-body);
+    transition:all 0.15s;white-space:nowrap;
+  }
+  .btn-tareas-modal:hover { background:var(--accent-light);border-color:var(--accent);color:var(--accent); }
+
+  /* ── MODAL DE TAREAS ─────────────────────────────────────────────────── */
+  .tareas-modal-overlay {
+    position:fixed;inset:0;z-index:2000;
+    background:rgba(0,0,0,0.45);
+    display:flex;align-items:flex-end;justify-content:center;
+    opacity:0;pointer-events:none;transition:opacity 0.25s;
+  }
+  .tareas-modal-overlay.open { opacity:1;pointer-events:all; }
+  .tareas-modal {
+    background:var(--paper);border-radius:var(--radius) var(--radius) 0 0;
+    width:100%;max-width:600px;max-height:90vh;overflow-y:auto;
+    padding:1.5rem 1.2rem 2rem;
+    transform:translateY(40px);transition:transform 0.25s;
+  }
+  .tareas-modal-overlay.open .tareas-modal { transform:translateY(0); }
+  .tareas-modal-hdr {
+    display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;
+  }
+  .tareas-modal-hdr h3 { font-family:var(--font-display);font-size:1.2rem;color:var(--accent); }
+  .tareas-modal-hdr button { background:none;border:none;font-size:1.2rem;color:var(--muted);cursor:pointer; }
+  .tareas-filtros {
+    display:flex;gap:0.4rem;margin-bottom:1rem;flex-wrap:wrap;
+  }
+  .tareas-filtro-btn {
+    padding:0.3rem 0.75rem;border-radius:20px;border:1px solid var(--border);
+    background:var(--bg);color:var(--muted);font-size:0.78rem;cursor:pointer;
+    font-family:var(--font-body);transition:all 0.15s;
+  }
+  .tareas-filtro-btn.active-todas  { background:var(--accent);color:white;border-color:var(--accent); }
+  .tareas-filtro-btn.active-alta   { background:#e05555;color:white;border-color:#e05555; }
+  .tareas-filtro-btn.active-media  { background:#e0a020;color:white;border-color:#e0a020; }
+  .tareas-filtro-btn.active-baja   { background:#48a86d;color:white;border-color:#48a86d; }
+  .tareas-filtro-btn.active-sin    { background:var(--muted);color:white;border-color:var(--muted); }
+  .tareas-modal-seccion-title {
+    font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;
+    color:var(--muted);margin:0.9rem 0 0.4rem;padding-bottom:0.3rem;
+    border-bottom:1px solid var(--border);
+  }
+  .tareas-modal-item {
+    display:flex;align-items:flex-start;gap:0.6rem;padding:0.55rem 0.6rem;
+    border-radius:calc(var(--radius) - 2px);margin-bottom:0.3rem;
+    background:var(--bg);border:1px solid var(--border);
+    border-left:3px solid var(--second);
+  }
+  .tareas-modal-item.done { opacity:0.5; }
+  .tareas-modal-item.prio-alta { border-left-color:#e05555; }
+  .tareas-modal-item.prio-media { border-left-color:#e0a020; }
+  .tareas-modal-item.prio-baja { border-left-color:#48a86d; }
+  .tareas-modal-fecha {
+    font-size:0.7rem;font-weight:700;color:var(--second);
+    background:var(--paper);border:1px solid var(--border);
+    border-radius:6px;padding:0.2rem 0.4rem;flex-shrink:0;white-space:nowrap;
+  }
+  .tareas-modal-text {
+    flex:1;font-size:0.82rem;color:var(--ink);word-break:break-word;
+  }
+  .tareas-modal-item.done .tareas-modal-text { text-decoration:line-through;color:var(--muted); }
+  .tareas-modal-empty {
+    text-align:center;color:var(--muted);font-size:0.85rem;padding:2rem 0;
+  }
+
   /* ── AVISO DE EVENTOS PRÓXIMOS ───────────────────────────────────────── */
   .proximos-banner {
     background:var(--accent-light);border:1.5px solid var(--accent);border-radius:var(--radius);
@@ -1378,6 +1452,212 @@
     font-family:var(--font-body);
   }
   .btn-paleta:hover { background:var(--accent-light);border-color:var(--accent);color:var(--accent); }
+
+  /* ── BOTÓN ESTADÍSTICAS ──────────────────────────────────────── */
+  .btn-stats {
+    position:absolute;top:1rem;left:6rem;z-index:50;
+    display:flex;align-items:center;justify-content:center;
+    width:36px;height:36px;
+    background:var(--paper);border:1px solid var(--border);
+    border-radius:50%;color:var(--muted);font-size:1rem;
+    cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,0.06);
+    transition:background 0.2s,border-color 0.2s,color 0.2s;
+    font-family:var(--font-body);
+  }
+  .btn-stats:hover { background:var(--accent-light);border-color:var(--accent);color:var(--accent); }
+
+  /* ── MODAL ESTADÍSTICAS ──────────────────────────────────────── */
+  .stats-overlay {
+    position:fixed;inset:0;z-index:2000;
+    background:rgba(0,0,0,0.45);
+    display:flex;align-items:flex-end;justify-content:center;
+    opacity:0;pointer-events:none;transition:opacity 0.25s;
+  }
+  .stats-overlay.open { opacity:1;pointer-events:all; }
+  .stats-modal {
+    background:var(--paper);border-radius:var(--radius) var(--radius) 0 0;
+    width:100%;max-width:600px;max-height:90vh;overflow-y:auto;
+    padding:1.5rem 1.2rem 2rem;
+    transform:translateY(40px);transition:transform 0.25s;
+  }
+  .stats-overlay.open .stats-modal { transform:translateY(0); }
+  .stats-modal-hdr {
+    display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:1rem;
+  }
+  .stats-modal-hdr h3 {
+    font-family:var(--font-display);font-size:1.2rem;color:var(--accent);
+  }
+  .stats-modal-hdr button {
+    background:none;border:none;font-size:1.2rem;color:var(--muted);cursor:pointer;
+  }
+  .stats-period-tabs {
+    display:flex;gap:0.4rem;margin-bottom:1.2rem;flex-wrap:wrap;
+  }
+  .stats-tab {
+    padding:0.35rem 0.8rem;border-radius:20px;border:1px solid var(--border);
+    background:var(--bg);color:var(--muted);font-size:0.8rem;cursor:pointer;
+    font-family:var(--font-body);transition:all 0.15s;
+  }
+  .stats-tab.active {
+    background:var(--accent);color:white;border-color:var(--accent);
+  }
+  .stats-grid {
+    display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;margin-bottom:1.2rem;
+  }
+  .stats-card {
+    background:var(--bg);border-radius:var(--radius);padding:0.9rem 1rem;
+    border:1px solid var(--border);
+  }
+  .stats-card-label {
+    font-size:0.72rem;color:var(--muted);margin-bottom:0.3rem;text-transform:uppercase;letter-spacing:0.5px;
+  }
+  .stats-card-value {
+    font-family:var(--font-display);font-size:1.8rem;color:var(--accent);font-weight:700;line-height:1;
+  }
+  .stats-card-sub {
+    font-size:0.72rem;color:var(--muted);margin-top:0.2rem;
+  }
+  .stats-section-title {
+    font-family:var(--font-display);font-size:0.9rem;color:var(--ink);
+    margin:1rem 0 0.6rem;font-weight:600;
+  }
+  .stats-bar-row {
+    display:flex;align-items:center;gap:0.6rem;margin-bottom:0.5rem;
+  }
+  .stats-bar-label {
+    font-size:0.78rem;color:var(--ink);min-width:80px;
+  }
+  .stats-bar-track {
+    flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;
+  }
+  .stats-bar-fill {
+    height:100%;background:var(--accent);border-radius:4px;transition:width 0.4s ease;
+  }
+  .stats-bar-fill.second { background:var(--second); }
+  .stats-bar-count {
+    font-size:0.75rem;color:var(--muted);min-width:20px;text-align:right;
+  }
+  .stats-racha {
+    display:flex;align-items:center;gap:0.5rem;
+    background:var(--accent-light);border-radius:var(--radius);
+    padding:0.7rem 1rem;margin-bottom:0.8rem;
+  }
+  .stats-racha-emoji { font-size:1.4rem; }
+  .stats-racha-text { font-size:0.85rem;color:var(--ink); }
+  .stats-racha-text strong { color:var(--accent); }
+  .stats-empty {
+    text-align:center;color:var(--muted);font-size:0.85rem;padding:1.5rem 0;
+  }
+
+  /* ── SISTEMA DE AMIGOS ──────────────────────────────────────────── */
+  .amigos-overlay {
+    position:fixed;inset:0;z-index:2000;
+    background:rgba(0,0,0,0.45);
+    display:flex;align-items:flex-end;justify-content:center;
+    opacity:0;pointer-events:none;transition:opacity 0.25s;
+  }
+  .amigos-overlay.open { opacity:1;pointer-events:all; }
+  .amigos-modal {
+    background:var(--paper);border-radius:var(--radius) var(--radius) 0 0;
+    width:100%;max-width:600px;max-height:90vh;overflow-y:auto;
+    padding:1.5rem 1.2rem 2rem;
+    transform:translateY(40px);transition:transform 0.25s;
+  }
+  .amigos-overlay.open .amigos-modal { transform:translateY(0); }
+  .amigos-modal-hdr {
+    display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;
+  }
+  .amigos-modal-hdr h3 { font-family:var(--font-display);font-size:1.2rem;color:var(--accent); }
+  .amigos-modal-hdr button { background:none;border:none;font-size:1.2rem;color:var(--muted);cursor:pointer; }
+  .amigos-buscar-row {
+    display:flex;gap:0.5rem;margin-bottom:1.2rem;
+  }
+  .amigos-buscar-row input {
+    flex:1;padding:0.55rem 0.8rem;border:1px solid var(--border);
+    border-radius:var(--radius);font-size:0.85rem;background:var(--bg);
+    color:var(--ink);font-family:var(--font-body);
+  }
+  .amigos-buscar-row input:focus { outline:none;border-color:var(--accent); }
+  .amigos-buscar-row button {
+    padding:0.55rem 1rem;background:var(--accent);color:white;
+    border:none;border-radius:var(--radius);font-size:0.85rem;
+    cursor:pointer;font-family:var(--font-body);white-space:nowrap;
+  }
+  .amigos-section-title {
+    font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;
+    color:var(--muted);margin:1rem 0 0.5rem;padding-bottom:0.3rem;
+    border-bottom:1px solid var(--border);
+  }
+  .amigo-item {
+    display:flex;align-items:center;gap:0.7rem;padding:0.6rem 0.5rem;
+    border-radius:calc(var(--radius) - 2px);margin-bottom:0.3rem;
+    background:var(--bg);border:1px solid var(--border);
+  }
+  .amigo-avatar {
+    width:34px;height:34px;border-radius:50%;background:var(--accent-light);
+    border:1px solid var(--accent);display:flex;align-items:center;justify-content:center;
+    font-size:0.8rem;font-weight:700;color:var(--accent);flex-shrink:0;
+  }
+  .amigo-info { flex:1;min-width:0; }
+  .amigo-nombre { font-size:0.85rem;font-weight:600;color:var(--ink); }
+  .amigo-cel { font-size:0.72rem;color:var(--muted); }
+  .amigo-actions { display:flex;gap:0.4rem;flex-shrink:0; }
+  .amigo-btn {
+    padding:0.25rem 0.6rem;border-radius:20px;font-size:0.72rem;
+    cursor:pointer;font-family:var(--font-body);border:1px solid var(--border);
+    background:var(--bg);color:var(--muted);transition:all 0.15s;
+  }
+  .amigo-btn.aceptar { background:var(--accent);color:white;border-color:var(--accent); }
+  .amigo-btn.compartir { background:var(--accent-light);color:var(--accent);border-color:var(--accent); }
+  .amigo-btn.rechazar { color:#e05555;border-color:#e05555; }
+  .amigos-empty { text-align:center;color:var(--muted);font-size:0.83rem;padding:1rem 0; }
+  .amigos-msg { font-size:0.78rem;padding:0.5rem 0.7rem;border-radius:var(--radius);margin-bottom:0.8rem; }
+  .amigos-msg.ok { background:var(--accent-light);color:var(--accent); }
+  .amigos-msg.err { background:#fdeaea;color:#c0392b; }
+
+  /* Modal compartir eventos */
+  .compartir-eventos-overlay {
+    position:fixed;inset:0;z-index:2100;
+    background:rgba(0,0,0,0.5);
+    display:flex;align-items:flex-end;justify-content:center;
+    opacity:0;pointer-events:none;transition:opacity 0.2s;
+  }
+  .compartir-eventos-overlay.open { opacity:1;pointer-events:all; }
+  .compartir-eventos-modal {
+    background:var(--paper);border-radius:var(--radius) var(--radius) 0 0;
+    width:100%;max-width:600px;max-height:85vh;overflow-y:auto;
+    padding:1.5rem 1.2rem 2rem;
+    transform:translateY(40px);transition:transform 0.2s;
+  }
+  .compartir-eventos-overlay.open .compartir-eventos-modal { transform:translateY(0); }
+  .compartir-eventos-hdr {
+    display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;
+  }
+  .compartir-eventos-hdr h3 { font-family:var(--font-display);font-size:1.1rem;color:var(--accent); }
+  .compartir-eventos-hdr button { background:none;border:none;font-size:1.2rem;color:var(--muted);cursor:pointer; }
+  .compartir-evt-item {
+    display:flex;align-items:center;gap:0.6rem;padding:0.5rem 0.6rem;
+    border-radius:calc(var(--radius) - 2px);margin-bottom:0.3rem;
+    background:var(--bg);border:1px solid var(--border);cursor:pointer;
+    transition:background 0.15s;
+  }
+  .compartir-evt-item.seleccionado { background:var(--accent-light);border-color:var(--accent); }
+  .compartir-evt-check {
+    width:18px;height:18px;border-radius:4px;border:1.5px solid var(--border);
+    display:flex;align-items:center;justify-content:center;font-size:0.7rem;
+    flex-shrink:0;background:var(--paper);
+  }
+  .compartir-evt-item.seleccionado .compartir-evt-check {
+    background:var(--accent);border-color:var(--accent);color:white;
+  }
+  .compartir-evt-info { flex:1;font-size:0.82rem;color:var(--ink); }
+  .compartir-evt-fecha { font-size:0.7rem;color:var(--muted); }
+  .compartir-guardar-btn {
+    width:100%;margin-top:1rem;padding:0.7rem;background:var(--accent);
+    color:white;border:none;border-radius:var(--radius);font-size:0.9rem;
+    cursor:pointer;font-family:var(--font-body);
+  }
 
   /* ELIMINAR CUENTA */
   .perfil-dropdown-danger-zone {
@@ -1657,6 +1937,26 @@
   <!-- PALETA BUTTON -->
   <button class="btn-paleta" onclick="abrirTemaModal()" title="Cambiar tema">🎨</button>
 
+  <!-- ESTADÍSTICAS BUTTON -->
+  <button class="btn-stats" onclick="abrirStats()" title="Estadísticas">📊</button>
+
+  <!-- MODAL ESTADÍSTICAS -->
+  <div class="stats-overlay" id="stats-overlay" onclick="cerrarStatsOverlay(event)">
+    <div class="stats-modal">
+      <div class="stats-modal-hdr">
+        <h3>📊 Mis estadísticas</h3>
+        <button onclick="cerrarStats()">✕</button>
+      </div>
+      <div class="stats-period-tabs">
+        <button class="stats-tab active" data-period="semana" onclick="cambiarPeriodoStats('semana',this)">Esta semana</button>
+        <button class="stats-tab" data-period="mes" onclick="cambiarPeriodoStats('mes',this)">Este mes</button>
+        <button class="stats-tab" data-period="semestre" onclick="cambiarPeriodoStats('semestre',this)">Semestre</button>
+        <button class="stats-tab" data-period="anio" onclick="cambiarPeriodoStats('anio',this)">Este año</button>
+      </div>
+      <div id="stats-content"></div>
+    </div>
+  </div>
+
   <!-- TEMA MODAL -->
   <div class="tema-modal-overlay" id="tema-modal-overlay" onclick="cerrarTemaModal(event)">
     <div class="tema-modal">
@@ -1690,6 +1990,7 @@
     </div>
     <div class="perfil-dropdown-divider"></div>
     <button class="perfil-dropdown-edit-btn" onclick="toggleEditPerfil()">✏️ Editar mi cuenta</button>
+    <button class="perfil-dropdown-edit-btn" onclick="abrirAmigos()" style="margin-top:0.3rem">👥 Mis amigos</button>
 
     <!-- Panel edición -->
     <div class="perfil-edit-panel hidden" id="perfil-edit-panel">
@@ -1857,7 +2158,10 @@
   <div class="resumen-panel" id="resumen-panel">
     <div class="resumen-panel-hdr" onclick="toggleResumen()">
       <h2>📋 Mis eventos <span class="resumen-badge" id="resumen-badge" style="display:none">0</span></h2>
-      <span class="resumen-toggle-icon" id="resumen-toggle-icon">▼</span>
+      <div class="resumen-panel-hdr-actions" onclick="event.stopPropagation()">
+        <button class="btn-tareas-modal" onclick="abrirTareasModal()">✅ Tareas</button>
+        <span class="resumen-toggle-icon" id="resumen-toggle-icon">▼</span>
+      </div>
     </div>
     <div class="resumen-body hidden" id="resumen-body">
       <div class="resumen-empty" id="resumen-empty">Todavía no tenés eventos agendados.<br>Tocá cualquier día del calendario para agregar uno.</div>
@@ -1866,6 +2170,25 @@
   </div>
 
   <div id="calendar-output"></div>
+</div>
+
+<!-- MODAL TAREAS -->
+<div class="tareas-modal-overlay" id="tareas-modal-overlay" onclick="cerrarTareasOverlay(event)">
+  <div class="tareas-modal">
+    <div class="tareas-modal-hdr">
+      <h3>✅ Mis tareas</h3>
+      <button onclick="cerrarTareasModal()">✕</button>
+    </div>
+    <div class="tareas-filtros">
+      <button class="tareas-filtro-btn active-todas" data-filtro="todas" onclick="filtrarTareas('todas',this)">Todas</button>
+      <button class="tareas-filtro-btn" data-filtro="pendientes" onclick="filtrarTareas('pendientes',this)">Pendientes</button>
+      <button class="tareas-filtro-btn" data-filtro="alta" onclick="filtrarTareas('alta',this)">🔴 Alta</button>
+      <button class="tareas-filtro-btn" data-filtro="media" onclick="filtrarTareas('media',this)">🟡 Media</button>
+      <button class="tareas-filtro-btn" data-filtro="baja" onclick="filtrarTareas('baja',this)">🟢 Baja</button>
+      <button class="tareas-filtro-btn" data-filtro="sin" onclick="filtrarTareas('sin',this)">Sin prioridad</button>
+    </div>
+    <div id="tareas-modal-list"></div>
+  </div>
 </div>
 
 <!-- HORARIO SEMANAL MODAL -->
@@ -2662,6 +2985,7 @@ function construirConfigActual() {
 async function guardarConfig() {
   const config = construirConfigActual();
   localStorage.setItem('agenda_config', JSON.stringify(config));
+  const meta = currentUser?.user_metadata || {};
   await db.from('agenda_config').upsert({
     user_id: getStorageId(),
     tema:    config.tema,
@@ -2671,6 +2995,9 @@ async function guardarConfig() {
     tareas:  userTareas,
     materias: userMaterias,
     horario: userHorario,
+    nombre:  meta.nombre || null,
+    apellido: meta.apellido || null,
+    celular: meta.celular || null,
     updated_at: new Date().toISOString()
   }, { onConflict: 'user_id' });
 }
@@ -4360,6 +4687,7 @@ async function initPush() {
   if (Notification.permission === 'granted') {
     await suscribirPush();
     document.getElementById('push-banner').classList.add('hidden');
+    actualizarBadge();
     return;
   }
 
@@ -4492,10 +4820,46 @@ function dismissPushBanner() {
   localStorage.setItem('push_dismissed', '1');
 }
 
+// ── BADGE DINÁMICO ───────────────────────────────────────────────────────────
+function actualizarBadge() {
+  if (!('setAppBadge' in navigator)) return;
+
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
+  let total = 0;
+
+  // Contar eventos de hoy y próximos 7 días
+  Object.entries(userEvents || {}).forEach(([key, evts]) => {
+    const [y, m, d] = key.split('-').map(Number);
+    const fecha = new Date(y, m - 1, d);
+    fecha.setHours(0, 0, 0, 0);
+    const diffDias = Math.round((fecha - hoy) / 86400000);
+    if (diffDias >= 0 && diffDias <= 7) total += evts.length;
+  });
+
+  // Contar tareas pendientes de hoy y próximos 7 días
+  Object.entries(userTareas || {}).forEach(([key, tlist]) => {
+    const pendientes = tlist.filter(t => !t.done);
+    if (!pendientes.length) return;
+    const [y, m, d] = key.split('-').map(Number);
+    const fecha = new Date(y, m - 1, d);
+    fecha.setHours(0, 0, 0, 0);
+    const diffDias = Math.round((fecha - hoy) / 86400000);
+    if (diffDias >= 0 && diffDias <= 7) total += pendientes.length;
+  });
+
+  if (total > 0) {
+    navigator.setAppBadge(total).catch(() => {});
+  } else {
+    navigator.clearAppBadge().catch(() => {});
+  }
+}
+
 // Helpers para llamar desde guardarEventos/guardarTareas
 async function onDatosActualizados() {
   await syncDatosParaSW();
   if (Notification.permission === 'granted') programarNotificacionesLocales();
+  actualizarBadge();
 }
 
 // Utilidad VAPID
@@ -4505,8 +4869,603 @@ function urlBase64ToUint8Array(base64String) {
   const raw = atob(base64);
   return Uint8Array.from([...raw].map(c => c.charCodeAt(0)));
 }
+// ── ESTADÍSTICAS ─────────────────────────────────────────────────────────────
+
+let statsPeriodoActual = 'semana';
+
+function abrirStats() {
+  renderStats(statsPeriodoActual);
+  document.getElementById('stats-overlay').classList.add('open');
+}
+
+function cerrarStats() {
+  document.getElementById('stats-overlay').classList.remove('open');
+}
+
+function cerrarStatsOverlay(e) {
+  if (e.target === document.getElementById('stats-overlay')) cerrarStats();
+}
+
+function cambiarPeriodoStats(periodo, btn) {
+  statsPeriodoActual = periodo;
+  document.querySelectorAll('.stats-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderStats(periodo);
+}
+
+function getRangoFechas(periodo) {
+  const hoy = new Date();
+  hoy.setHours(0,0,0,0);
+  let desde, hasta;
+
+  if (periodo === 'semana') {
+    const dia = hoy.getDay(); // 0=dom
+    desde = new Date(hoy); desde.setDate(hoy.getDate() - dia);
+    hasta = new Date(desde); hasta.setDate(desde.getDate() + 6);
+  } else if (periodo === 'mes') {
+    desde = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+    hasta = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0);
+  } else if (periodo === 'semestre') {
+    const mes = hoy.getMonth(); // 0-11
+    if (mes <= 5) { // 1er semestre: ene-jun
+      desde = new Date(hoy.getFullYear(), 0, 1);
+      hasta = new Date(hoy.getFullYear(), 5, 30);
+    } else { // 2do semestre: jul-dic
+      desde = new Date(hoy.getFullYear(), 6, 1);
+      hasta = new Date(hoy.getFullYear(), 11, 31);
+    }
+  } else { // anio
+    desde = new Date(hoy.getFullYear(), 0, 1);
+    hasta = new Date(hoy.getFullYear(), 11, 31);
+  }
+  return { desde, hasta };
+}
+
+function toKey(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function renderStats(periodo) {
+  const { desde, hasta } = getRangoFechas(periodo);
+  const hoy = new Date(); hoy.setHours(0,0,0,0);
+
+  // ── Recopilar datos en el rango ──
+  let tareasTotal = 0, tareasHechas = 0, tareasAlta = 0, tareasMedia = 0, tareasBaja = 0;
+  let rachaActual = 0, rachaMax = 0, rachaTemp = 0;
+  const tipoCount = {};
+  let totalEventos = 0;
+  let diasConTareasHechas = new Set();
+
+  // Iterar cada día del rango
+  const cur = new Date(desde);
+  while (cur <= hasta) {
+    const key = toKey(cur);
+
+    // Tareas
+    const tlist = userTareas[key] || [];
+    tlist.forEach(t => {
+      tareasTotal++;
+      if (t.done) { tareasHechas++; diasConTareasHechas.add(key); }
+      if (t.prio === 'alta') tareasAlta++;
+      else if (t.prio === 'media') tareasMedia++;
+      else if (t.prio === 'baja') tareasBaja++;
+    });
+
+    // Eventos
+    const evts = userEvents[key] || [];
+    evts.forEach(ev => {
+      totalEventos++;
+      const tipo = ev.type || 'otro';
+      tipoCount[tipo] = (tipoCount[tipo] || 0) + 1;
+    });
+
+    cur.setDate(cur.getDate() + 1);
+  }
+
+  // Racha actual (días consecutivos hacia atrás con al menos 1 tarea hecha)
+  const chk = new Date(hoy);
+  while (true) {
+    if (diasConTareasHechas.has(toKey(chk))) { rachaActual++; chk.setDate(chk.getDate()-1); }
+    else break;
+  }
+
+  // Racha máxima en el período
+  const cur2 = new Date(desde);
+  while (cur2 <= hasta) {
+    if (diasConTareasHechas.has(toKey(cur2))) {
+      rachaTemp++;
+      if (rachaTemp > rachaMax) rachaMax = rachaTemp;
+    } else rachaTemp = 0;
+    cur2.setDate(cur2.getDate()+1);
+  }
+
+  const pct = tareasTotal > 0 ? Math.round((tareasHechas / tareasTotal) * 100) : 0;
+
+  const TIPO_NOMBRES = {
+    parcial:'📝 Parcial', final:'📋 Final', entrega:'📦 Entrega/TP',
+    clase:'📚 Clase especial', otro:'📌 Otro'
+  };
+  const tipoEntries = Object.entries(tipoCount).sort((a,b) => b[1]-a[1]);
+  const maxTipo = tipoEntries[0]?.[1] || 1;
+
+  const prioMax = Math.max(tareasAlta, tareasMedia, tareasBaja, 1);
+
+  const html = `
+    ${rachaActual > 0 ? `
+    <div class="stats-racha">
+      <span class="stats-racha-emoji">${rachaActual >= 7 ? '🔥' : rachaActual >= 3 ? '⚡' : '✨'}</span>
+      <span class="stats-racha-text">Racha actual: <strong>${rachaActual} día${rachaActual>1?'s':''}</strong> completando tareas${rachaMax > rachaActual ? ` · Máxima: ${rachaMax} días` : ''}</span>
+    </div>` : ''}
+
+    <div class="stats-grid">
+      <div class="stats-card">
+        <div class="stats-card-label">Tareas hechas</div>
+        <div class="stats-card-value">${tareasHechas}</div>
+        <div class="stats-card-sub">de ${tareasTotal} totales</div>
+      </div>
+      <div class="stats-card">
+        <div class="stats-card-label">Completadas</div>
+        <div class="stats-card-value">${pct}%</div>
+        <div class="stats-card-sub">${tareasTotal === 0 ? 'Sin tareas' : pct >= 80 ? '¡Muy bien! 🎉' : pct >= 50 ? 'Vas bien 👍' : 'Seguí adelante 💪'}</div>
+      </div>
+      <div class="stats-card">
+        <div class="stats-card-label">Eventos</div>
+        <div class="stats-card-value">${totalEventos}</div>
+        <div class="stats-card-sub">en el período</div>
+      </div>
+      <div class="stats-card">
+        <div class="stats-card-label">Racha máx.</div>
+        <div class="stats-card-value">${rachaMax}</div>
+        <div class="stats-card-sub">días consecutivos</div>
+      </div>
+    </div>
+
+    ${tipoEntries.length > 0 ? `
+    <div class="stats-section-title">Eventos por tipo</div>
+    ${tipoEntries.map(([tipo, count]) => `
+      <div class="stats-bar-row">
+        <span class="stats-bar-label">${TIPO_NOMBRES[tipo] || tipo}</span>
+        <div class="stats-bar-track">
+          <div class="stats-bar-fill" style="width:${Math.round((count/maxTipo)*100)}%"></div>
+        </div>
+        <span class="stats-bar-count">${count}</span>
+      </div>
+    `).join('')}` : ''}
+
+    ${tareasTotal > 0 ? `
+    <div class="stats-section-title">Tareas por prioridad</div>
+    ${[['🔴 Alta', tareasAlta, ''], ['🟡 Media', tareasMedia, 'second'], ['🟢 Baja', tareasBaja, '']].map(([label, count, cls]) => `
+      <div class="stats-bar-row">
+        <span class="stats-bar-label">${label}</span>
+        <div class="stats-bar-track">
+          <div class="stats-bar-fill ${cls}" style="width:${Math.round((count/prioMax)*100)}%"></div>
+        </div>
+        <span class="stats-bar-count">${count}</span>
+      </div>
+    `).join('')}` : `<div class="stats-empty">Sin tareas en este período</div>`}
+  `;
+
+  document.getElementById('stats-content').innerHTML = html;
+}
+
+// ── MODAL DE TAREAS ───────────────────────────────────────────────────────────
+
+let filtroTareasActual = 'todas';
+
+function abrirTareasModal() {
+  filtroTareasActual = 'todas';
+  document.querySelectorAll('.tareas-filtro-btn').forEach(b => {
+    b.className = 'tareas-filtro-btn' + (b.dataset.filtro === 'todas' ? ' active-todas' : '');
+  });
+  renderTareasModal();
+  document.getElementById('tareas-modal-overlay').classList.add('open');
+}
+
+function cerrarTareasModal() {
+  document.getElementById('tareas-modal-overlay').classList.remove('open');
+}
+
+function cerrarTareasOverlay(e) {
+  if (e.target === document.getElementById('tareas-modal-overlay')) cerrarTareasModal();
+}
+
+function filtrarTareas(filtro, btn) {
+  filtroTareasActual = filtro;
+  document.querySelectorAll('.tareas-filtro-btn').forEach(b => {
+    const f = b.dataset.filtro;
+    b.className = 'tareas-filtro-btn' + (f === filtro ? ` active-${filtro}` : '');
+  });
+  renderTareasModal();
+}
+
+function renderTareasModal() {
+  const hoy = new Date(); hoy.setHours(0,0,0,0);
+  const MESES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+
+  // Recopilar todas las tareas con su fecha
+  let items = [];
+  Object.entries(userTareas || {}).forEach(([key, tlist]) => {
+    const [y, m, d] = key.split('-').map(Number);
+    const fecha = new Date(y, m-1, d);
+    tlist.forEach((t, i) => {
+      items.push({ ...t, key, fecha, idx: i });
+    });
+  });
+
+  // Aplicar filtro
+  if (filtroTareasActual === 'pendientes') {
+    items = items.filter(t => !t.done);
+  } else if (filtroTareasActual === 'alta') {
+    items = items.filter(t => t.prio === 'alta');
+  } else if (filtroTareasActual === 'media') {
+    items = items.filter(t => t.prio === 'media');
+  } else if (filtroTareasActual === 'baja') {
+    items = items.filter(t => t.prio === 'baja');
+  } else if (filtroTareasActual === 'sin') {
+    items = items.filter(t => !t.prio);
+  }
+
+  // Ordenar: pendientes primero, luego por fecha
+  items.sort((a, b) => {
+    if (a.done !== b.done) return a.done ? 1 : -1;
+    return a.fecha - b.fecha;
+  });
+
+  if (items.length === 0) {
+    document.getElementById('tareas-modal-list').innerHTML =
+      `<div class="tareas-modal-empty">Sin tareas para este filtro 🎉</div>`;
+    return;
+  }
+
+  // Agrupar por "Pendientes" y "Completadas"
+  const pendientes = items.filter(t => !t.done);
+  const hechas = items.filter(t => t.done);
+
+  function renderGrupo(lista, titulo) {
+    if (!lista.length) return '';
+    return `
+      <div class="tareas-modal-seccion-title">${titulo} (${lista.length})</div>
+      ${lista.map(t => {
+        const esPasada = t.fecha < hoy && !t.done;
+        const fechaStr = `${t.fecha.getDate()} ${MESES[t.fecha.getMonth()]}`;
+        const prioClass = t.prio ? `prio-${t.prio}` : '';
+        const doneClass = t.done ? 'done' : '';
+        const vencidaTag = esPasada ? ` <span style="color:#e05555;font-size:0.68rem">vencida</span>` : '';
+        return `
+          <div class="tareas-modal-item ${prioClass} ${doneClass}">
+            <span class="tareas-modal-fecha">${fechaStr}${vencidaTag}</span>
+            <span class="tareas-modal-text">${escapeHtml(t.text)}${t.prio ? ` <span style="font-size:0.7rem">${t.prio==='alta'?'🔴':t.prio==='media'?'🟡':'🟢'}</span>` : ''}</span>
+          </div>`;
+      }).join('')}`;
+  }
+
+  document.getElementById('tareas-modal-list').innerHTML =
+    renderGrupo(pendientes, '📌 Pendientes') +
+    renderGrupo(hechas, '✅ Completadas');
+}
+
+// ── SISTEMA DE AMIGOS ─────────────────────────────────────────────────────────
+
+let amigoCompartirActual = null; // { id, nombre } del amigo al que se le comparte
+let eventosSeleccionados = new Set(); // keys de eventos seleccionados para compartir
+
+function abrirAmigos() {
+  if (!currentUser) { showToast('Iniciá sesión para usar esta función'); return; }
+  cerrarPerfilDropdown();
+  document.getElementById('amigos-msg').innerHTML = '';
+  document.getElementById('amigos-buscar-input').value = '';
+  document.getElementById('amigos-buscar-resultado').innerHTML = '';
+  cargarAmigos();
+  document.getElementById('amigos-overlay').classList.add('open');
+}
+
+function cerrarAmigos() {
+  document.getElementById('amigos-overlay').classList.remove('open');
+}
+
+function cerrarAmigosOverlay(e) {
+  if (e.target === document.getElementById('amigos-overlay')) cerrarAmigos();
+}
+
+function mostrarMsgAmigos(txt, tipo = 'ok') {
+  document.getElementById('amigos-msg').innerHTML =
+    `<div class="amigos-msg ${tipo}">${txt}</div>`;
+  setTimeout(() => { document.getElementById('amigos-msg').innerHTML = ''; }, 3000);
+}
+
+async function buscarAmigo() {
+  const cel = document.getElementById('amigos-buscar-input').value.trim().replace(/\D/g,'');
+  if (cel.length < 8) { mostrarMsgAmigos('Ingresá un celular válido', 'err'); return; }
+  if (!currentUser) return;
+
+  const res = document.getElementById('amigos-buscar-resultado');
+  res.innerHTML = '<div class="amigos-empty">Buscando...</div>';
+
+  // Buscar por email construido igual que en el registro
+  const emailBuscado = `cel${cel}@gmail.com`;
+  const { data, error } = await db.from('agenda_config')
+    .select('user_id, nombre, apellido, celular')
+    .eq('celular', cel)
+    .single();
+
+  if (error || !data) {
+    res.innerHTML = '<div class="amigos-empty">No encontramos a nadie con ese celular 🤔</div>';
+    return;
+  }
+
+  if (data.user_id === getStorageId()) {
+    res.innerHTML = '<div class="amigos-empty">Ese sos vos 😄</div>';
+    return;
+  }
+
+  const nombre = `${data.nombre || ''} ${data.apellido || ''}`.trim() || 'Usuario';
+  const iniciales = nombre.split(' ').map(p=>p[0]).join('').slice(0,2).toUpperCase();
+
+  // Ver si ya son amigos o hay solicitud pendiente
+  const { data: rel } = await db.from('amigos')
+    .select('estado')
+    .or(`and(user_id.eq.${getStorageId()},amigo_id.eq.${data.user_id}),and(user_id.eq.${data.user_id},amigo_id.eq.${getStorageId()})`)
+    .maybeSingle();
+
+  let accion = '';
+  if (!rel) {
+    accion = `<button class="amigo-btn aceptar" onclick="enviarSolicitud('${data.user_id}','${nombre}')">Agregar</button>`;
+  } else if (rel.estado === 'pendiente') {
+    accion = `<span style="font-size:0.75rem;color:var(--muted)">Solicitud pendiente</span>`;
+  } else {
+    accion = `<span style="font-size:0.75rem;color:var(--accent)">✓ Ya son amigos</span>`;
+  }
+
+  res.innerHTML = `
+    <div class="amigo-item">
+      <div class="amigo-avatar">${iniciales}</div>
+      <div class="amigo-info">
+        <div class="amigo-nombre">${escapeHtml(nombre)}</div>
+        <div class="amigo-cel">📱 ${cel}</div>
+      </div>
+      <div class="amigo-actions">${accion}</div>
+    </div>`;
+}
+
+async function enviarSolicitud(amigoId, nombre) {
+  const { error } = await db.from('amigos').insert({
+    user_id: getStorageId(),
+    amigo_id: amigoId,
+    estado: 'pendiente'
+  });
+  if (error) { mostrarMsgAmigos('Error al enviar solicitud', 'err'); return; }
+  mostrarMsgAmigos(`Solicitud enviada a ${nombre} ✓`);
+  document.getElementById('amigos-buscar-resultado').innerHTML = '';
+  document.getElementById('amigos-buscar-input').value = '';
+  cargarAmigos();
+}
+
+async function cargarAmigos() {
+  const lista = document.getElementById('amigos-lista');
+  lista.innerHTML = '<div class="amigos-empty">Cargando...</div>';
+
+  // Solicitudes recibidas pendientes
+  const { data: recibidas } = await db.from('amigos')
+    .select('user_id, estado')
+    .eq('amigo_id', getStorageId())
+    .eq('estado', 'pendiente');
+
+  // Amigos aceptados (en ambas direcciones)
+  const { data: aceptados1 } = await db.from('amigos')
+    .select('amigo_id, estado')
+    .eq('user_id', getStorageId())
+    .eq('estado', 'aceptado');
+
+  const { data: aceptados2 } = await db.from('amigos')
+    .select('user_id, estado')
+    .eq('amigo_id', getStorageId())
+    .eq('estado', 'aceptado');
+
+  const idsAmigos = [
+    ...(aceptados1||[]).map(r => r.amigo_id),
+    ...(aceptados2||[]).map(r => r.user_id)
+  ];
+  const idsRecibidas = (recibidas||[]).map(r => r.user_id);
+
+  // Cargar info de todos los IDs
+  const todosIds = [...new Set([...idsAmigos, ...idsRecibidas])];
+  if (!todosIds.length && !(recibidas||[]).length) {
+    lista.innerHTML = '<div class="amigos-empty">Todavía no tenés amigos agregados.<br>Buscalos por celular arriba 👆</div>';
+    return;
+  }
+
+  let htmlOut = '';
+
+  if (idsRecibidas.length) {
+    const { data: infoRecibidas } = await db.from('agenda_config')
+      .select('user_id, nombre, apellido, celular')
+      .in('user_id', idsRecibidas);
+
+    htmlOut += `<div class="amigos-section-title">Solicitudes recibidas (${idsRecibidas.length})</div>`;
+    (infoRecibidas||[]).forEach(u => {
+      const nombre = `${u.nombre||''} ${u.apellido||''}`.trim() || 'Usuario';
+      const iniciales = nombre.split(' ').map(p=>p[0]).join('').slice(0,2).toUpperCase();
+      htmlOut += `
+        <div class="amigo-item">
+          <div class="amigo-avatar">${iniciales}</div>
+          <div class="amigo-info">
+            <div class="amigo-nombre">${escapeHtml(nombre)}</div>
+            <div class="amigo-cel">📱 ${u.celular||''}</div>
+          </div>
+          <div class="amigo-actions">
+            <button class="amigo-btn aceptar" onclick="aceptarSolicitud('${u.user_id}','${nombre}')">Aceptar</button>
+            <button class="amigo-btn rechazar" onclick="rechazarSolicitud('${u.user_id}')">✕</button>
+          </div>
+        </div>`;
+    });
+  }
+
+  if (idsAmigos.length) {
+    const { data: infoAmigos } = await db.from('agenda_config')
+      .select('user_id, nombre, apellido, celular')
+      .in('user_id', idsAmigos);
+
+    htmlOut += `<div class="amigos-section-title">Mis amigos (${idsAmigos.length})</div>`;
+    (infoAmigos||[]).forEach(u => {
+      const nombre = `${u.nombre||''} ${u.apellido||''}`.trim() || 'Usuario';
+      const iniciales = nombre.split(' ').map(p=>p[0]).join('').slice(0,2).toUpperCase();
+      htmlOut += `
+        <div class="amigo-item">
+          <div class="amigo-avatar">${iniciales}</div>
+          <div class="amigo-info">
+            <div class="amigo-nombre">${escapeHtml(nombre)}</div>
+            <div class="amigo-cel">📱 ${u.celular||''}</div>
+          </div>
+          <div class="amigo-actions">
+            <button class="amigo-btn compartir" onclick="abrirCompartirEventos('${u.user_id}','${nombre}')">Compartir</button>
+          </div>
+        </div>`;
+    });
+  }
+
+  lista.innerHTML = htmlOut || '<div class="amigos-empty">Sin amigos todavía</div>';
+}
+
+async function aceptarSolicitud(amigoId, nombre) {
+  await db.from('amigos').update({ estado: 'aceptado' })
+    .eq('user_id', amigoId).eq('amigo_id', getStorageId());
+  mostrarMsgAmigos(`¡Ahora sos amigo de ${nombre}! 🎉`);
+  cargarAmigos();
+}
+
+async function rechazarSolicitud(amigoId) {
+  await db.from('amigos').delete()
+    .eq('user_id', amigoId).eq('amigo_id', getStorageId());
+  cargarAmigos();
+}
+
+// ── COMPARTIR EVENTOS ─────────────────────────────────────────────────────────
+
+async function abrirCompartirEventos(amigoId, amigoNombre) {
+  amigoCompartirActual = { id: amigoId, nombre: amigoNombre };
+  eventosSeleccionados = new Set();
+  document.getElementById('compartir-eventos-titulo').textContent = `Compartir con ${amigoNombre}`;
+
+  // Cargar eventos ya compartidos con este amigo
+  const { data: yaCompartidos } = await db.from('eventos_compartidos')
+    .select('evento_fecha, evento_idx')
+    .eq('owner_id', getStorageId())
+    .eq('compartido_con', amigoId);
+
+  const yaSet = new Set((yaCompartidos||[]).map(r => `${r.evento_fecha}-${r.evento_idx}`));
+
+  // Construir lista de todos mis eventos
+  const MESES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  const EVENT_ICONS = { parcial:'📝', final:'📋', entrega:'📦', clase:'📚', otro:'📌' };
+
+  const entries = Object.entries(userEvents||{})
+    .sort(([a],[b]) => a.localeCompare(b));
+
+  if (!entries.length) {
+    document.getElementById('compartir-eventos-lista').innerHTML =
+      '<div class="amigos-empty">No tenés eventos para compartir</div>';
+    document.getElementById('compartir-eventos-overlay').classList.add('open');
+    return;
+  }
+
+  let html = '';
+  entries.forEach(([key, evts]) => {
+    const [y, m, d] = key.split('-').map(Number);
+    const fechaStr = `${d} ${MESES[m-1]} ${y}`;
+    evts.forEach((ev, idx) => {
+      const uid = `${key}-${idx}`;
+      const sel = yaSet.has(uid);
+      if (sel) eventosSeleccionados.add(uid);
+      const icon = EVENT_ICONS[ev.type] || '📌';
+      html += `
+        <div class="compartir-evt-item ${sel?'seleccionado':''}" onclick="toggleEventoCompartir('${uid}',this)">
+          <div class="compartir-evt-check">${sel?'✓':''}</div>
+          <div class="compartir-evt-info">
+            <div>${icon} ${escapeHtml(ev.name||ev.otro||'Evento')}</div>
+            <div class="compartir-evt-fecha">${fechaStr}</div>
+          </div>
+        </div>`;
+    });
+  });
+
+  document.getElementById('compartir-eventos-lista').innerHTML = html;
+  document.getElementById('compartir-eventos-overlay').classList.add('open');
+}
+
+function toggleEventoCompartir(uid, el) {
+  if (eventosSeleccionados.has(uid)) {
+    eventosSeleccionados.delete(uid);
+    el.classList.remove('seleccionado');
+    el.querySelector('.compartir-evt-check').textContent = '';
+  } else {
+    eventosSeleccionados.add(uid);
+    el.classList.add('seleccionado');
+    el.querySelector('.compartir-evt-check').textContent = '✓';
+  }
+}
+
+function cerrarCompartirEventos() {
+  document.getElementById('compartir-eventos-overlay').classList.remove('open');
+}
+
+function cerrarCompartirOverlay(e) {
+  if (e.target === document.getElementById('compartir-eventos-overlay')) cerrarCompartirEventos();
+}
+
+async function guardarEventosCompartidos() {
+  if (!amigoCompartirActual) return;
+  const amigoId = amigoCompartirActual.id;
+
+  // Borrar los anteriores y reemplazar con los seleccionados
+  await db.from('eventos_compartidos')
+    .delete()
+    .eq('owner_id', getStorageId())
+    .eq('compartido_con', amigoId);
+
+  if (eventosSeleccionados.size > 0) {
+    const rows = [...eventosSeleccionados].map(uid => {
+      const parts = uid.split('-'); // YYYY-MM-DD-idx
+      const idx = parseInt(parts.pop());
+      const fecha = parts.join('-');
+      return { owner_id: getStorageId(), evento_fecha: fecha, evento_idx: idx, compartido_con: amigoId };
+    });
+    await db.from('eventos_compartidos').insert(rows);
+  }
+
+  cerrarCompartirEventos();
+  showToast(`✓ Compartiste ${eventosSeleccionados.size} evento${eventosSeleccionados.size!==1?'s':''} con ${amigoCompartirActual.nombre}`);
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
-</script>
+<div class="amigos-overlay" id="amigos-overlay" onclick="cerrarAmigosOverlay(event)">
+  <div class="amigos-modal">
+    <div class="amigos-modal-hdr">
+      <h3>👥 Mis amigos</h3>
+      <button onclick="cerrarAmigos()">✕</button>
+    </div>
+    <div id="amigos-msg"></div>
+    <div class="amigos-buscar-row">
+      <input type="tel" id="amigos-buscar-input" placeholder="Celular del amigo (ej: 1123456789)" maxlength="20">
+      <button onclick="buscarAmigo()">Buscar</button>
+    </div>
+    <div id="amigos-buscar-resultado"></div>
+    <div id="amigos-lista"></div>
+  </div>
+</div>
+
+<!-- MODAL COMPARTIR EVENTOS -->
+<div class="compartir-eventos-overlay" id="compartir-eventos-overlay" onclick="cerrarCompartirOverlay(event)">
+  <div class="compartir-eventos-modal">
+    <div class="compartir-eventos-hdr">
+      <h3 id="compartir-eventos-titulo">Compartir con amigo</h3>
+      <button onclick="cerrarCompartirEventos()">✕</button>
+    </div>
+    <p style="font-size:0.8rem;color:var(--muted);margin-bottom:0.8rem">Elegí los eventos que querés compartir:</p>
+    <div id="compartir-eventos-lista"></div>
+    <button class="compartir-guardar-btn" onclick="guardarEventosCompartidos()">Guardar selección</button>
+  </div>
+</div>
+
 <!-- MODAL ELIMINAR CUENTA -->
 <div class="eliminar-overlay" id="eliminar-overlay" onclick="cerrarEliminarCuenta(event)">
   <div class="eliminar-modal">
