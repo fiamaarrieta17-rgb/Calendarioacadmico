@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Agenda Universitaria</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#D4748A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600&display=swap');
@@ -14,287 +18,171 @@
 
   /* Blanco limpio — minimalista claro */
   body.tema-blanco {
-    --bg:#F8F9FA;--paper:#FFFFFF;--ink:#1A1A1A;--accent:#2C3E50;--accent-light:#ECF0F1;
-    --second:#34495E;--second-light:#F0F3F5;--muted:#95A5A6;--border:#D5DBDB;
-    --summer:#E8F8F5;--winter:#EBF5FB;--exam:#FEF9E7;--holiday:#FADBD8;--vac-color:#34495E;
-    --font-display:'Inter',sans-serif;--font-body:'Inter',sans-serif;--radius:8px;
+    --bg:#FAFAFA;--paper:#FFFFFF;--ink:#1A1A1A;--accent:#444444;--accent-light:#F0F0F0;
+    --second:#888888;--second-light:#EBEBEB;--muted:#AAAAAA;--border:#E2E2E2;
+    --summer:#F0F7F0;--winter:#F0F0F7;--exam:#F7F5F0;--holiday:#F7F0F0;--vac-color:#666666;
+    --font-display:'DM Sans',sans-serif;--font-body:'DM Sans',sans-serif;--radius:4px;
   }
-  body.tema-blanco header h1 {
-    background:linear-gradient(135deg, #2C3E50, #34495E);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  }
-  body.tema-blanco .config-panel { box-shadow:0 4px 15px rgba(0,0,0,0.08);border:1px solid #ECF0F1; }
-  body.tema-blanco .month-card { box-shadow:0 2px 8px rgba(0,0,0,0.06); }
 
   /* Rosa palo — suave y tranquilo */
   body.tema-rosa {
-    --bg:#FDF7F8;--paper:#FFFFFF;--ink:#6B1B35;--accent:#E75480;--accent-light:#FCE4EC;
-    --second:#D946A6;--second-light:#F8BBD0;--muted:#C2185B;--border:#F8BBD0;
-    --summer:#FFE0B2;--winter:#FCE4EC;--exam:#FFF9C4;--holiday:#FFCCBC;--vac-color:#C2185B;
-    --font-display:'Playfair Display',serif;--font-body:'Poppins',sans-serif;--radius:16px;
+    --bg:#FEF6F7;--paper:#FFFFFF;--ink:#3D1A22;--accent:#D4748A;--accent-light:#FDEAED;
+    --second:#C490A8;--second-light:#F8EAF2;--muted:#C0909A;--border:#F2D8DE;
+    --summer:#FDE8D0;--winter:#F8EAF2;--exam:#FEF3E0;--holiday:#FDEAED;--vac-color:#B85A72;
+    --font-display:'Playfair Display',serif;--font-body:'DM Sans',sans-serif;--radius:14px;
   }
-  body.tema-rosa header h1 {
-    background:linear-gradient(135deg, #E75480, #D946A6);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  }
-  body.tema-rosa .config-panel { box-shadow:0 8px 24px rgba(231,84,128,0.12);border:1px solid #FCE4EC; }
-  body.tema-rosa .month-card { box-shadow:0 4px 12px rgba(231,84,128,0.1); }
 
   /* Rojo y blanco — limpio y contrastado */
   body.tema-rojo {
-    --bg:#FFFBFB;--paper:#FFFFFF;--ink:#B71C1C;--accent:#D32F2F;--accent-light:#FFEBEE;
-    --second:#F44336;--second-light:#FFCDD2;--muted:#EF5350;--border:#FFCDD2;
-    --summer:#FFE0B2;--winter:#FFEBEE;--exam:#FFF9C4;--holiday:#FFEBEE;--vac-color:#C62828;
-    --font-display:'Roboto',sans-serif;--font-body:'Roboto',sans-serif;--radius:8px;
+    --bg:#FFFAFA;--paper:#FFFFFF;--ink:#1A0505;--accent:#C0392B;--accent-light:#FDECEA;
+    --second:#E74C3C;--second-light:#FEF0EF;--muted:#B07070;--border:#F5CFCF;
+    --summer:#FFF0F0;--winter:#FFF5F5;--exam:#FFF8E0;--holiday:#FDECEA;--vac-color:#922B21;
+    --font-display:'DM Sans',sans-serif;--font-body:'DM Sans',sans-serif;--radius:6px;
   }
-  body.tema-rojo header h1 {
-    background:linear-gradient(135deg, #D32F2F, #F44336);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  }
-  body.tema-rojo .config-panel { box-shadow:0 8px 24px rgba(211,47,47,0.15);border:1px solid #FFCDD2; }
-  body.tema-rojo .month-card { box-shadow:0 4px 12px rgba(211,47,47,0.12); }
 
   /* Celeste — muy suave, aéreo */
   body.tema-celeste {
-    --bg:#E3F2FD;--paper:#FFFFFF;--ink:#01579B;--accent:#0277BD;--accent-light:#B3E5FC;
-    --second:#0288D1;--second-light:#81D4FA;--muted:#0277BD;--border:#81D4FA;
-    --summer:#E0F2F1;--winter:#E1F5FE;--exam:#FFFDE7;--holiday:#FFE0B2;--vac-color:#01579B;
-    --font-display:'Quicksand',sans-serif;--font-body:'Quicksand',sans-serif;--radius:12px;
+    --bg:#F0F8FF;--paper:#FFFFFF;--ink:#0A2540;--accent:#3A9BD5;--accent-light:#DDF0FB;
+    --second:#5BC4E8;--second-light:#E0F6FC;--muted:#7AABCC;--border:#C8E8F5;
+    --summer:#E0F6FC;--winter:#DDF0FB;--exam:#FFF8E0;--holiday:#FFE8E0;--vac-color:#1A7FAA;
+    --font-display:'DM Sans',sans-serif;--font-body:'DM Sans',sans-serif;--radius:10px;
   }
-  body.tema-celeste header h1 {
-    background:linear-gradient(135deg, #0277BD, #0288D1);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  }
-  body.tema-celeste .config-panel { box-shadow:0 8px 24px rgba(2,119,189,0.1);border:1px solid #B3E5FC; }
-  body.tema-celeste .month-card { box-shadow:0 4px 12px rgba(2,119,189,0.08); }
 
   /* Azul — profundo pero claro */
   body.tema-azul {
-    --bg:#E8EAF6;--paper:#FFFFFF;--ink:#1A237E;--accent:#3F51B5;--accent-light:#C5CAE9;
-    --second:#5C6BC0;--second-light:#9FA8DA;--muted:#3F51B5;--border:#9FA8DA;
-    --summer:#E0F2F1;--winter:#E8EAF6;--exam:#FFFDE7;--holiday:#FFE0B2;--vac-color:#1A237E;
-    --font-display:'Montserrat',sans-serif;--font-body:'Montserrat',sans-serif;--radius:10px;
+    --bg:#EEF3FB;--paper:#FFFFFF;--ink:#0D1E3A;--accent:#1A56DB;--accent-light:#E1EAFD;
+    --second:#2D7DD2;--second-light:#DCEEFB;--muted:#6A8FC0;--border:#C5D8F5;
+    --summer:#DCEEFB;--winter:#E1EAFD;--exam:#FFF8E0;--holiday:#FFE8E0;--vac-color:#1040A0;
+    --font-display:'DM Sans',sans-serif;--font-body:'DM Sans',sans-serif;--radius:8px;
   }
-  body.tema-azul header h1 {
-    background:linear-gradient(135deg, #3F51B5, #5C6BC0);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  }
-  body.tema-azul .config-panel { box-shadow:0 8px 24px rgba(63,81,181,0.12);border:1px solid #C5CAE9; }
-  body.tema-azul .month-card { box-shadow:0 4px 12px rgba(63,81,181,0.1); }
 
   /* Violeta suave */
   body.tema-violeta {
-    --bg:#F3E5F5;--paper:#FFFFFF;--ink:#4A148C;--accent:#7B1FA2;--accent-light:#E1BEE7;
-    --second:#9C27B0;--second-light:#CE93D8;--muted:#7B1FA2;--border:#CE93D8;
-    --summer:#E0F2F1;--winter:#F3E5F5;--exam:#FFFDE7;--holiday:#FFE0B2;--vac-color:#4A148C;
-    --font-display:'DM Serif Display',serif;--font-body:'Raleway',sans-serif;--radius:14px;
+    --bg:#F5F0FF;--paper:#FFFFFF;--ink:#200A40;--accent:#6D3FD0;--accent-light:#EDE5FF;
+    --second:#9B72E8;--second-light:#F0EAFF;--muted:#9A80C8;--border:#DDD0F5;
+    --summer:#F0EAFF;--winter:#EDE5FF;--exam:#FEF3C7;--holiday:#FFE4F0;--vac-color:#4A2A9A;
+    --font-display:'DM Serif Display',serif;--font-body:'DM Sans',sans-serif;--radius:12px;
   }
-  body.tema-violeta header h1 {
-    background:linear-gradient(135deg, #7B1FA2, #9C27B0);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  }
-  body.tema-violeta .config-panel { box-shadow:0 8px 24px rgba(123,31,162,0.12);border:1px solid #E1BEE7; }
-  body.tema-violeta .month-card { box-shadow:0 4px 12px rgba(123,31,162,0.1); }
 
   /* Verde — fresco y tranquilo */
   body.tema-verde {
-    --bg:#E8F5E9;--paper:#FFFFFF;--ink:#1B5E20;--accent:#388E3C;--accent-light:#C8E6C9;
-    --second:#43A047;--second-light:#A5D6A7;--muted:#388E3C;--border:#A5D6A7;
-    --summer:#E0F2F1;--winter:#E8F5E9;--exam:#FFFDE7;--holiday:#FFE0B2;--vac-color:#1B5E20;
-    --font-display:'DM Serif Display',serif;--font-body:'Open Sans',sans-serif;--radius:10px;
+    --bg:#F2F8F4;--paper:#FFFFFF;--ink:#0A2010;--accent:#2A7D4F;--accent-light:#D8EFE2;
+    --second:#48A86D;--second-light:#DFF5E8;--muted:#6A9A78;--border:#C0DFC8;
+    --summer:#DFF5E8;--winter:#D8EFE2;--exam:#FFF8E0;--holiday:#FFE8E0;--vac-color:#1A6030;
+    --font-display:'DM Serif Display',serif;--font-body:'DM Sans',sans-serif;--radius:8px;
   }
-  body.tema-verde header h1 {
-    background:linear-gradient(135deg, #388E3C, #43A047);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  }
-  body.tema-verde .config-panel { box-shadow:0 8px 24px rgba(56,142,60,0.12);border:1px solid #C8E6C9; }
-  body.tema-verde .month-card { box-shadow:0 4px 12px rgba(56,142,60,0.1); }
 
   /* ── ESPECIALES ───────────────────────────────────────────────── */
 
   /* Minimalista — sin color, solo estructura */
   body.tema-minimalista {
-    --bg:#FAFAFA;--paper:#FFFFFF;--ink:#212121;--accent:#424242;--accent-light:#F5F5F5;
-    --second:#616161;--second-light:#EEEEEE;--muted:#9E9E9E;--border:#BDBDBD;
-    --summer:#F1F8E9;--winter:#ECEFF1;--exam:#FFFDE7;--holiday:#FFE0B2;--vac-color:#424242;
-    --font-display:'Lato',sans-serif;--font-body:'Lato',sans-serif;--radius:4px;
+    --bg:#F8F8F6;--paper:#FFFFFF;--ink:#111111;--accent:#222222;--accent-light:#F0F0EE;
+    --second:#555555;--second-light:#EBEBEB;--muted:#999999;--border:#E0E0E0;
+    --summer:#EEF4EE;--winter:#EEEEEF;--exam:#F4F2EE;--holiday:#F4EEEE;--vac-color:#444444;
+    --font-display:'DM Sans',sans-serif;--font-body:'DM Sans',sans-serif;--radius:3px;
   }
-  body.tema-minimalista header h1 {
-    background:linear-gradient(135deg, #424242, #616161);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  }
-  body.tema-minimalista .config-panel { box-shadow:0 2px 8px rgba(0,0,0,0.08);border:1px solid #EEEEEE; }
-  body.tema-minimalista .month-card { box-shadow:0 2px 6px rgba(0,0,0,0.05); }
 
   /* Maximalista — vibrante, colorido */
   body.tema-maximalista {
-    --bg:#FCE4EC;--paper:#FFFFFF;--ink:#880E4F;--accent:#C2185B;--accent-light:#F8BBD0;
-    --second:#E91E63;--second-light:#F06292;--muted:#AD1457;--border:#F8BBD0;
-    --summer:#FFE0B2;--winter:#FCE4EC;--exam:#FFF9C4;--holiday:#FFE0B2;--vac-color:#880E4F;
-    --font-display:'Playfair Display',serif;--font-body:'Poppins',sans-serif;--radius:20px;
+    --bg:#FAF0FF;--paper:#FFFFFF;--ink:#1A0030;--accent:#8B2FC9;--accent-light:#F0E0FF;
+    --second:#E8359A;--second-light:#FFE0F5;--muted:#A070C0;--border:#E0C8F5;
+    --summer:#FFE8F0;--winter:#F0E0FF;--exam:#FFF3C0;--holiday:#FFE0F5;--vac-color:#6A20A0;
+    --font-display:'Playfair Display',serif;--font-body:'DM Sans',sans-serif;--radius:20px;
   }
   body.tema-maximalista header h1 {
-    background:linear-gradient(90deg,#C2185B,#E91E63,#880E4F);
+    background:linear-gradient(90deg,#8B2FC9,#E8359A,#6A20A0);
     -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
   }
-  body.tema-maximalista .config-panel { box-shadow:0 12px 32px rgba(194,24,91,0.18);border:1px solid #F8BBD0; }
-  body.tema-maximalista .month-card { box-shadow:0 6px 20px rgba(194,24,91,0.15); }
 
   /* ── TEMAS OSCUROS ────────────────────────────────────────────── */
 
   /* Oscuro azul — elegante */
   body.tema-oscuro {
-    --bg:#0F1419;--paper:#1A1F2E;--ink:#E8EAED;--accent:#4A9EFF;--accent-light:#1B2A3E;
-    --second:#7C3AED;--second-light:#2A1A4E;--muted:#8B949E;--border:#30363D;
-    --summer:#0D2A2A;--winter:#1A2A3E;--exam:#2A2400;--holiday:#2A1010;--vac-color:#4DD0E1;
-    --font-display:'Inter',sans-serif;--font-body:'Inter',sans-serif;--radius:10px;
+    --bg:#0D1117;--paper:#161B22;--ink:#E6EDF3;--accent:#58A6FF;--accent-light:#0D2136;
+    --second:#BC8CFF;--second-light:#1A1030;--muted:#6E7681;--border:#21262D;
+    --summer:#0D2030;--winter:#1A1030;--exam:#201800;--holiday:#200010;--vac-color:#3DCFCF;
+    --font-display:'Inter',sans-serif;--font-body:'Inter',sans-serif;--radius:8px;
   }
-  body.tema-oscuro header h1 {
-    background:linear-gradient(135deg, #4A9EFF, #7C3AED);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  }
-  body.tema-oscuro .config-panel { box-shadow:0 8px 24px rgba(74,158,255,0.15);border:1px solid #30363D; }
-  body.tema-oscuro .month-card { box-shadow:0 4px 12px rgba(74,158,255,0.1); }
 
   /* Oscuro cálido — marrón/carbón */
   body.tema-oscuro-calido {
-    --bg:#1A1410;--paper:#2A2420;--ink:#F5E6D3;--accent:#D4915A;--accent-light:#3A2A1A;
-    --second:#C0A070;--second-light:#2A1A08;--muted:#A08070;--border:#3A3028;
-    --summer:#2A1A08;--winter:#1A2008;--exam:#2A2400;--holiday:#2A1010;--vac-color:#E0A060;
-    --font-display:'DM Serif Display',serif;--font-body:'Lora',sans-serif;--radius:10px;
+    --bg:#181410;--paper:#231E18;--ink:#EDE0D0;--accent:#D4915A;--accent-light:#2A1A08;
+    --second:#A0C070;--second-light:#181E08;--muted:#907060;--border:#302820;
+    --summer:#251A08;--winter:#182008;--exam:#201800;--holiday:#200808;--vac-color:#C0804A;
+    --font-display:'DM Serif Display',serif;--font-body:'DM Sans',sans-serif;--radius:8px;
   }
-  body.tema-oscuro-calido header h1 {
-    background:linear-gradient(135deg, #D4915A, #C0A070);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  }
-  body.tema-oscuro-calido .config-panel { box-shadow:0 8px 24px rgba(212,145,90,0.12);border:1px solid #3A3028; }
-  body.tema-oscuro-calido .month-card { box-shadow:0 4px 12px rgba(212,145,90,0.1); }
 
   /* Oscuro violeta — noche profunda */
   body.tema-oscuro-violeta {
-    --bg:#0F0A18;--paper:#1A1428;--ink:#E8D5FF;--accent:#B39DDB;--accent-light:#2A1A4E;
-    --second:#F06292;--second-light:#3A1A4E;--muted:#8070B0;--border:#2A1A44;
-    --summer:#1A2A2A;--winter:#2A1A4E;--exam:#2A2400;--holiday:#3A1010;--vac-color:#80D0C0;
-    --font-display:'Inter',sans-serif;--font-body:'Roboto',sans-serif;--radius:12px;
+    --bg:#0E0B16;--paper:#17132A;--ink:#DDD0FF;--accent:#A078F0;--accent-light:#1E1040;
+    --second:#F070C0;--second-light:#280A30;--muted:#7060A0;--border:#261A44;
+    --summer:#1E1040;--winter:#280A30;--exam:#201800;--holiday:#300A18;--vac-color:#80D0C0;
+    --font-display:'Inter',sans-serif;--font-body:'Inter',sans-serif;--radius:10px;
   }
-  body.tema-oscuro-violeta header h1 {
-    background:linear-gradient(135deg, #B39DDB, #F06292);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  }
-  body.tema-oscuro-violeta .config-panel { box-shadow:0 8px 24px rgba(179,157,219,0.12);border:1px solid #2A1A44; }
-  body.tema-oscuro-violeta .month-card { box-shadow:0 4px 12px rgba(179,157,219,0.1); }
 
   /* Oscuro verde — terminal / bosque nocturno */
   body.tema-oscuro-verde {
-    --bg:#0A1410;--paper:#121A16;--ink:#D0F0CC;--accent:#66BB6A;--accent-light:#0A2A1A;
-    --second:#A5D6A7;--second-light:#0A2010;--muted:#66BB6A;--border:#1A3A2A;
-    --summer:#0A2010;--winter:#0A1810;--exam:#1A1800;--holiday:#180808;--vac-color:#4CAF50;
-    --font-display:'Courier New',monospace;--font-body:'Courier New',monospace;--radius:8px;
+    --bg:#0A100C;--paper:#111A12;--ink:#C8E8C0;--accent:#4ABF70;--accent-light:#082010;
+    --second:#80D8A0;--second-light:#102010;--muted:#508058;--border:#1A2E1A;
+    --summer:#0A2010;--winter:#0A1810;--exam:#181800;--holiday:#180808;--vac-color:#30A050;
+    --font-display:'Inter',sans-serif;--font-body:'Inter',sans-serif;--radius:6px;
   }
-  body.tema-oscuro-verde header h1 {
-    background:linear-gradient(135deg, #66BB6A, #A5D6A7);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  }
-  body.tema-oscuro-verde .config-panel { box-shadow:0 8px 24px rgba(102,187,106,0.12);border:1px solid #1A3A2A; }
-  body.tema-oscuro-verde .month-card { box-shadow:0 4px 12px rgba(102,187,106,0.1); }
 
   /* Melocotón — cálido y delicado */
   body.tema-melocoton {
-    --bg:#FFF8F3;--paper:#FFFFFF;--ink:#4A1A08;--accent:#FF7043;--accent-light:#FFCCBC;
-    --second:#FF5722;--second-light:#FFAB91;--muted:#D84315;--border:#FFCCBC;
-    --summer:#FFE0B2;--winter:#FFCCBC;--exam:#FFFDE7;--holiday:#FFE0B2;--vac-color:#BF360C;
-    --font-display:'Playfair Display',serif;--font-body:'Raleway',sans-serif;--radius:14px;
+    --bg:#FFF5EE;--paper:#FFFFFF;--ink:#3A1A0A;--accent:#E07050;--accent-light:#FDEADE;
+    --second:#F0A070;--second-light:#FEF0E8;--muted:#C08070;--border:#F5D5C5;
+    --summer:#FDE8D0;--winter:#FEF0E8;--exam:#FEFAE0;--holiday:#FDEADE;--vac-color:#B04020;
+    --font-display:'Playfair Display',serif;--font-body:'DM Sans',sans-serif;--radius:12px;
   }
-  body.tema-melocoton header h1 {
-    background:linear-gradient(135deg, #FF7043, #FF5722);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  }
-  body.tema-melocoton .config-panel { box-shadow:0 8px 24px rgba(255,112,67,0.12);border:1px solid #FFCCBC; }
-  body.tema-melocoton .month-card { box-shadow:0 4px 12px rgba(255,112,67,0.1); }
 
   /* Menta — fresco y suave */
   body.tema-menta {
-    --bg:#E0F2F1;--paper:#FFFFFF;--ink:#004D40;--accent:#26A69A;--accent-light:#B2DFDB;
-    --second:#009688;--second-light:#80CBC4;--muted:#00897B;--border:#80CBC4;
-    --summer:#C8E6C9;--winter:#B2DFDB;--exam:#FFFDE7;--holiday:#FFE0B2;--vac-color:#00695C;
-    --font-display:'DM Serif Display',serif;--font-body:'Quicksand',sans-serif;--radius:12px;
+    --bg:#F0FAF5;--paper:#FFFFFF;--ink:#0A2818;--accent:#2DB87A;--accent-light:#D4F4E4;
+    --second:#60D4A0;--second-light:#E0FAF0;--muted:#60A080;--border:#B8E8D0;
+    --summer:#E0FAF0;--winter:#D4F4E4;--exam:#FEFAE0;--holiday:#FFE8E0;--vac-color:#158050;
+    --font-display:'DM Serif Display',serif;--font-body:'DM Sans',sans-serif;--radius:10px;
   }
-  body.tema-menta header h1 {
-    background:linear-gradient(135deg, #26A69A, #009688);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  }
-  body.tema-menta .config-panel { box-shadow:0 8px 24px rgba(38,166,154,0.12);border:1px solid #80CBC4; }
-  body.tema-menta .month-card { box-shadow:0 4px 12px rgba(38,166,154,0.1); }
 
   /* Arena — neutro cálido */
   body.tema-arena {
-    --bg:#F5F1E8;--paper:#FFFFFF;--ink:#3E2723;--accent:#A1887F;--accent-light:#D7CCC8;
-    --second:#8D6E63;--second-light:#BCAAA4;--muted:#6D4C41;--border:#BCAAA4;
-    --summer:#FFF8E1;--winter:#D7CCC8;--exam:#FFFDE7;--holiday:#FFE0B2;--vac-color:#4E342E;
-    --font-display:'Playfair Display',serif;--font-body:'Lora',sans-serif;--radius:8px;
+    --bg:#FAF6F0;--paper:#FFFFFF;--ink:#2A200A;--accent:#A07840;--accent-light:#F5EAD8;
+    --second:#C0A060;--second-light:#FAF0D8;--muted:#A08858;--border:#E8D8B8;
+    --summer:#FAF0D8;--winter:#F5EAD8;--exam:#FEFAE0;--holiday:#FEF0E8;--vac-color:#705018;
+    --font-display:'Playfair Display',serif;--font-body:'DM Sans',sans-serif;--radius:6px;
   }
-  body.tema-arena header h1 {
-    background:linear-gradient(135deg, #A1887F, #8D6E63);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  }
-  body.tema-arena .config-panel { box-shadow:0 8px 24px rgba(161,136,127,0.12);border:1px solid #BCAAA4; }
-  body.tema-arena .month-card { box-shadow:0 4px 12px rgba(161,136,127,0.1); }
 
   /* Lima — ácido y fresco */
   body.tema-lima {
-    --bg:#F1F8E9;--paper:#FFFFFF;--ink:#33691E;--accent:#7CB342;--accent-light:#DCEDC8;
-    --second:#9CCC65;--second-light:#C6FF00;--muted:#558B2F;--border:#9CCC65;
-    --summer:#C6FF00;--winter:#DCEDC8;--exam:#FFFDE7;--holiday:#FFE0B2;--vac-color:#33691E;
-    --font-display:'DM Sans',sans-serif;--font-body:'Poppins',sans-serif;--radius:10px;
+    --bg:#F5FAE0;--paper:#FFFFFF;--ink:#1A2800;--accent:#6A9800;--accent-light:#E8F5B0;
+    --second:#90C020;--second-light:#EFF8C8;--muted:#709000;--border:#D0E890;
+    --summer:#EFF8C8;--winter:#E8F5B0;--exam:#FEFAE0;--holiday:#FFF0E0;--vac-color:#426000;
+    --font-display:'DM Sans',sans-serif;--font-body:'DM Sans',sans-serif;--radius:8px;
   }
-  body.tema-lima header h1 {
-    background:linear-gradient(135deg, #7CB342, #9CCC65);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  }
-  body.tema-lima .config-panel { box-shadow:0 8px 24px rgba(124,179,66,0.12);border:1px solid #9CCC65; }
-  body.tema-lima .month-card { box-shadow:0 4px 12px rgba(124,179,66,0.1); }
 
   /* Índigo — profundo y sereno */
   body.tema-indigo {
-    --bg:#EDE7F6;--paper:#FFFFFF;--ink:#1A0033;--accent:#5E35B1;--accent-light:#D1C4E9;
-    --second:#7E57C2;--second-light:#B39DDB;--muted:#512DA8;--border:#B39DDB;
-    --summer:#E0F2F1;--winter:#EDE7F6;--exam:#FFFDE7;--holiday:#FFE0B2;--vac-color:#311B92;
-    --font-display:'Montserrat',sans-serif;--font-body:'Montserrat',sans-serif;--radius:8px;
+    --bg:#F0F0FA;--paper:#FFFFFF;--ink:#0A0A30;--accent:#3030C0;--accent-light:#D8D8F8;
+    --second:#6060D8;--second-light:#E8E8FC;--muted:#7878B0;--border:#C0C0F0;
+    --summer:#E8E8FC;--winter:#D8D8F8;--exam:#FEFAE0;--holiday:#FFE8E8;--vac-color:#1818A0;
+    --font-display:'Inter',sans-serif;--font-body:'Inter',sans-serif;--radius:4px;
   }
-  body.tema-indigo header h1 {
-    background:linear-gradient(135deg, #5E35B1, #7E57C2);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  }
-  body.tema-indigo .config-panel { box-shadow:0 8px 24px rgba(94,53,177,0.12);border:1px solid #B39DDB; }
-  body.tema-indigo .month-card { box-shadow:0 4px 12px rgba(94,53,177,0.1); }
 
   /* Coral oscuro — vibrante */
   body.tema-coral {
-    --bg:#FFEBEE;--paper:#FFFFFF;--ink:#B71C1C;--accent:#E53935;--accent-light:#FFCDD2;
-    --second:#F4511E;--second-light:#FFAB91;--muted:#D32F2F;--border:#FFCDD2;
-    --summer:#FFE0B2;--winter:#FFCDD2;--exam:#FFFDE7;--holiday:#FFE0B2;--vac-color:#BF360C;
-    --font-display:'DM Serif Display',serif;--font-body:'Poppins',sans-serif;--radius:16px;
+    --bg:#FFF0EE;--paper:#FFFFFF;--ink:#280A08;--accent:#E03A20;--accent-light:#FDDAD6;
+    --second:#F07060;--second-light:#FEE8E5;--muted:#C06050;--border:#F5C8C0;
+    --summer:#FDE8D0;--winter:#FEE8E5;--exam:#FEFAE0;--holiday:#FDDAD6;--vac-color:#A02010;
+    --font-display:'DM Serif Display',serif;--font-body:'DM Sans',sans-serif;--radius:14px;
   }
-  body.tema-coral header h1 {
-    background:linear-gradient(135deg, #E53935, #F4511E);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  }
-  body.tema-coral .config-panel { box-shadow:0 8px 24px rgba(229,57,53,0.12);border:1px solid #FFCDD2; }
-  body.tema-coral .month-card { box-shadow:0 4px 12px rgba(229,57,53,0.1); }
 
   /* Pizarra — gris azulado profesional */
   body.tema-pizarra {
-    --bg:#ECEFF1;--paper:#FFFFFF;--ink:#263238;--accent:#455A64;--accent-light:#B0BEC5;
-    --second:#607D8B;--second-light:#90A4AE;--muted:#37474F;--border:#90A4AE;
-    --summer:#E0F2F1;--winter:#ECEFF1;--exam:#FFFDE7;--holiday:#FFE0B2;--vac-color:#1A237E;
-    --font-display:'Roboto',sans-serif;--font-body:'Roboto',sans-serif;--radius:8px;
+    --bg:#F2F4F6;--paper:#FFFFFF;--ink:#111820;--accent:#4A6280;--accent-light:#D8E4EE;
+    --second:#6A8AA8;--second-light:#E4EEF6;--muted:#7A90A8;--border:#C8D8E8;
+    --summer:#E4EEF6;--winter:#D8E4EE;--exam:#FEFAE0;--holiday:#FFE8E0;--vac-color:#2A4060;
+    --font-display:'DM Sans',sans-serif;--font-body:'DM Sans',sans-serif;--radius:6px;
   }
-  body.tema-pizarra header h1 {
-    background:linear-gradient(135deg, #455A64, #607D8B);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  }
-  body.tema-pizarra .config-panel { box-shadow:0 8px 24px rgba(69,90,100,0.12);border:1px solid #90A4AE; }
-  body.tema-pizarra .month-card { box-shadow:0 4px 12px rgba(69,90,100,0.1); }
 
   /* Oscuro rojo — dramático */
   body.tema-oscuro-rojo {
@@ -314,201 +202,116 @@
 
   /* Durazno — cálido pastel */
   body.tema-durazno {
-    --bg:#FFE0D2;--paper:#FFFFFF;--ink:#3E2723;--accent:#FF6E40;--accent-light:#FFCCBC;
-    --second:#FF5722;--second-light:#FFAB91;--muted:#D84315;--border:#FFAB91;
-    --summer:#FFE0B2;--winter:#FFCCBC;--exam:#FFFDE7;--holiday:#FFE0B2;--vac-color:#BF360C;
-    --font-display:'Playfair Display',serif;--font-body:'Raleway',sans-serif;--radius:18px;
+    --bg:#FFF8F0;--paper:#FFFFFF;--ink:#2A1000;--accent:#D4804A;--accent-light:#FDEBD8;
+    --second:#E8B080;--second-light:#FEF3E5;--muted:#B87848;--border:#F0D0B0;
+    --summer:#FEF3E5;--winter:#FDEBD8;--exam:#FEFAE0;--holiday:#FFE8E0;--vac-color:#A05020;
+    --font-display:'Playfair Display',serif;--font-body:'DM Sans',sans-serif;--radius:16px;
   }
-  body.tema-durazno header h1 {
-    background:linear-gradient(135deg, #FF6E40, #FF5722);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  }
-  body.tema-durazno .config-panel { box-shadow:0 8px 24px rgba(255,110,64,0.12);border:1px solid #FFAB91; }
-  body.tema-durazno .month-card { box-shadow:0 4px 12px rgba(255,110,64,0.1); }
 
   /* Lavanda — lila suave */
   body.tema-lavanda {
-    --bg:#F3E5F5;--paper:#FFFFFF;--ink:#4A148C;--accent:#8E24AA;--accent-light:#E1BEE7;
-    --second:#AB47BC;--second-light:#CE93D8;--muted:#6A1B9A;--border:#CE93D8;
-    --summer:#E0F2F1;--winter:#F3E5F5;--exam:#FFFDE7;--holiday:#FFE0B2;--vac-color:#4A148C;
-    --font-display:'DM Serif Display',serif;--font-body:'Raleway',sans-serif;--radius:16px;
+    --bg:#F7F2FF;--paper:#FFFFFF;--ink:#1E0840;--accent:#9058C8;--accent-light:#EBE0FF;
+    --second:#BCA0E8;--second-light:#F3EEFF;--muted:#9870C0;--border:#DDD0F8;
+    --summer:#F3EEFF;--winter:#EBE0FF;--exam:#FEF8E0;--holiday:#FFE8F0;--vac-color:#6030A0;
+    --font-display:'DM Serif Display',serif;--font-body:'DM Sans',sans-serif;--radius:14px;
   }
-  body.tema-lavanda header h1 {
-    background:linear-gradient(135deg, #8E24AA, #AB47BC);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  }
-  body.tema-lavanda .config-panel { box-shadow:0 8px 24px rgba(142,36,170,0.12);border:1px solid #CE93D8; }
-  body.tema-lavanda .month-card { box-shadow:0 4px 12px rgba(142,36,170,0.1); }
 
   /* Cobre — metálico cálido */
   body.tema-cobre {
-    --bg:#FBE9E7;--paper:#FFFFFF;--ink:#3E2723;--accent:#D7CCC8;--accent-light:#EFEBE9;
-    --second:#A1887F;--second-light:#D7CCC8;--muted:#6D4C41;--border:#BCAAA4;
-    --summer:#FFF8E1;--winter:#EFEBE9;--exam:#FFFDE7;--holiday:#FFE0B2;--vac-color:#4E342E;
-    --font-display:'DM Serif Display',serif;--font-body:'Lora',sans-serif;--radius:8px;
+    --bg:#FAF2EC;--paper:#FFFFFF;--ink:#1E0800;--accent:#B06030;--accent-light:#F5E0D0;
+    --second:#D09060;--second-light:#FAEEE0;--muted:#A07050;--border:#E8C8A8;
+    --summer:#FAEEE0;--winter:#F5E0D0;--exam:#FEFAE0;--holiday:#FFE8E0;--vac-color:#803010;
+    --font-display:'DM Serif Display',serif;--font-body:'DM Sans',sans-serif;--radius:6px;
   }
-  body.tema-cobre header h1 {
-    background:linear-gradient(135deg, #D7CCC8, #A1887F);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  }
-  body.tema-cobre .config-panel { box-shadow:0 8px 24px rgba(215,204,200,0.12);border:1px solid #BCAAA4; }
-  body.tema-cobre .month-card { box-shadow:0 4px 12px rgba(215,204,200,0.1); }
 
   /* Océano — azul-verde profundo */
   body.tema-oceano {
-    --bg:#E0F2F1;--paper:#FFFFFF;--ink:#004D40;--accent:#00897B;--accent-light:#B2DFDB;
-    --second:#009688;--second-light:#80CBC4;--muted:#00695C;--border:#80CBC4;
-    --summer:#C8E6C9;--winter:#B2DFDB;--exam:#FFFDE7;--holiday:#FFE0B2;--vac-color:#004D40;
-    --font-display:'Quicksand',sans-serif;--font-body:'Quicksand',sans-serif;--radius:12px;
+    --bg:#EEF8F8;--paper:#FFFFFF;--ink:#001820;--accent:#007880;--accent-light:#CCEEEE;
+    --second:#20A8B8;--second-light:#DAFAFA;--muted:#509098;--border:#A8D8DC;
+    --summer:#DAFAFA;--winter:#CCEEEE;--exam:#FEFAE0;--holiday:#FFE8E0;--vac-color:#005060;
+    --font-display:'DM Sans',sans-serif;--font-body:'DM Sans',sans-serif;--radius:10px;
   }
-  body.tema-oceano header h1 {
-    background:linear-gradient(135deg, #00897B, #009688);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  }
-  body.tema-oceano .config-panel { box-shadow:0 8px 24px rgba(0,137,123,0.12);border:1px solid #80CBC4; }
-  body.tema-oceano .month-card { box-shadow:0 4px 12px rgba(0,137,123,0.1); }
 
   /* Oscuro dorado — lujoso */
   body.tema-oscuro-dorado {
-    --bg:#1A1410;--paper:#2A2420;--ink:#F5E6D3;--accent:#FFB74D;--accent-light:#3A2A1A;
-    --second:#FFA726;--second-light:#2A1A08;--muted:#E0A060;--border:#3A3028;
-    --summer:#2A1A08;--winter:#1A2008;--exam:#2A2400;--holiday:#2A1010;--vac-color:#FFB74D;
-    --font-display:'Playfair Display',serif;--font-body:'Lora',sans-serif;--radius:10px;
+    --bg:#100C00;--paper:#1C1600;--ink:#F0E0A0;--accent:#D4A830;--accent-light:#281E00;
+    --second:#F0C840;--second-light:#201800;--muted:#806820;--border:#302400;
+    --summer:#201800;--winter:#281E00;--exam:#181400;--holiday:#180808;--vac-color:#C09020;
+    --font-display:'Playfair Display',serif;--font-body:'DM Sans',sans-serif;--radius:8px;
   }
-  body.tema-oscuro-dorado header h1 {
-    background:linear-gradient(135deg, #FFB74D, #FFA726);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  }
-  body.tema-oscuro-dorado .config-panel { box-shadow:0 8px 24px rgba(255,183,77,0.15);border:1px solid #3A3028; }
-  body.tema-oscuro-dorado .month-card { box-shadow:0 4px 12px rgba(255,183,77,0.12); }
 
   /* Oscuro petróleo — verde oscuro elegante */
   body.tema-oscuro-petroleo {
-    --bg:#0A1818;--paper:#122A28;--ink:#C8E6E1;--accent:#4DB8AC;--accent-light:#0A2A28;
-    --second:#80CBC4;--second-light:#0A2010;--muted:#4DB8AC;--border:#1A3A38;
-    --summer:#0A2010;--winter:#0A1810;--exam:#1A1800;--holiday:#180808;--vac-color:#26A69A;
-    --font-display:'Courier New',monospace;--font-body:'Courier New',monospace;--radius:10px;
+    --bg:#030F10;--paper:#071820;--ink:#B0E0D8;--accent:#30C0B0;--accent-light:#041820;
+    --second:#60D8C8;--second-light:#061018;--muted:#307870;--border:#0C2828;
+    --summer:#062018;--winter:#041820;--exam:#181400;--holiday:#180808;--vac-color:#208878;
+    --font-display:'Inter',sans-serif;--font-body:'Inter',sans-serif;--radius:8px;
   }
-  body.tema-oscuro-petroleo header h1 {
-    background:linear-gradient(135deg, #4DB8AC, #80CBC4);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  }
-  body.tema-oscuro-petroleo .config-panel { box-shadow:0 8px 24px rgba(77,184,172,0.12);border:1px solid #1A3A38; }
-  body.tema-oscuro-petroleo .month-card { box-shadow:0 4px 12px rgba(77,184,172,0.1); }
 
 
   /* Sandía — rosa vibrante con verde */
   body.tema-sandia {
-    --bg:#FCE4EC;--paper:#FFFFFF;--ink:#880E4F;--accent:#EC407A;--accent-light:#F8BBD0;
-    --second:#43A047;--second-light:#C8E6C9;--muted:#C2185B;--border:#F8BBD0;
-    --summer:#C8E6C9;--winter:#F8BBD0;--exam:#FFFDE7;--holiday:#FFE0B2;--vac-color:#6A1B9A;
-    --font-display:'Playfair Display',serif;--font-body:'Poppins',sans-serif;--radius:22px;
+    --bg:#FFF0F3;--paper:#FFFFFF;--ink:#1A0008;--accent:#E8205A;--accent-light:#FFD6E3;
+    --second:#28B050;--second-light:#D0F0DC;--muted:#C04070;--border:#F5B8C8;
+    --summer:#D0F0DC;--winter:#FFD6E3;--exam:#FEFAE0;--holiday:#FFD6E3;--vac-color:#A01030;
+    --font-display:'Playfair Display',serif;--font-body:'DM Sans',sans-serif;--radius:20px;
   }
-  body.tema-sandia header h1 {
-    background:linear-gradient(135deg, #EC407A, #43A047);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  }
-  body.tema-sandia .config-panel { box-shadow:0 12px 32px rgba(236,64,122,0.15);border:1px solid #F8BBD0; }
-  body.tema-sandia .month-card { box-shadow:0 6px 20px rgba(236,64,122,0.12); }
 
   /* Carbón — gris oscuro neutro */
   body.tema-carbon {
-    --bg:#212121;--paper:#303030;--ink:#FAFAFA;--accent:#BDBDBD;--accent-light:#424242;
-    --second:#9E9E9E;--second-light:#424242;--muted:#757575;--border:#424242;
-    --summer:#303030;--winter:#424242;--exam:#2A2800;--holiday:#2A1818;--vac-color:#BDBDBD;
-    --font-display:'Roboto',sans-serif;--font-body:'Roboto',sans-serif;--radius:12px;
+    --bg:#1C1C1E;--paper:#2C2C2E;--ink:#EBEBF5;--accent:#EBEBF5;--accent-light:#3A3A3C;
+    --second:#98989D;--second-light:#3A3A3C;--muted:#636366;--border:#3A3A3C;
+    --summer:#2C2C2E;--winter:#3A3A3C;--exam:#2A2800;--holiday:#2A1818;--vac-color:#AEAEB2;
+    --font-display:'Inter',sans-serif;--font-body:'Inter',sans-serif;--radius:12px;
   }
-  body.tema-carbon header h1 {
-    background:linear-gradient(135deg, #BDBDBD, #9E9E9E);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  }
-  body.tema-carbon .config-panel { box-shadow:0 8px 24px rgba(189,189,189,0.12);border:1px solid #424242; }
-  body.tema-carbon .month-card { box-shadow:0 4px 12px rgba(189,189,189,0.1); }
 
   /* Amanecer — degradado naranja-rosa */
   body.tema-amanecer {
-    --bg:#FFF3E0;--paper:#FFFFFF;--ink:#3E2723;--accent:#FF7043;--accent-light:#FFCCBC;
-    --second:#EC407A;--second-light:#F8BBD0;--muted:#D84315;--border:#FFCCBC;
-    --summer:#FFE0B2;--winter:#FFCCBC;--exam:#FFFDE7;--holiday:#FFE0B2;--vac-color:#BF360C;
-    --font-display:'Playfair Display',serif;--font-body:'Raleway',sans-serif;--radius:20px;
+    --bg:#FFF7F0;--paper:#FFFFFF;--ink:#1A0800;--accent:#F0602A;--accent-light:#FFE5D5;
+    --second:#E040A0;--second-light:#FFD8EE;--muted:#C06040;--border:#F8C8A8;
+    --summer:#FFD8EE;--winter:#FFE5D5;--exam:#FEFAE0;--holiday:#FFE5D5;--vac-color:#C03000;
+    --font-display:'Playfair Display',serif;--font-body:'DM Sans',sans-serif;--radius:18px;
   }
-  body.tema-amanecer header h1 {
-    background:linear-gradient(135deg, #FF7043, #EC407A);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  }
-  body.tema-amanecer .config-panel { box-shadow:0 12px 32px rgba(255,112,67,0.15);border:1px solid #FFCCBC; }
-  body.tema-amanecer .month-card { box-shadow:0 6px 20px rgba(255,112,67,0.12); }
 
   /* Bosque — verde oscuro terroso */
   body.tema-bosque {
-    --bg:#0D1810;--paper:#162018;--ink:#E0F2E0;--accent:#66BB6A;--accent-light:#0A2A1A;
-    --second:#A5D6A7;--second-light:#0A2010;--muted:#558B2F;--border:#1A3A2A;
-    --summer:#0A2010;--winter:#0A1810;--exam:#1A1800;--holiday:#180808;--vac-color:#558B2F;
-    --font-display:'DM Serif Display',serif;--font-body:'Lora',sans-serif;--radius:6px;
+    --bg:#0D1A10;--paper:#152018;--ink:#D8EED0;--accent:#80C860;--accent-light:#102010;
+    --second:#A8D880;--second-light:#0A1808;--muted:#507840;--border:#203020;
+    --summer:#102010;--winter:#0A1808;--exam:#181800;--holiday:#181008;--vac-color:#60A040;
+    --font-display:'DM Serif Display',serif;--font-body:'DM Sans',sans-serif;--radius:4px;
   }
-  body.tema-bosque header h1 {
-    background:linear-gradient(135deg, #66BB6A, #A5D6A7);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  }
-  body.tema-bosque .config-panel { box-shadow:0 8px 24px rgba(102,187,106,0.12);border:1px solid #1A3A2A; }
-  body.tema-bosque .month-card { box-shadow:0 4px 12px rgba(102,187,106,0.1); }
 
   /* Hielo — casi blanco azulado crisp */
   body.tema-hielo {
-    --bg:#E3F2FD;--paper:#FAFCFF;--ink:#0D47A1;--accent:#1976D2;--accent-light:#90CAF9;
-    --second:#42A5F5;--second-light:#64B5F6;--muted:#1565C0;--border:#64B5F6;
-    --summer:#E0F2F1;--winter:#E3F2FD;--exam:#FFFDE7;--holiday:#FFE0B2;--vac-color:#0D47A1;
-    --font-display:'Inter',sans-serif;--font-body:'Inter',sans-serif;--radius:4px;
+    --bg:#F0F6FF;--paper:#FAFCFF;--ink:#0A1830;--accent:#2060C0;--accent-light:#D8E8FF;
+    --second:#60A0F0;--second-light:#E8F2FF;--muted:#7090C0;--border:#C0D8F8;
+    --summer:#E8F2FF;--winter:#D8E8FF;--exam:#F8F8E0;--holiday:#FFE8E8;--vac-color:#1040A0;
+    --font-display:'Inter',sans-serif;--font-body:'Inter',sans-serif;--radius:2px;
   }
-  body.tema-hielo header h1 {
-    background:linear-gradient(135deg, #1976D2, #42A5F5);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  }
-  body.tema-hielo .config-panel { box-shadow:0 8px 24px rgba(25,118,210,0.12);border:1px solid #64B5F6; }
-  body.tema-hielo .month-card { box-shadow:0 4px 12px rgba(25,118,210,0.1); }
 
   /* Magenta — fucsia eléctrico */
   body.tema-magenta {
-    --bg:#F3E5F5;--paper:#FFFFFF;--ink:#6A1B9A;--accent:#D81B60;--accent-light:#F8BBD0;
-    --second:#C2185B;--second-light:#F06292;--muted:#880E4F;--border:#F8BBD0;
-    --summer:#FFE0B2;--winter:#F8BBD0;--exam:#FFFDE7;--holiday:#FFE0B2;--vac-color:#6A1B9A;
-    --font-display:'Poppins',sans-serif;--font-body:'Poppins',sans-serif;--radius:12px;
+    --bg:#FFF0FF;--paper:#FFFFFF;--ink:#1E001E;--accent:#C000C0;--accent-light:#F8D0F8;
+    --second:#8000C0;--second-light:#EED0FF;--muted:#A040A0;--border:#F0B0F0;
+    --summer:#EED0FF;--winter:#F8D0F8;--exam:#FEFAE0;--holiday:#F8D0F8;--vac-color:#900090;
+    --font-display:'DM Sans',sans-serif;--font-body:'DM Sans',sans-serif;--radius:0px;
   }
-  body.tema-magenta header h1 {
-    background:linear-gradient(135deg, #D81B60, #C2185B);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  }
-  body.tema-magenta .config-panel { box-shadow:0 12px 32px rgba(216,27,96,0.15);border:1px solid #F8BBD0; }
-  body.tema-magenta .month-card { box-shadow:0 6px 20px rgba(216,27,96,0.12); }
 
   /* Sépia — fotografía antigua */
   body.tema-sepia {
-    --bg:#F5EED8;--paper:#FFFFFF;--ink:#3E2723;--accent:#8D6E63;--accent-light:#D7CCC8;
-    --second:#A1887F;--second-light:#EFEBE9;--muted:#6D4C41;--border:#BCAAA4;
-    --summer:#FFF8E1;--winter:#D7CCC8;--exam:#FFFDE7;--holiday:#FFE0B2;--vac-color:#4E342E;
-    --font-display:'Playfair Display',serif;--font-body:'Lora',sans-serif;--radius:8px;
+    --bg:#F5EED8;--paper:#FAF5E8;--ink:#1A0F00;--accent:#7A4A10;--accent-light:#EDD8A8;
+    --second:#B07830;--second-light:#F0E0B8;--muted:#907050;--border:#D8C090;
+    --summer:#F0E0B8;--winter:#EDD8A8;--exam:#F5EDCC;--holiday:#EDD8A8;--vac-color:#5A3008;
+    --font-display:'Playfair Display',serif;--font-body:'DM Sans',sans-serif;--radius:0px;
   }
-  body.tema-sepia header h1 {
-    background:linear-gradient(135deg, #8D6E63, #A1887F);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  }
-  body.tema-sepia .config-panel { box-shadow:0 8px 24px rgba(141,110,99,0.12);border:1px solid #BCAAA4; }
-  body.tema-sepia .month-card { box-shadow:0 4px 12px rgba(141,110,99,0.1); }
 
-  /* Sangre — Rojo y negro de alto contraste */
-  body.tema-sangre {
-    --bg:#050000;--paper:#120000;--ink:#FFFFFF;--accent:#FF0000;--accent-light:#330000;
-    --second:#880000;--second-light:#220000;--muted:#BBBBBB;--border:#440000;
-    --summer:#2A0000;--winter:#1A0000;--exam:#2A2400;--holiday:#440000;--vac-color:#FF3333;
-    --font-display:'Inter',sans-serif;--font-body:'Inter',sans-serif;--radius:10px;
+  /* Neón — oscuro con verde neón */
+  body.tema-neon {
+    --bg:#050510;--paper:#0A0A20;--ink:#E0FFE0;--accent:#00FF88;--accent-light:#003820;
+    --second:#FF00FF;--second-light:#200020;--muted:#008840;--border:#003020;
+    --summer:#003820;--winter:#200020;--exam:#202000;--holiday:#200010;--vac-color:#00CC66;
+    --font-display:'Inter',sans-serif;--font-body:'Inter',sans-serif;--radius:4px;
   }
-  body.tema-sangre header h1 {
-    background:linear-gradient(135deg, #FF0000, #880000);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-    text-shadow:0 0 15px rgba(255,0,0,0.3);
-  }
-  body.tema-sangre .config-panel { box-shadow:0 8px 24px rgba(255,0,0,0.15);border:1px solid #440000; }
-  body.tema-sangre .month-card { box-shadow:0 4px 12px rgba(255,0,0,0.1); }
 
   /* ── MATERIAS ─────────────────────────────────────────────────── */
   .materias-section { margin-top:1rem;border-top:1px solid var(--border);padding-top:0.8rem; }
@@ -550,14 +353,14 @@
   .prio-btn:hover { opacity:0.8; }
   .prio-btn.active-alta  { background:#ef4444;color:#fff;border-color:#ef4444; }
   .prio-btn.active-media { background:#f59e0b;color:#fff;border-color:#f59e0b; }
-  .prio-btn.active-baja  { background:#3a9bd5;color:#fff;border-color:#3a9bd5; }
+  .prio-btn.active-baja  { background:#22c55e;color:#fff;border-color:#22c55e; }
   .prio-badge {
     font-size:0.62rem;font-weight:700;padding:0.1rem 0.38rem;
     border-radius:50px;color:#fff;margin-left:0.25rem;flex-shrink:0;
   }
   .prio-alta  { background:#ef4444; }
   .prio-media { background:#f59e0b; }
-  .prio-baja  { background:#3a9bd5; }
+  .prio-baja  { background:#22c55e; }
 
   /* ── HORARIO SEMANAL ─────────────────────────────────────────── */
   .horario-section { margin-top:1rem;border-top:1px solid var(--border);padding-top:0.8rem; }
@@ -727,6 +530,17 @@
   }
   .legend-item { display:flex;align-items:center;gap:0.4rem;font-size:0.72rem;color:var(--muted);line-height:1; }
   .legend-dot  { width:9px;height:9px;border-radius:3px;flex-shrink:0;opacity:0.85; }
+  /* Indicadores específicos de eventos y tareas en la leyenda */
+  .legend-evt-dot {
+    width:7px;height:7px;border-radius:50%;
+    background:var(--accent);flex-shrink:0;
+    box-shadow:0 1px 2px rgba(0,0,0,0.18);
+  }
+  .legend-task-dot {
+    width:6px;height:6px;border-radius:1px;
+    background:transparent;border:1.5px solid var(--second);
+    transform:rotate(45deg);flex-shrink:0;
+  }
 
   /* CALENDAR */
   #calendar-output { display:none; }
@@ -755,8 +569,8 @@
   .weekdays { display:grid;grid-template-columns:repeat(7,1fr);padding:0.32rem 0.38rem 0.12rem;gap:2px; }
   .weekday  { text-align:center;font-size:0.58rem;font-weight:600;color:var(--muted);text-transform:uppercase; }
   .days-grid { display:grid;grid-template-columns:repeat(7,1fr);padding:0 0.38rem 0.45rem;gap:2px; }
-  .day { aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:0.65rem;border-radius:calc(var(--radius) - 2px);cursor:pointer;transition:filter 0.12s; flex-direction:column; gap:1px; }
-  .day:not(.empty):hover { filter:brightness(0.88);transform:scale(1.08); }
+  .day { aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:0.65rem;border-radius:calc(var(--radius) - 2px);cursor:pointer;transition:filter 0.12s,box-shadow 0.12s; flex-direction:column; gap:0px; }
+  .day:not(.empty):hover { filter:brightness(0.88);transform:scale(1.08);box-shadow:0 2px 8px rgba(0,0,0,0.15); }
   .day.empty    { background:transparent;cursor:default; }
   .day.empty:hover { filter:none;transform:none; }
   .day.normal   { color:var(--ink); }
@@ -766,15 +580,30 @@
   .day.verano      { background:var(--summer);color:var(--vac-color);font-weight:500; }
   .day.invierno    { background:var(--winter);color:var(--vac-color);font-weight:500; }
   .day.receso      { background:var(--holiday);color:#CC3333; }
-  .day.examen      { background:var(--exam);color:var(--second);font-weight:600; }
-  .day.today       { box-shadow:inset 0 0 0 2px var(--accent);font-weight:700; }
-  /* event dots on day */
-  .day-dots { display:flex;gap:2px;justify-content:center;flex-wrap:wrap;max-width:100%; }
-  .day-dot { width:5px;height:5px;border-radius:50%;background:var(--accent);flex-shrink:0;box-shadow:0 0 0 1px rgba(0,0,0,0.12); }
-  .day-dot.tarea { background:var(--second); border-radius:1px; width:6px; height:2px; margin-top:1.5px; }
-  .day-dot.prio-alta { background:#ef4444 !important; }
-  .day-dot.prio-media { background:#f59e0b !important; }
-  .day-dot.prio-baja { background:#3a9bd5 !important; }
+  .day.examen      { background:var(--exam);color:var(--second);font-weight:700; }
+  .day.today       {
+    box-shadow:inset 0 0 0 2px var(--accent);
+    font-weight:800;
+  }
+  /* día con eventos: borde sutil extra */
+  .day.has-events:not(.today) { box-shadow:inset 0 -2px 0 0 var(--accent); }
+  /* día con tareas pendientes: borde inferior diferente */
+  .day.has-tareas:not(.has-events):not(.today) { box-shadow:inset 0 -2px 0 0 var(--second); }
+  /* event dots on day — eventos=círculo lleno, tareas=rombo */
+  .day-dots { display:flex;gap:2px;justify-content:center;flex-wrap:wrap;max-width:100%;margin-top:1px; }
+  .day-dot {
+    width:5px;height:5px;border-radius:50%;
+    background:var(--accent);flex-shrink:0;
+    box-shadow:0 1px 2px rgba(0,0,0,0.18);
+  }
+  .day-dot.tarea {
+    background:transparent;
+    border:1.5px solid var(--second);
+    border-radius:2px;
+    transform:rotate(45deg);
+    width:5px;height:5px;
+    box-shadow:none;
+  }
   .day .day-num { line-height:1; }
 
   /* NAVEGACIÓN DE MES */
@@ -939,8 +768,7 @@
     background:var(--accent);color:white;font-size:0.78rem;font-weight:600;cursor:pointer;white-space:nowrap;
   }
   .tareas-empty { font-size:0.78rem;color:var(--muted);text-align:center;padding:0.8rem 0; }
-  .tarea-item { display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.5rem;background:var(--accent-light);border-radius:var(--radius);margin-bottom:0.4rem;border:1px solid transparent;transition:all 0.2s; }
-  .tarea-item:hover { border-color:var(--border);background:var(--paper); }
+  .tarea-item { display:flex;align-items:center;gap:0.5rem;padding:0.5rem 0.4rem;border-bottom:1px solid var(--border); }
   .tarea-item:last-child { border-bottom:none; }
   .tarea-check {
     width:21px;height:21px;border-radius:50%;border:1.5px solid var(--accent);
@@ -966,8 +794,8 @@
   /* event list below save */
   .event-list { display:flex;flex-direction:column;gap:0.4rem; }
   .event-list:not(:empty) { margin-bottom:0.8rem;padding-bottom:0.8rem;border-bottom:1px solid var(--border); }
-  .event-item { display:flex;align-items:center;justify-content:space-between;background:var(--paper);border:1.5px solid var(--border);border-left:4px solid var(--accent);border-radius:calc(var(--radius) - 2px);padding:0.55rem 0.75rem;font-size:0.8rem;box-shadow:0 2px 4px rgba(0,0,0,0.04); }
-  .event-item-name { color:var(--ink);font-weight:600;flex:1;min-width:0; }
+  .event-item { display:flex;align-items:center;justify-content:space-between;background:var(--accent-light);border:1px solid var(--border);border-radius:calc(var(--radius)-2px);padding:0.45rem 0.65rem;font-size:0.78rem; }
+  .event-item-name { color:var(--ink);font-weight:500;flex:1;min-width:0; }
   .event-item-del { background:none;border:none;cursor:pointer;color:var(--muted);font-size:0.85rem;padding:0 0.2rem;transition:color 0.15s;flex-shrink:0; }
   .event-item-del:hover { color:#e05555; }
   .event-add-label { font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.5rem; }
@@ -1403,16 +1231,32 @@
     color:var(--muted);margin-bottom:0.5rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border);
   }
   .resumen-event-row {
-    display:flex;align-items:flex-start;gap:0.7rem;padding:0.5rem 0.6rem;
+    display:flex;align-items:flex-start;gap:0.7rem;padding:0.55rem 0.7rem;
     border-radius:calc(var(--radius) - 2px);margin-bottom:0.3rem;
-    background:var(--accent-light);border:1px solid var(--border);
-    transition:background 0.15s;
+    background:var(--accent-light);
+    border:1px solid var(--border);
+    border-left:3px solid var(--accent);
+    transition:background 0.15s,box-shadow 0.15s;
   }
-  .resumen-event-row:hover { background:var(--second-light); }
+  .resumen-event-row:hover { background:var(--second-light);box-shadow:0 2px 8px rgba(0,0,0,0.08); }
+  /* Tareas en el resumen — borde diferente */
+  .resumen-event-row.tipo-tarea {
+    background:var(--second-light);
+    border-left-color:var(--second);
+  }
+  .resumen-event-row.tipo-tarea:hover { background:var(--accent-light); }
   .resumen-event-date {
     flex-shrink:0;font-size:0.72rem;font-weight:700;color:var(--accent);
     min-width:36px;text-align:center;
-    background:var(--paper);border-radius:6px;padding:0.2rem 0.4rem;
+    background:var(--paper);border-radius:6px;padding:0.25rem 0.4rem;
+    border:1px solid var(--border);
+  }
+  .resumen-event-row.tipo-tarea .resumen-event-date {
+    color:var(--second);
+  }
+  .resumen-event-type-icon {
+    font-size:0.9rem;flex-shrink:0;align-self:center;
+    opacity:0.8;
   }
   .resumen-event-info { flex:1;min-width:0; }
   .resumen-event-name { font-size:0.82rem;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
@@ -1462,6 +1306,41 @@
     background:var(--accent-light);border:1px solid var(--accent);border-radius:50px;
     padding:0.25rem 0.6rem;white-space:nowrap;
   }
+  /* ── PUSH NOTIFICATIONS UI ───────────────────────────────────────── */
+  .push-banner {
+    display:flex;align-items:center;gap:0.8rem;
+    background:var(--accent-light);border:1.5px solid var(--accent);
+    border-radius:var(--radius);padding:0.75rem 1rem;
+    margin-bottom:1rem;
+  }
+  .push-banner.hidden { display:none; }
+  .push-banner-icon { font-size:1.4rem;flex-shrink:0; }
+  .push-banner-text { flex:1;min-width:0; }
+  .push-banner-text strong { display:block;font-size:0.82rem;color:var(--ink);font-weight:700; }
+  .push-banner-text span { font-size:0.73rem;color:var(--muted); }
+  .btn-push-enable {
+    flex-shrink:0;padding:0.4rem 0.9rem;
+    background:var(--accent);color:white;border:none;
+    border-radius:50px;font-size:0.75rem;font-weight:700;
+    cursor:pointer;font-family:var(--font-body);
+    transition:opacity 0.2s;white-space:nowrap;
+  }
+  .btn-push-enable:hover { opacity:0.85; }
+  .btn-push-enable.enabled { background:transparent;color:var(--muted);border:1px solid var(--border); }
+  .btn-push-dismiss { background:none;border:none;color:var(--muted);font-size:1rem;cursor:pointer;padding:0.2rem;flex-shrink:0; }
+  .push-config-row {
+    display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;
+    margin-top:0.5rem;
+  }
+  .push-config-row label { font-size:0.72rem;color:var(--muted);font-weight:600; }
+  .push-dia-btn {
+    padding:0.22rem 0.6rem;border-radius:50px;
+    border:1.5px solid var(--border);background:transparent;
+    color:var(--muted);font-size:0.7rem;font-weight:700;
+    cursor:pointer;font-family:var(--font-body);transition:all 0.15s;
+  }
+  .push-dia-btn.active { background:var(--accent);color:white;border-color:var(--accent); }
+
   /* TEMA MODAL */
   .tema-modal-overlay {
     position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:300;
@@ -1943,6 +1822,17 @@
     <div class="proximos-body hidden" id="proximos-body"></div>
   </div>
 
+  <!-- PUSH NOTIFICATION BANNER -->
+  <div class="push-banner hidden" id="push-banner">
+    <span class="push-banner-icon">🔔</span>
+    <div class="push-banner-text">
+      <strong>Recordatorios de eventos</strong>
+      <span>Activá las notificaciones para que te avisemos antes de tus exámenes y entregas.</span>
+    </div>
+    <button class="btn-push-enable" id="btn-push-enable" onclick="activarPush()">Activar</button>
+    <button class="btn-push-dismiss" onclick="dismissPushBanner()" title="Cerrar">✕</button>
+  </div>
+
   <!-- LEYENDA -->
   <div class="legend">
     <div class="legend-item"><div class="legend-dot" style="background:var(--accent);"></div> Primer semestre</div>
@@ -1951,6 +1841,10 @@
     <div class="legend-item"><div class="legend-dot" style="background:var(--summer);border:1px solid var(--border);"></div> Receso de verano</div>
     <div class="legend-item"><div class="legend-dot" style="background:var(--winter);border:1px solid var(--border);"></div> Receso de invierno</div>
     <div class="legend-item"><div class="legend-dot" style="background:var(--holiday);border:1px solid var(--border);"></div> Feriado nacional</div>
+    <div class="legend-item" style="margin-left:auto;padding-left:0.8rem;border-left:1px solid var(--border);gap:0.6rem;">
+      <div class="legend-evt-dot"></div> Evento
+      <div class="legend-task-dot"></div> Tarea pendiente
+    </div>
   </div>
 
   <!-- FILTRO DE MATERIAS -->
@@ -2039,21 +1933,6 @@
     </div>
     <p class="event-date-label" id="event-date-label"></p>
     <div class="event-list" id="event-list-day"></div>
-
-    <div class="tareas-section">
-      <div class="tareas-section-hdr">✅ Tareas pendientes</div>
-      <div class="tareas-add-row">
-        <input type="text" id="tarea-input" placeholder="ej: Leer capítulo 3" maxlength="80" onkeydown="if(event.key==='Enter'){event.preventDefault();agregarTarea();}">
-        <button class="btn-tarea-add" onclick="agregarTarea()">+ Agregar</button>
-      </div>
-      <div class="prioridad-selector" id="prioridad-selector">
-        <button class="prio-btn" data-prio="alta" onclick="setPrioTarea('alta',this)">🔴 Alta</button>
-        <button class="prio-btn" data-prio="media" onclick="setPrioTarea('media',this)">🟡 Media</button>
-        <button class="prio-btn" data-prio="baja" onclick="setPrioTarea('baja',this)" >🔵 Baja</button>
-      </div>
-      <div class="tareas-list" id="tareas-list-day"></div>
-    </div>
-
     <div class="event-add-label">+ Nuevo evento</div>
     <div class="event-field">
       <label>Nombre del evento</label>
@@ -2088,6 +1967,20 @@
     <div class="event-btns">
       <button class="btn-event-cancel" onclick="cerrarModalEvento()">Cancelar</button>
       <button class="btn-event-save" onclick="guardarEvento()">Guardar</button>
+    </div>
+
+    <div class="tareas-section">
+      <div class="tareas-section-hdr">✅ Tareas pendientes</div>
+      <div class="tareas-add-row">
+        <input type="text" id="tarea-input" placeholder="ej: Leer capítulo 3" maxlength="80" onkeydown="if(event.key==='Enter'){event.preventDefault();agregarTarea();}">
+        <button class="btn-tarea-add" onclick="agregarTarea()">+ Agregar</button>
+      </div>
+      <div class="prioridad-selector" id="prioridad-selector">
+        <button class="prio-btn" data-prio="alta" onclick="setPrioTarea('alta',this)">🔴 Alta</button>
+        <button class="prio-btn" data-prio="media" onclick="setPrioTarea('media',this)">🟡 Media</button>
+        <button class="prio-btn" data-prio="baja" onclick="setPrioTarea('baja',this)" >🟢 Baja</button>
+      </div>
+      <div class="tareas-list" id="tareas-list-day"></div>
     </div>
   </div>
 </div>
@@ -2924,7 +2817,7 @@ const TEMAS = [
   { id:'hielo',          label:'Hielo',         bg:'#F0F6FF', accent:'#2060C0', second:'#60A0F0' },
   { id:'magenta',        label:'Magenta',       bg:'#FFF0FF', accent:'#C000C0', second:'#8000C0' },
   { id:'sepia',          label:'Sépia',         bg:'#F5EED8', accent:'#7A4A10', second:'#B07830' },
-  { id:'sangre',         label:'Sangre',        bg:'#050000', accent:'#FF0000', second:'#880000' },
+  { id:'neon',           label:'Neón',          bg:'#050510', accent:'#00FF88', second:'#FF00FF' },
 ];
 
 function renderColorGrid() {
@@ -3119,28 +3012,25 @@ function renderMonth(year, month, r, feriados, opts={}) {
   for(let d=1;d<=last.getDate();d++){
     const date=new Date(year,month,d);
     const key=toKey(date);
-    const evts = userEvents[key] || [];
-    const matForDay = (evts.length > 0 && evts[0].materiaId) ? userMaterias.find(m => m.id === evts[0].materiaId) : null;
-    const dayStyle = matForDay ? ` style="background:${matForDay.color}15; border: 1.5px solid ${matForDay.color}88;"` : (evts.length > 0 ? ' style="border: 1.5px solid var(--accent);"' : '');
     const cls = getDayClass(date,r,feriados) + (esHoy(date) ? ' today' : '');
     const tip = getDayLabel(date,r,feriados);
     const tipAttr = tip ? ` data-tip="${tip}"` : '';
+    const evts = userEvents[key] || [];
     const pendientes = (userTareas[key] || []).filter(t => !t.done);
     let dotsHTML = '';
+    const hasEvtsClass = evts.length ? ' has-events' : '';
+    const hasTareasClass = pendientes.length ? ' has-tareas' : '';
     if (evts.length || pendientes.length) {
       // max 5 dots to keep it tidy
       const evtDots = evts.slice(0,4).map(ev => {
         const mat = userMaterias && ev.materiaId ? userMaterias.find(m => m.id === ev.materiaId) : null;
-        const dotColor = mat ? mat.color : (EVENT_TYPE_COLOR[ev.type] || 'var(--accent)');
-        return `<span class="day-dot"${dotColor ? ` style="background:${dotColor}"` : ''}></span>`;
+        const dotColor = mat ? mat.color : '';
+        return `<span class="day-dot" title="${escapeHtml(ev.name||'')}"${dotColor ? ` style="background:${dotColor}"` : ''}></span>`;
       }).join('');
-      const tareaDots = pendientes.slice(0, Math.max(0, 5 - evts.length)).map(t => {
-	      const prioCls = t.prio ? ` prio-${t.prio}` : '';
-	      return `<span class="day-dot tarea${prioCls}"></span>`;
-	    }).join('');
+      const tareaDots = pendientes.slice(0, Math.max(0, 5 - evts.length)).map(t => `<span class="day-dot tarea" title="${escapeHtml(t.text||'Tarea')}"></span>`).join('');
       dotsHTML = `<span class="day-dots">${evtDots}${tareaDots}</span>`;
     }
-    h+=`<div class="day ${cls}"${tipAttr}${dayStyle} onclick="event.stopPropagation();abrirModalEvento('${key}',${d})"><span class="day-num">${d}</span>${dotsHTML}</div>`;
+    h+=`<div class="day ${cls}${hasEvtsClass}${hasTareasClass}"${tipAttr} onclick="event.stopPropagation();abrirModalEvento('${key}',${d})"><span class="day-num">${d}</span>${dotsHTML}</div>`;
   }
   return h+`</div></div>`;
 }
@@ -3269,10 +3159,8 @@ function renderSemanaVisible() {
     const dEvts = userEvents[toKey(d)] || [];
     const dDotColor = (() => {
       if (!dEvts.length) return isSelected ? 'rgba(255,255,255,0.6)' : 'transparent';
-      const firstEvt = dEvts[0];
-      const firstMat = userMaterias && firstEvt.materiaId ? userMaterias.find(m => m.id === firstEvt.materiaId) : null;
-      if (isSelected) return 'rgba(255,255,255,0.9)';
-      return firstMat ? firstMat.color : (EVENT_TYPE_COLOR[firstEvt.type] || 'var(--accent)');
+      const firstMat = userMaterias && dEvts[0].materiaId ? userMaterias.find(m => m.id === dEvts[0].materiaId) : null;
+      return isSelected ? 'rgba(255,255,255,0.9)' : (firstMat ? firstMat.color : 'var(--accent)');
     })();
     return `<div onclick="irADia('${toKey(d)}')" style="
       display:flex;flex-direction:column;align-items:center;gap:2px;
@@ -3287,12 +3175,11 @@ function renderSemanaVisible() {
     </div>`;
   }).join('');
 
-  // Eventos y Tareas del día
-  const evtsList = userEvents[key] || [];
-  const evtsHTML = evtsList.length > 0
-    ? evtsList.map(e => {
+  // Eventos del día
+  const evtsHTML = hasEvt
+    ? userEvents[key].map(e => {
         const mat = userMaterias && e.materiaId ? userMaterias.find(m => m.id === e.materiaId) : null;
-        const evBg = mat ? mat.color : (EVENT_TYPE_COLOR[e.type] || 'var(--accent)');
+        const evBg = mat ? mat.color : 'var(--accent)';
         const matBadge = mat ? `<span style="font-size:0.68rem;background:rgba(255,255,255,0.25);padding:0.1rem 0.45rem;border-radius:50px;font-weight:700;">${escapeHtml(mat.nombre)}</span>` : '';
         return `
         <div onclick="abrirModalEvento('${key}',${date.getDate()})" style="
@@ -3317,30 +3204,6 @@ function renderSemanaVisible() {
         cursor:pointer;" onclick="abrirModalEvento('${key}',${date.getDate()})">
         + Agregar evento
       </div>`;
-
-  const tareasList = userTareas[key] || [];
-  const tareasHTML = tareasList.length > 0
-    ? `
-      <div style="margin-top:1rem; border-top:1px solid var(--border); padding-top:0.8rem;">
-        <div style="font-family:var(--font-display); font-size:0.85rem; font-weight:600; color:var(--accent); margin-bottom:0.6rem;">✅ Tareas del día</div>
-        <div style="display:flex; flex-direction:column; gap:0.4rem;">
-          ${tareasList.map(t => {
-            const prioColors = {alta:'#ef4444', media:'#f59e0b', baja:'#3a9bd5'};
-            const dotColor = t.prio ? prioColors[t.prio] : 'var(--muted)';
-            return `
-            <div onclick="abrirModalEvento('${key}',${date.getDate()})" style="
-              display:flex; align-items:center; gap:0.6rem;
-              padding:0.5rem 0.7rem; border-radius:8px;
-              background:var(--paper); border:1px solid var(--border);
-              cursor:pointer;
-            ">
-              <div style="width:8px; height:8px; border-radius:50%; background:${dotColor}; flex-shrink:0;"></div>
-              <span style="font-size:0.82rem; color:var(--ink); ${t.done ? 'text-decoration:line-through; opacity:0.6;' : ''}">${escapeHtml(t.text)}</span>
-            </div>`;
-          }).join('')}
-        </div>
-      </div>`
-    : '';
 
   const labelHTML = label
     ? `<div style="
@@ -3378,7 +3241,6 @@ function renderSemanaVisible() {
       </div>
       <div style="display:flex;flex-direction:column;gap:0.5rem;">
         ${evtsHTML}
-        ${tareasHTML}
       </div>
     </div>
 
@@ -3556,17 +3418,8 @@ let userEvents = {}; // { 'YYYY-MM-DD': [{name, type, note},...] }
 let _eventModalKey = null;
 
 const EVENT_TYPE_LABEL = {
-  parcial:'📝 Parcial', final:'🎓 Final', entrega:'📂 Entrega', tp:'📋 Trabajo Práctico', 
+  parcial:'📝 Parcial', final:'📋 Final', entrega:'📦 Entrega/TP',
   clase:'📚 Clase especial', otro:'📌 Otro'
-};
-
-const EVENT_TYPE_COLOR = {
-  parcial: '#E03A20', // Rojo coral
-  final: '#8B2FC9',   // Violeta
-  entrega: '#3A9BD5', // Celeste
-  tp: '#F59E0B',      // Ámbar
-  clase: '#2A7D4F',   // Verde
-  otro: '#666666'     // Gris
 };
 
 // Devuelve la etiqueta a mostrar para un evento: si es tipo "otro" y tiene
@@ -3595,6 +3448,7 @@ function cargarEventos() {
 async function guardarEventos() {
   localStorage.setItem('agenda_events', JSON.stringify(userEvents));
   if (currentUser) sincronizarDatosNube();
+  onDatosActualizados(); // sync con SW para push
 }
 
 // ── TAREAS (cosas pendientes por día) ──────────────────────────────────────
@@ -3606,6 +3460,7 @@ function cargarTareas() {
 async function guardarTareasStorage() {
   localStorage.setItem('agenda_tareas', JSON.stringify(userTareas));
   if (currentUser) sincronizarDatosNube();
+  onDatosActualizados(); // sync con SW para push
 }
 
 // Debounce para no hacer un upsert por cada tecla
@@ -3910,12 +3765,16 @@ function renderResumen() {
     const monthLabel = `${MESES[parseInt(m)-1]} ${y}`;
     const rows = evts.map(ev => {
       const [,, d] = ev.key.split('-');
-      const meta = [tipoLabelDeEvento(ev), ev.time ? fmtTime(ev.time) : '', ev.note].filter(Boolean).join(' · ');
+      const tipoLabel = tipoLabelDeEvento(ev);
+      const tipoIcon = tipoLabel ? tipoLabel.split(' ')[0] : '📌';
+      const meta = [ev.time ? fmtTime(ev.time) : '', ev.note].filter(Boolean).join(' · ');
       return `<div class="resumen-event-row">
         <span class="resumen-event-date">${parseInt(d)}</span>
+        <span class="resumen-event-type-icon" title="${tipoLabel}">${tipoIcon}</span>
         <div class="resumen-event-info">
-          <div class="resumen-event-name">${ev.name}</div>
-          ${meta ? `<div class="resumen-event-meta">${meta}</div>` : ''}
+          <div class="resumen-event-name">${escapeHtml(ev.name)}</div>
+          ${meta ? `<div class="resumen-event-meta">${escapeHtml(meta)}</div>` : ''}
+          ${tipoLabel ? `<div class="resumen-event-meta" style="margin-top:0.15rem;font-size:0.68rem;opacity:0.7;">${tipoLabel}</div>` : ''}
         </div>
         <button class="resumen-event-del" onclick="eliminarDesdeResumen('${ev.key}',${ev.idx})" title="Eliminar">✕</button>
       </div>`;
@@ -3940,19 +3799,19 @@ function refreshDayDot(key) {
     const existing = el.querySelector('.day-dots');
     const evts = userEvents[key] || [];
     const pendientes = (userTareas[key] || []).filter(t => !t.done);
+    // update indicator classes
+    el.classList.toggle('has-events', evts.length > 0);
+    el.classList.toggle('has-tareas', pendientes.length > 0);
     if (!evts.length && !pendientes.length) {
       if (existing) existing.remove();
       return;
     }
     const evtDots = evts.slice(0,4).map(ev => {
       const mat = userMaterias && ev.materiaId ? userMaterias.find(m => m.id === ev.materiaId) : null;
-      const dotColor = mat ? mat.color : (EVENT_TYPE_COLOR[ev.type] || 'var(--accent)');
-      return `<span class="day-dot"${dotColor ? ` style="background:${dotColor}"` : ''}></span>`;
+      const dotColor = mat ? mat.color : '';
+      return `<span class="day-dot" title="${escapeHtml(ev.name||'')}"${dotColor ? ` style="background:${dotColor}"` : ''}></span>`;
     }).join('');
-    const tareaDots = pendientes.slice(0, Math.max(0, 5 - evts.length)).map(t => {
-	      const prioCls = t.prio ? ` prio-${t.prio}` : '';
-	      return `<span class="day-dot tarea${prioCls}"></span>`;
-	    }).join('');
+    const tareaDots = pendientes.slice(0, Math.max(0, 5 - evts.length)).map(t => `<span class="day-dot tarea" title="${escapeHtml(t.text||'Tarea')}"></span>`).join('');
     const html = `<span class="day-dots">${evtDots}${tareaDots}</span>`;
     if (existing) existing.outerHTML = html;
     else el.insertAdjacentHTML('beforeend', html);
@@ -4105,7 +3964,7 @@ function setPrioTarea(prio, btn) {
 
 function prioBadgeHTML(prio) {
   if (!prio) return '';
-  const labels = {alta:'🔴',media:'🟡',baja:'🔵'};
+  const labels = {alta:'🔴',media:'🟡',baja:'🟢'};
   return `<span class="prio-badge prio-${prio}" title="Prioridad ${prio}">${labels[prio]}</span>`;
 }
 
@@ -4358,6 +4217,7 @@ window.onload = async () => {
   } finally {
     yaInicializado = true;
     document.getElementById('loading-overlay').classList.add('hidden');
+    initPush(); // inicializar service worker y push
   }
 };
 // ── ELIMINAR CUENTA ───────────────────────────────────────────────────────────
@@ -4446,6 +4306,205 @@ window.addEventListener('keydown', e => {
     document.body.style.overflow = '';
   }
 });
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ── PUSH NOTIFICATIONS ───────────────────────────────────────────────────────
+const VAPID_PUBLIC_KEY = 'BIC5cRyKi6e-73OKAmIT0FLFR4xMLj-hhACRUXA4iBN_2VddYMu3btItMoU1j32NnoFIt-PHfKkoQ02F3F5Icoc';
+
+// Días de antelación para avisar (configurable por el usuario)
+let pushDias = JSON.parse(localStorage.getItem('push_dias') || '[1,3,7]');
+let pushDismissed = localStorage.getItem('push_dismissed') === '1';
+let swReg = null; // ServiceWorkerRegistration
+
+// ── IDB helpers (para pasar datos al SW) ─────────────────────────────────────
+function swOpenDB() {
+  return new Promise((res, rej) => {
+    const req = indexedDB.open('agenda-sw', 1);
+    req.onupgradeneeded = e => e.target.result.createObjectStore('kv');
+    req.onsuccess  = e => res(e.target.result);
+    req.onerror    = e => rej(e.target.error);
+  });
+}
+async function swSet(key, val) {
+  const db = await swOpenDB();
+  return new Promise((res, rej) => {
+    const tx  = db.transaction('kv', 'readwrite');
+    tx.objectStore('kv').put(val, key);
+    tx.oncomplete = () => res();
+    tx.onerror    = e => rej(e.target.error);
+  });
+}
+
+// Sincronizar eventos/tareas con IndexedDB para que el SW pueda leerlos
+async function syncDatosParaSW() {
+  try {
+    await swSet('push_eventos', userEvents || {});
+    await swSet('push_tareas',  userTareas  || {});
+    await swSet('push_config',  { dias: pushDias });
+  } catch(e) { /* si IDB no está disponible, ignorar */ }
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+async function initPush() {
+  if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+
+  // Registrar SW
+  try {
+    swReg = await navigator.serviceWorker.register('/sw.js', { scope: '/' });
+  } catch(e) { console.warn('SW register failed:', e); return; }
+
+  // Sincronizar datos al SW
+  await syncDatosParaSW();
+
+  // Si ya tiene permiso, suscribir silenciosamente
+  if (Notification.permission === 'granted') {
+    await suscribirPush();
+    document.getElementById('push-banner').classList.add('hidden');
+    return;
+  }
+
+  // Si ya rechazó, no mostrar el banner
+  if (Notification.permission === 'denied') return;
+  if (pushDismissed) return;
+
+  // Mostrar banner sugerente
+  document.getElementById('push-banner').classList.remove('hidden');
+}
+
+// ── ACTIVAR push desde el botón del banner ───────────────────────────────────
+async function activarPush() {
+  const btn = document.getElementById('btn-push-enable');
+  btn.textContent = '...';
+  btn.disabled = true;
+
+  const perm = await Notification.requestPermission();
+  if (perm !== 'granted') {
+    showToast('⚠️ Permiso de notificaciones denegado');
+    btn.textContent = 'Activar';
+    btn.disabled = false;
+    return;
+  }
+  await suscribirPush();
+  document.getElementById('push-banner').classList.add('hidden');
+  showToast('🔔 Notificaciones activadas');
+
+  // Programar check inmediato con las próximas semanas
+  programarNotificacionesLocales();
+}
+
+// ── SUSCRIBIR al PushManager ─────────────────────────────────────────────────
+async function suscribirPush() {
+  if (!swReg) return;
+  try {
+    const appServerKey = urlBase64ToUint8Array(VAPID_PUBLIC_KEY);
+    let sub = await swReg.pushManager.getSubscription();
+    if (!sub) {
+      sub = await swReg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: appServerKey });
+    }
+    // Guardar suscripción en Supabase si hay usuario
+    if (currentUser && sub) {
+      await db.from('agenda_config').upsert({
+        user_id: getStorageId(),
+        push_subscription: JSON.stringify(sub),
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'user_id' }).select();
+    }
+    // Guardar localmente también
+    localStorage.setItem('push_subscription', JSON.stringify(sub));
+  } catch(e) { console.warn('Push subscribe error:', e); }
+}
+
+// ── NOTIFICACIONES LOCALES (sin servidor) ────────────────────────────────────
+// Usa Notification API directamente + setTimeout para el contexto de la app abierta
+// y PeriodicSync cuando está en background (donde está disponible).
+function programarNotificacionesLocales() {
+  if (Notification.permission !== 'granted') return;
+
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
+
+  Object.entries(userEvents || {}).forEach(([key, evts]) => {
+    const [y, m, d] = key.split('-').map(Number);
+    const fecha = new Date(y, m - 1, d);
+    fecha.setHours(0, 0, 0, 0);
+    const diffMs = fecha - hoy;
+    const diffDias = Math.round(diffMs / 86400000);
+
+    pushDias.forEach(antelacion => {
+      if (diffDias === antelacion) {
+        const diasLabel = antelacion === 0 ? 'HOY' : antelacion === 1 ? 'mañana' : `en ${antelacion} días`;
+        evts.forEach(ev => {
+          // Notificar con pequeño delay para que no bloquee el hilo
+          setTimeout(() => {
+            new Notification(`📅 ${ev.name}`, {
+              body: `${diasLabel.charAt(0).toUpperCase() + diasLabel.slice(1)} — ${fmtFechaCorta(fecha)}`,
+              icon: '/icon-192.png',
+              badge: '/badge-96.png',
+              tag: `evt-${key}-${ev.name}`,
+              data: { url: '/' }
+            });
+          }, 500);
+        });
+      }
+    });
+  });
+
+  // Tareas pendientes
+  Object.entries(userTareas || {}).forEach(([key, tlist]) => {
+    const pendientes = tlist.filter(t => !t.done);
+    if (!pendientes.length) return;
+    const [y, m, d] = key.split('-').map(Number);
+    const fecha = new Date(y, m - 1, d);
+    fecha.setHours(0, 0, 0, 0);
+    const diffDias = Math.round((fecha - hoy) / 86400000);
+
+    pushDias.forEach(antelacion => {
+      if (diffDias === antelacion) {
+        const diasLabel = antelacion === 0 ? 'HOY' : antelacion === 1 ? 'mañana' : `en ${antelacion} días`;
+        setTimeout(() => {
+          new Notification(`✅ ${pendientes.length} tarea${pendientes.length > 1 ? 's' : ''} pendiente${pendientes.length > 1 ? 's' : ''}`, {
+            body: `Vencen ${diasLabel} — ${fmtFechaCorta(fecha)}`,
+            icon: '/icon-192.png',
+            badge: '/badge-96.png',
+            tag: `tarea-${key}`,
+            data: { url: '/' }
+          });
+        }, 700);
+      }
+    });
+  });
+
+  // Intentar registrar PeriodicSync para checks en background
+  if (swReg && 'periodicSync' in swReg) {
+    swReg.periodicSync.register('agenda-check', { minInterval: 12 * 60 * 60 * 1000 })
+      .catch(() => {}); // puede fallar si el navegador no lo soporta todavía
+  }
+}
+
+function fmtFechaCorta(d) {
+  const MESES_CORTO = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  return `${d.getDate()} ${MESES_CORTO[d.getMonth()]}`;
+}
+
+function dismissPushBanner() {
+  document.getElementById('push-banner').classList.add('hidden');
+  pushDismissed = true;
+  localStorage.setItem('push_dismissed', '1');
+}
+
+// Helpers para llamar desde guardarEventos/guardarTareas
+async function onDatosActualizados() {
+  await syncDatosParaSW();
+  if (Notification.permission === 'granted') programarNotificacionesLocales();
+}
+
+// Utilidad VAPID
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const raw = atob(base64);
+  return Uint8Array.from([...raw].map(c => c.charCodeAt(0)));
+}
 // ─────────────────────────────────────────────────────────────────────────────
 </script>
 <!-- MODAL ELIMINAR CUENTA -->
