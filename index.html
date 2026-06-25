@@ -2651,8 +2651,22 @@ db.auth.onAuthStateChange(async (event, session) => {
   actualizarUserBar(currentUser);
   if (yaInicializado) {
     if (currentUser) {
-      // Login: cargar TODOS los datos desde la nube (pisa el localStorage)
+      // Login: mergear datos locales con los de la nube (no pisar)
+      const _evtsAntes = JSON.parse(localStorage.getItem('agenda_events') || '{}');
+      const _tareasAntes = JSON.parse(localStorage.getItem('agenda_tareas') || '{}');
       await cargarConfig();
+      let _cambiaron = false;
+      Object.entries(_evtsAntes).forEach(([k, v]) => {
+        if (!userEvents[k]) { userEvents[k] = v; _cambiaron = true; }
+      });
+      Object.entries(_tareasAntes).forEach(([k, v]) => {
+        if (!userTareas[k]) { userTareas[k] = v; _cambiaron = true; }
+      });
+      if (_cambiaron) {
+        localStorage.setItem('agenda_events', JSON.stringify(userEvents));
+        localStorage.setItem('agenda_tareas', JSON.stringify(userTareas));
+        sincronizarDatosNube();
+      }
     } else {
       // Logout: limpiar TODOS los datos locales y la UI
       localStorage.removeItem('agenda_events');
