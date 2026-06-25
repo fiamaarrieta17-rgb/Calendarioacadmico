@@ -4680,6 +4680,17 @@ async function syncDatosParaSW() {
     await swSet('push_tareas',  userTareas  || {});
     await swSet('push_config',  { dias: pushDias });
   } catch(e) { /* si IDB no está disponible, ignorar */ }
+
+  // Sincronizar eventos al servidor para que la Edge Function pueda mandar push
+  if (currentUser) {
+    try {
+      await db.from('agenda_config').upsert({
+        user_id: getStorageId(),
+        eventos: userEvents || {},
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'user_id' });
+    } catch(e) { /* ignorar si falla */ }
+  }
 }
 
 // ── INIT ─────────────────────────────────────────────────────────────────────
