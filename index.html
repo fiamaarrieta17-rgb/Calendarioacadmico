@@ -3067,8 +3067,20 @@ async function cargarConfig() {
     generateCalendar();
     renderResumen();
 
-  } else if (local) {
-    aplicarConfig(JSON.parse(local));
+  } else {
+    // No hay fila en agenda_config — crearla con los datos del usuario
+    // Esto pasa la primera vez que un usuario inicia sesión (especialmente en iPhone)
+    if (local) aplicarConfig(JSON.parse(local));
+    const meta = currentUser?.user_metadata || {};
+    const celularMeta = meta.celular || currentUser?.email?.split('@')[0]?.replace(/^cel/, '') || null;
+    await db.from('agenda_config').upsert({
+      user_id: getStorageId(),
+      nombre:   meta.nombre   || null,
+      apellido: meta.apellido || null,
+      celular:  celularMeta,
+      eventos:  userEvents || {},
+      updated_at: new Date().toISOString()
+    }, { onConflict: 'user_id' });
   }
 }
 
