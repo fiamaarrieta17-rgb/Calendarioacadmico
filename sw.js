@@ -1,7 +1,7 @@
 // ── SERVICE WORKER — Agenda Universitaria ─────────────────────────────────────
 // Maneja push notifications y cache básico
 
-const CACHE_NAME = 'agenda-v1';
+const CACHE_NAME = 'agenda-v2';
 
 // ── INSTALL ───────────────────────────────────────────────────────────────────
 self.addEventListener('install', e => {
