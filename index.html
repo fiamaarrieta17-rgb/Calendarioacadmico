@@ -1463,6 +1463,23 @@
   .btn-reactivar-push:hover { background:var(--accent);color:#fff; }
   .btn-reactivar-push:disabled { opacity:0.5;cursor:not-allowed; }
 
+  /* NOTIFICACIÓN DE PRUEBA */
+  .push-test-row {
+    display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;
+    margin-top:0.6rem;padding:0.6rem 0.7rem;
+    background:var(--accent-light);border:1px solid var(--border);
+    border-radius:var(--radius);
+  }
+  .push-test-row label { font-size:0.72rem;color:var(--muted);font-weight:600;flex:1;min-width:120px; }
+  .btn-test-push {
+    padding:0.32rem 0.9rem;border-radius:50px;
+    border:1.5px solid var(--accent);background:transparent;
+    color:var(--accent);font-size:0.72rem;font-weight:700;
+    cursor:pointer;font-family:var(--font-body);transition:all 0.18s;white-space:nowrap;
+  }
+  .btn-test-push:hover { background:var(--accent);color:#fff; }
+  .btn-test-push:disabled { opacity:0.5;cursor:not-allowed; }
+
   /* TEMA MODAL */
   .tema-modal-overlay {
     position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:300;
@@ -1938,6 +1955,12 @@
     </div>
     <div class="materias-list-mgr" id="materias-list-mgr"></div>
     <button class="btn-abrir-horario" onclick="abrirHorarioModal()">📅 Configurar horario semanal recurrente</button>
+  </div>
+
+  <!-- NOTIFICACIÓN DE PRUEBA -->
+  <div class="push-test-row" id="push-test-row">
+    <label>🔔 Probá las notificaciones</label>
+    <button class="btn-test-push" id="btn-test-push" onclick="enviarNotificacionPrueba()">Enviar prueba</button>
   </div>
 
   <!-- COMPARTIR INSIDE DRAWER -->
@@ -4893,6 +4916,51 @@ async function initPush() {
 
   // Mostrar banner sugerente (primera vez)
   document.getElementById('push-banner').classList.remove('hidden');
+}
+
+// ── NOTIFICACIÓN DE PRUEBA ────────────────────────────────────────────────────
+async function enviarNotificacionPrueba() {
+  const btn = document.getElementById('btn-test-push');
+
+  // Si no tiene permiso, pedirlo primero
+  if (Notification.permission !== 'granted') {
+    const perm = await Notification.requestPermission();
+    if (perm !== 'granted') {
+      showToast('⚠️ Permiso de notificaciones denegado. Activá las notificaciones primero.');
+      return;
+    }
+  }
+
+  btn.textContent = '...';
+  btn.disabled = true;
+
+  try {
+    // Intentar vía Service Worker si está disponible (más confiable en móvil)
+    if (swReg) {
+      await swReg.showNotification('🔔 Prueba de notificación', {
+        body: 'Todo funciona correctamente. Las notificaciones de tu agenda están activas.',
+        icon: '/apple-touch-icon.png',
+        badge: '/apple-touch-icon.png',
+        tag: 'notif-prueba',
+        renotify: true,
+      });
+    } else {
+      // Fallback: Notification API directa
+      new Notification('🔔 Prueba de notificación', {
+        body: 'Todo funciona correctamente. Las notificaciones de tu agenda están activas.',
+        icon: '/apple-touch-icon.png',
+        tag: 'notif-prueba',
+      });
+    }
+    showToast('✅ Notificación de prueba enviada');
+  } catch(e) {
+    showToast('⚠️ No se pudo enviar la notificación: ' + e.message);
+  }
+
+  setTimeout(() => {
+    btn.textContent = 'Enviar prueba';
+    btn.disabled = false;
+  }, 2000);
 }
 
 // ── ACTIVAR push desde el botón del banner ───────────────────────────────────
