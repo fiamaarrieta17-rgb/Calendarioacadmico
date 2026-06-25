@@ -4665,10 +4665,28 @@ window.onload = async () => {
     document.getElementById('p1-exam-start').value=d.p1xs; document.getElementById('p1-exam-end').value=d.p1xe;
     document.getElementById('p2-start').value=d.p2s; document.getElementById('p2-end').value=d.p2e;
     document.getElementById('p2-exam-start').value=d.p2xs; document.getElementById('p2-exam-end').value=d.p2xe;
+    // Guardar eventos locales ANTES de que cargarConfig los pise con los de Supabase
+    const _evtsAntesDeSync = JSON.parse(localStorage.getItem('agenda_events') || '{}');
+    const _tareasAntesDeSync = JSON.parse(localStorage.getItem('agenda_tareas') || '{}');
+
     const { data: { session } } = await db.auth.getSession();
     currentUser = session?.user ?? null;
     actualizarUserBar(currentUser);
     await cargarConfig();
+
+    // Mergear los eventos locales que teníamos antes con lo que trajo Supabase
+    let _cambiaron = false;
+    Object.entries(_evtsAntesDeSync).forEach(([k, v]) => {
+      if (!userEvents[k]) { userEvents[k] = v; _cambiaron = true; }
+    });
+    Object.entries(_tareasAntesDeSync).forEach(([k, v]) => {
+      if (!userTareas[k]) { userTareas[k] = v; _cambiaron = true; }
+    });
+    if (_cambiaron && currentUser) {
+      localStorage.setItem('agenda_events', JSON.stringify(userEvents));
+      localStorage.setItem('agenda_tareas', JSON.stringify(userTareas));
+      sincronizarDatosNube();
+    }
     generateCalendar();
   } catch (e) {
     generateCalendar();
@@ -4800,7 +4818,17 @@ async function syncDatosParaSW() {
     await swSet('push_tareas',  userTareas  || {});
     await swSet('push_config',  { dias: pushDias });
   } catch(e) { /* si IDB no está disponible, ignorar */ }
-  // El upsert a Supabase lo maneja sincronizarDatosNube() para evitar conflictos
+
+  // Sincronizar eventos al servidor para que la Edge Function pueda mandar push
+  if (currentUser) {
+    try {
+      await db.from('agenda_config').upsert({
+        user_id: getStorageId(),
+        eventos: userEvents || {},
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'user_id' });
+    } catch(e) { /* ignorar si falla */ }
+  }
 }
 
 // ── INIT ─────────────────────────────────────────────────────────────────────
