@@ -2134,6 +2134,17 @@
     <button class="btn-push-dismiss" onclick="dismissPushBanner()" title="Cerrar">✕</button>
   </div>
 
+  <!-- BOTÓN SIMULACRO DE NOTIFICACIÓN -->
+  <div class="push-banner" id="push-test-banner" style="border-style:dashed;">
+    <span class="push-banner-icon">🧪</span>
+    <div class="push-banner-text">
+      <strong>Probar notificación</strong>
+      <span>Simulá cómo se va a ver el aviso del día del evento y el de 3hs antes.</span>
+    </div>
+    <button class="btn-push-enable" onclick="probarNotificacion('dia')">Hoy</button>
+    <button class="btn-push-enable" onclick="probarNotificacion('3h')">3hs antes</button>
+  </div>
+
   <!-- LEYENDA -->
   <div class="legend">
     <div class="legend-item"><div class="legend-dot" style="background:var(--accent);"></div> Primer semestre</div>
@@ -4636,7 +4647,7 @@ window.addEventListener('keydown', e => {
 // ─────────────────────────────────────────────────────────────────────────────
 
 // ── PUSH NOTIFICATIONS ───────────────────────────────────────────────────────
-const VAPID_PUBLIC_KEY = 'BIC5cRyKi6e-73OKAmIT0FLFR4xMLj-hhACRUXA4iBN_2VddYMu3btItMoU1j32NnoFIt-PHfKkoQ02F3F5Icoc';
+const VAPID_PUBLIC_KEY = 'BDjYz0MU7wW4MW3Tit3pzdLn62WEiDU5q_o51VaN1qXBgcUUz5ebN_r9EtBqXu2aDeDmZHWbIVNyhh7WkuhBtzY';
 
 // Días de antelación para avisar (configurable por el usuario)
 let pushDias = JSON.parse(localStorage.getItem('push_dias') || '[1,3,7]');
@@ -4673,6 +4684,13 @@ async function syncDatosParaSW() {
 
 // ── INIT ─────────────────────────────────────────────────────────────────────
 async function initPush() {
+  // Los avisos "día del evento" / "3hs antes" solo necesitan la Notification API
+  // (no PushManager), así que los arrancamos apenas haya permiso, sin depender
+  // de si el navegador soporta push real.
+  if ('Notification' in window && Notification.permission === 'granted') {
+    iniciarChequeoAvisosPrecisos();
+  }
+
   if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
 
   // Registrar SW
@@ -4718,6 +4736,7 @@ async function activarPush() {
 
   // Programar check inmediato con las próximas semanas
   programarNotificacionesLocales();
+  iniciarChequeoAvisosPrecisos();
 }
 
 // ── SUSCRIBIR al PushManager ─────────────────────────────────────────────────
@@ -4726,6 +4745,16 @@ async function suscribirPush() {
   try {
     const appServerKey = urlBase64ToUint8Array(VAPID_PUBLIC_KEY);
     let sub = await swReg.pushManager.getSubscription();
+    // Si ya había una suscripción pero con otra clave VAPID (ej: cambiamos de clave),
+    // hay que darla de baja y crear una nueva con la clave actual.
+    if (sub) {
+      const claveActual = btoa(String.fromCharCode(...new Uint8Array(sub.options?.applicationServerKey || [])));
+      const claveEsperada = btoa(String.fromCharCode(...appServerKey));
+      if (claveActual !== claveEsperada) {
+        await sub.unsubscribe().catch(() => {});
+        sub = null;
+      }
+    }
     if (!sub) {
       sub = await swReg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: appServerKey });
     }
@@ -4812,6 +4841,109 @@ function programarNotificacionesLocales() {
 function fmtFechaCorta(d) {
   const MESES_CORTO = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
   return `${d.getDate()} ${MESES_CORTO[d.getMonth()]}`;
+}
+
+// ── AVISO "DÍA DEL EVENTO" + "3 HORAS ANTES" ─────────────────────────────────
+// Estos avisos solo se disparan mientras la app/pestaña está abierta (no hay
+// servidor mandando push real). Por eso chequeamos cada minuto: si la app
+// queda abierta en algún momento del día del evento, o cerca de las 3hs
+// previas a la hora del evento, se muestra la notificación una sola vez
+// (se guarda una marca en localStorage para no repetirla).
+function yaAvisado(idMarca) {
+  const marcas = JSON.parse(localStorage.getItem('avisos_enviados') || '{}');
+  return !!marcas[idMarca];
+}
+function marcarAvisado(idMarca) {
+  const marcas = JSON.parse(localStorage.getItem('avisos_enviados') || '{}');
+  marcas[idMarca] = Date.now();
+  // Limpieza simple: si hay más de 500 marcas guardadas, tirar las más viejas
+  const keys = Object.keys(marcas);
+  if (keys.length > 500) {
+    keys.sort((a,b) => marcas[a] - marcas[b]).slice(0, keys.length - 500).forEach(k => delete marcas[k]);
+  }
+  localStorage.setItem('avisos_enviados', JSON.stringify(marcas));
+}
+
+function chequearAvisosPrecisos() {
+  if (Notification.permission !== 'granted') return;
+  const ahora = new Date();
+  const hoyStr = `${ahora.getFullYear()}-${String(ahora.getMonth()+1).padStart(2,'0')}-${String(ahora.getDate()).padStart(2,'0')}`;
+
+  Object.entries(userEvents || {}).forEach(([key, evts]) => {
+    if (key !== hoyStr) return; // solo nos importa el día de hoy para estos dos avisos
+    const [y, m, d] = key.split('-').map(Number);
+
+    evts.forEach((ev, idx) => {
+      // 1) Aviso "día del evento": una vez por día, en cuanto la app esté abierta ese día
+      const idDia = `dia-${key}-${idx}-${ev.name}`;
+      if (!yaAvisado(idDia)) {
+        marcarAvisado(idDia);
+        new Notification(`📅 Hoy: ${ev.name}`, {
+          body: ev.time ? `Hoy a las ${ev.time}` : `Tenés un evento hoy — ${fmtFechaCorta(ahora)}`,
+          icon: '/icon-192.png',
+          badge: '/badge-96.png',
+          tag: idDia,
+          data: { url: '/' }
+        });
+      }
+
+      // 2) Aviso "3 horas antes": solo si el evento tiene hora configurada
+      if (ev.time) {
+        const [hh, mm] = ev.time.split(':').map(Number);
+        const fechaEvento = new Date(y, m - 1, d, hh, mm, 0, 0);
+        const tresHoraAntes = new Date(fechaEvento.getTime() - 3 * 60 * 60 * 1000);
+        const idTres = `3h-${key}-${idx}-${ev.name}`;
+        // Ventana de 2 minutos alrededor del momento exacto (el chequeo corre cada 60s)
+        if (!yaAvisado(idTres) && ahora >= tresHoraAntes && ahora <= fechaEvento) {
+          marcarAvisado(idTres);
+          new Notification(`⏰ En 3 horas: ${ev.name}`, {
+            body: `Empieza a las ${ev.time}`,
+            icon: '/icon-192.png',
+            badge: '/badge-96.png',
+            tag: idTres,
+            data: { url: '/' }
+          });
+        }
+      }
+    });
+  });
+}
+
+// Chequear apenas carga la página y después cada 60 segundos mientras esté abierta
+let _intervaloAvisosPrecisos = null;
+function iniciarChequeoAvisosPrecisos() {
+  chequearAvisosPrecisos();
+  if (_intervaloAvisosPrecisos) clearInterval(_intervaloAvisosPrecisos);
+  _intervaloAvisosPrecisos = setInterval(chequearAvisosPrecisos, 60 * 1000);
+}
+
+// ── SIMULACRO DE NOTIFICACIÓN (botón de prueba) ──────────────────────────────
+async function probarNotificacion(tipo) {
+  if (Notification.permission !== 'granted') {
+    const perm = await Notification.requestPermission();
+    if (perm !== 'granted') {
+      showToast('⚠️ Permiso de notificaciones denegado');
+      return;
+    }
+  }
+  if (tipo === 'dia') {
+    new Notification('📅 Hoy: Parcial de Análisis II', {
+      body: 'Hoy a las 18:00 (esto es una prueba)',
+      icon: '/icon-192.png',
+      badge: '/badge-96.png',
+      tag: 'prueba-dia',
+      data: { url: '/' }
+    });
+  } else {
+    new Notification('⏰ En 3 horas: Parcial de Análisis II', {
+      body: 'Empieza a las 18:00 (esto es una prueba)',
+      icon: '/icon-192.png',
+      badge: '/badge-96.png',
+      tag: 'prueba-3h',
+      data: { url: '/' }
+    });
+  }
+  showToast('🧪 Notificación de prueba enviada');
 }
 
 function dismissPushBanner() {
