@@ -3142,6 +3142,9 @@ async function cargarConfig() {
     generateCalendar();
     renderResumen();
 
+    // Sincronizar datos frescos de Supabase con el SW para que las notificaciones estén al día
+    onDatosActualizados();
+
   } else {
     // No hay fila en agenda_config — crearla con los datos del usuario
     // Esto pasa la primera vez que un usuario inicia sesión (especialmente en iPhone)
@@ -4839,6 +4842,7 @@ async function syncDatosParaSW() {
       await db.from('agenda_config').upsert({
         user_id: getStorageId(),
         eventos: userEvents || {},
+        tareas:  userTareas  || {},
         updated_at: new Date().toISOString()
       }, { onConflict: 'user_id' });
     } catch(e) { /* ignorar si falla */ }
@@ -4965,6 +4969,9 @@ function programarNotificacionesLocales() {
       if (diffDias === antelacion) {
         const diasLabel = antelacion === 0 ? 'HOY' : antelacion === 1 ? 'mañana' : `en ${antelacion} días`;
         evts.forEach(ev => {
+          const idMarca = `prog-evt-${key}-${ev.name}-${antelacion}`;
+          if (yaAvisado(idMarca)) return;
+          marcarAvisado(idMarca);
           // Notificar con pequeño delay para que no bloquee el hilo
           setTimeout(() => {
             new Notification(`📅 ${ev.name}`, {
@@ -4992,6 +4999,9 @@ function programarNotificacionesLocales() {
     pushDias.forEach(antelacion => {
       if (diffDias === antelacion) {
         const diasLabel = antelacion === 0 ? 'HOY' : antelacion === 1 ? 'mañana' : `en ${antelacion} días`;
+        const idMarca = `prog-tarea-${key}-${antelacion}`;
+        if (yaAvisado(idMarca)) return;
+        marcarAvisado(idMarca);
         setTimeout(() => {
           new Notification(`✅ ${pendientes.length} tarea${pendientes.length > 1 ? 's' : ''} pendiente${pendientes.length > 1 ? 's' : ''}`, {
             body: `Vencen ${diasLabel} — ${fmtFechaCorta(fecha)}`,
