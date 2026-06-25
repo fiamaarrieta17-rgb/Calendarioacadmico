@@ -1449,6 +1449,19 @@
     cursor:pointer;font-family:var(--font-body);transition:all 0.15s;
   }
   .push-dia-btn.active { background:var(--accent);color:white;border-color:var(--accent); }
+  .push-reactivar-row {
+    display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;
+    margin-top:0.6rem;padding-top:0.6rem;border-top:1px solid var(--border);
+  }
+  .push-reactivar-row label { font-size:0.72rem;color:var(--muted);font-weight:600;flex:1;min-width:120px; }
+  .btn-reactivar-push {
+    padding:0.32rem 0.9rem;border-radius:50px;
+    border:1.5px solid var(--accent);background:transparent;
+    color:var(--accent);font-size:0.72rem;font-weight:700;
+    cursor:pointer;font-family:var(--font-body);transition:all 0.18s;white-space:nowrap;
+  }
+  .btn-reactivar-push:hover { background:var(--accent);color:#fff; }
+  .btn-reactivar-push:disabled { opacity:0.5;cursor:not-allowed; }
 
   /* TEMA MODAL */
   .tema-modal-overlay {
@@ -2169,8 +2182,11 @@
     <button class="btn-push-dismiss" onclick="dismissPushBanner()" title="Cerrar">✕</button>
   </div>
 
-  <!-- BOTÓN SIMULACRO DE NOTIFICACIÓN -->
-
+  <!-- BOTÓN REACTIVAR NOTIFICACIONES -->
+  <div class="push-reactivar-row" id="push-reactivar-row" style="display:none;">
+    <label>🔕 Las notificaciones están desactivadas</label>
+    <button class="btn-reactivar-push" id="btn-reactivar-push" onclick="reactivarNotificaciones()">🔔 Reactivar</button>
+  </div>
 
   <!-- LEYENDA -->
   <div class="legend">
@@ -3070,16 +3086,28 @@ async function cargarConfig() {
       cargarFotoEnAvatar();
     }
 
-    // Eventos
+    // Eventos — merge entre Supabase y localStorage para no perder datos locales
     if (data.eventos && typeof data.eventos === 'object') {
-      userEvents = data.eventos;
+      const localEvts = JSON.parse(localStorage.getItem('agenda_events') || '{}');
+      userEvents = { ...data.eventos, ...localEvts };
       localStorage.setItem('agenda_events', JSON.stringify(userEvents));
+      sincronizarDatosNube();
+    } else {
+      const localEvts = JSON.parse(localStorage.getItem('agenda_events') || '{}');
+      if (Object.keys(localEvts).length) {
+        userEvents = localEvts;
+        sincronizarDatosNube();
+      }
     }
 
-    // Tareas
+    // Tareas — merge entre Supabase y localStorage para no perder datos locales
     if (data.tareas && typeof data.tareas === 'object') {
-      userTareas = data.tareas;
+      const localTareas = JSON.parse(localStorage.getItem('agenda_tareas') || '{}');
+      userTareas = { ...data.tareas, ...localTareas };
       localStorage.setItem('agenda_tareas', JSON.stringify(userTareas));
+    } else {
+      const localTareas = JSON.parse(localStorage.getItem('agenda_tareas') || '{}');
+      if (Object.keys(localTareas).length) userTareas = localTareas;
     }
 
     // Materias
@@ -4809,14 +4837,25 @@ async function initPush() {
     await suscribirPush();
     document.getElementById('push-banner').classList.add('hidden');
     actualizarBadge();
+    chequearEstadoNotificaciones();
     return;
   }
 
-  // Si ya rechazó, no mostrar el banner
-  if (Notification.permission === 'denied') return;
+  // Si el permiso fue revocado por el sistema, mostrar botón de reactivar
+  if (Notification.permission === 'denied') {
+    chequearEstadoNotificaciones();
+    return;
+  }
+
+  // Si tenía suscripción pero el permiso quedó en 'default' (reseteo del sistema)
+  if (localStorage.getItem('push_subscription')) {
+    chequearEstadoNotificaciones();
+    return;
+  }
+
   if (pushDismissed) return;
 
-  // Mostrar banner sugerente
+  // Mostrar banner sugerente (primera vez)
   document.getElementById('push-banner').classList.remove('hidden');
 }
 
@@ -5053,6 +5092,75 @@ function dismissPushBanner() {
   document.getElementById('push-banner').classList.add('hidden');
   pushDismissed = true;
   localStorage.setItem('push_dismissed', '1');
+}
+
+// ── REACTIVAR notificaciones (si el sistema las cortó) ───────────────────────
+async function reactivarNotificaciones() {
+  const btn = document.getElementById('btn-reactivar-push');
+  btn.textContent = '...';
+  btn.disabled = true;
+
+  // Limpiar estado anterior
+  localStorage.removeItem('push_dismissed');
+  localStorage.removeItem('push_subscription');
+  pushDismissed = false;
+
+  // Ocultar el botón de reactivar
+  document.getElementById('push-reactivar-row').style.display = 'none';
+
+  // Si el permiso está denegado a nivel sistema, hay que ir a configuración
+  if (Notification.permission === 'denied') {
+    showToast('⚠️ Permiso bloqueado. Activá las notificaciones desde Configuración del sistema > Agenda.');
+    btn.textContent = '🔔 Reactivar';
+    btn.disabled = false;
+    document.getElementById('push-reactivar-row').style.display = 'flex';
+    return;
+  }
+
+  // Si es 'default' (nunca pedido o reseteado), pedir permiso
+  if (Notification.permission === 'default') {
+    const perm = await Notification.requestPermission();
+    if (perm !== 'granted') {
+      showToast('⚠️ Permiso de notificaciones denegado');
+      btn.textContent = '🔔 Reactivar';
+      btn.disabled = false;
+      document.getElementById('push-reactivar-row').style.display = 'flex';
+      return;
+    }
+  }
+
+  // Permiso granted: re-registrar SW y suscribir
+  try {
+    swReg = await navigator.serviceWorker.register('/sw.js', { scope: '/' });
+    await syncDatosParaSW();
+    await suscribirPush();
+    programarNotificacionesLocales();
+    iniciarChequeoAvisosPrecisos();
+    showToast('🔔 Notificaciones reactivadas');
+  } catch(e) {
+    showToast('⚠️ Error al reactivar. Intentá de nuevo.');
+    btn.textContent = '🔔 Reactivar';
+    btn.disabled = false;
+    document.getElementById('push-reactivar-row').style.display = 'flex';
+  }
+}
+
+// Mostrar botón de reactivar si el permiso fue revocado después de estar activo
+function chequearEstadoNotificaciones() {
+  if (!('Notification' in window)) return;
+  const row = document.getElementById('push-reactivar-row');
+  const banner = document.getElementById('push-banner');
+  if (!row) return;
+  // Mostrar botón reactivar si: permiso denegado o revocado (default + ya había suscripción)
+  const teniaSuscripcion = !!localStorage.getItem('push_subscription');
+  if (Notification.permission === 'denied' ||
+      (Notification.permission === 'default' && teniaSuscripcion)) {
+    banner.classList.add('hidden');
+    row.style.display = 'flex';
+  } else if (Notification.permission === 'granted') {
+    row.style.display = 'none';
+    banner.classList.add('hidden');
+  }
 }
 
 // ── BADGE DINÁMICO ───────────────────────────────────────────────────────────
