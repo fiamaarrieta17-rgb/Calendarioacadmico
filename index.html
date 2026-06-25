@@ -5,7 +5,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Agenda Universitaria</title>
 <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#FFFFFF">
+<script>
+(function() {
+  try {
+    var cfg = JSON.parse(localStorage.getItem('agenda_config') || '{}');
+    if (!cfg.tema || cfg.tema === 'rosa') {
+      cfg.tema = 'minimalista';
+      localStorage.setItem('agenda_config', JSON.stringify(cfg));
+    }
+    var tema = cfg.tema;
+    if (tema) {
+      var bgMap = {
+        'blanco':'#FAFAFA','rosa':'#FEF6F7','rojo':'#FFFAFA','celeste':'#F0F8FF',
+        'azul':'#EEF3FB','violeta':'#F5F0FF','verde':'#F2F8F4','minimalista':'#F8F8F6',
+        'maximalista':'#FAF0FF','oscuro':'#0D1117','oscuro-calido':'#181410',
+        'oscuro-violeta':'#0F0C18','oscuro-verde':'#0A100C','melocoton':'#FFF5EE',
+        'menta':'#F0FAF5','arena':'#FAF6F0','lima':'#F5FAE0','indigo':'#F0F0FA',
+        'coral':'#FFF0EE','pizarra':'#F2F4F6','oscuro-rojo':'#120808',
+        'oscuro-indigo':'#090918','durazno':'#FFF8F0','lavanda':'#F7F2FF',
+        'cobre':'#FAF2EC','oceano':'#EEF8F8','oscuro-dorado':'#100C00',
+        'oscuro-petroleo':'#040E10','sandia':'#FFF0F3','carbon':'#1A1A1C',
+        'amanecer':'#FFF7F0','bosque':'#0C1810','hielo':'#F0F6FF',
+        'magenta':'#FFF0FF','sepia':'#F5EED8','neon':'#060610'
+      };
+      var bg = bgMap[tema] || '#FFFFFF';
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', bg);
+      document.addEventListener('DOMContentLoaded', function() {
+        var overlay = document.getElementById('loading-overlay');
+        if (overlay) overlay.style.background = bg;
+      });
+    }
+  } catch(e) {}
+})();
+</script>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -959,7 +992,7 @@
   .auth-back a { color:var(--accent);cursor:pointer;font-weight:600; }
 
   /* LOADING */
-  .loading-overlay { position:fixed;inset:0;background:var(--bg);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;transition:opacity 0.3s; }
+  .loading-overlay { position:fixed;inset:0;background:#FFFFFF;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;transition:opacity 0.3s; }
   .loading-overlay.hidden { opacity:0;pointer-events:none;display:none; }
   .spinner { width:34px;height:34px;border-radius:50%;border:3px solid var(--border);border-top-color:var(--accent);animation:spin 0.8s linear infinite; }
   @keyframes spin { to { transform:rotate(360deg); } }
@@ -1750,7 +1783,7 @@
   .tema-accordion-body { padding:0.6rem 0.7rem 0.8rem; display:block; }
 </style>
 </head>
-<body class="tema-rosa">
+<body class="tema-minimalista">
 
 <!-- LOADING -->
 <div class="loading-overlay" id="loading-overlay">
