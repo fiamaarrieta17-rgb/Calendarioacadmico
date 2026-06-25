@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Agenda Universitaria</title>
 <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#D4748A">
+<meta name="theme-color" content="#000000">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -3087,6 +3087,8 @@ async function cargarConfig() {
 function aplicarConfig(config) {
   if (config.tema) {
     document.body.className = 'tema-' + config.tema;
+    const metaTheme = document.querySelector('meta[name="theme-color"]');
+    if (metaTheme) metaTheme.setAttribute('content', TEMA_BG_COLORS[config.tema] || '#000000');
     renderColorGrid();
   }
   if (config.anio) {
@@ -3202,8 +3204,49 @@ function cerrarTemaModal(e) {
   document.body.style.overflow = '';
 }
 
+const TEMA_BG_COLORS = {
+  'blanco':          '#FAFAFA',
+  'rosa':            '#FEF6F7',
+  'rojo':            '#FFFAFA',
+  'celeste':         '#F0F8FF',
+  'azul':            '#EEF3FB',
+  'violeta':         '#F5F0FF',
+  'verde':           '#F2F8F4',
+  'minimalista':     '#F8F8F6',
+  'maximalista':     '#FAF0FF',
+  'oscuro':          '#0D1117',
+  'oscuro-calido':   '#181410',
+  'oscuro-violeta':  '#0F0C18',
+  'oscuro-verde':    '#0A100C',
+  'melocoton':       '#FFF5EE',
+  'menta':           '#F0FAF5',
+  'arena':           '#FAF6F0',
+  'lima':            '#F5FAE0',
+  'indigo':          '#F0F0FA',
+  'coral':           '#FFF0EE',
+  'pizarra':         '#F2F4F6',
+  'oscuro-rojo':     '#120808',
+  'oscuro-indigo':   '#090918',
+  'durazno':         '#FFF8F0',
+  'lavanda':         '#F7F2FF',
+  'cobre':           '#FAF2EC',
+  'oceano':          '#EEF8F8',
+  'oscuro-dorado':   '#100C00',
+  'oscuro-petroleo': '#040E10',
+  'sandia':          '#FFF0F3',
+  'carbon':          '#1A1A1C',
+  'amanecer':        '#FFF7F0',
+  'bosque':          '#0C1810',
+  'hielo':           '#F0F6FF',
+  'magenta':         '#FFF0FF',
+  'sepia':           '#F5EED8',
+  'neon':            '#060610',
+};
+
 function setTema(tema) {
   document.body.className = 'tema-' + tema;
+  const metaTheme = document.querySelector('meta[name="theme-color"]');
+  if (metaTheme) metaTheme.setAttribute('content', TEMA_BG_COLORS[tema] || '#000000');
   renderColorGrid();
   if (document.getElementById('calendar-output').style.display !== 'none') generateCalendar();
   guardarConfig();
