@@ -1951,6 +1951,10 @@
     <div class="materia-add-row">
       <input type="text" id="materia-nombre-input" placeholder="ej: Álgebra" maxlength="30">
       <input type="color" id="materia-color-input" value="#6D3FD0" title="Color">
+    </div>
+    <div class="materia-add-row" style="margin-top:0.25rem;">
+      <input type="date" id="materia-desde-input" title="Desde" style="flex:1;">
+      <input type="date" id="materia-hasta-input" title="Hasta" style="flex:1;">
       <button class="btn-materia-add" onclick="agregarMateria()">+ Agregar</button>
     </div>
     <div class="materias-list-mgr" id="materias-list-mgr"></div>
@@ -3528,7 +3532,26 @@ function renderMonth(year, month, r, feriados, opts={}) {
       const tareaDots = pendientes.slice(0, Math.max(0, 5 - evts.length)).map(t => `<span class="day-dot tarea" title="${escapeHtml(t.text||'Tarea')}"></span>`).join('');
       dotsHTML = `<span class="day-dots">${evtDots}${tareaDots}</span>`;
     }
-    h+=`<div class="day ${cls}${hasEvtsClass}${hasTareasClass}"${tipAttr} onclick="event.stopPropagation();abrirModalEvento('${key}',${d})"><span class="day-num">${d}</span>${dotsHTML}</div>`;
+    // Materia color: pintar fondo completo si hay horario en este día de la semana Y cae en el período de la materia
+    const dow = date.getDay();
+    const clasesHoy = (userHorario||[]).filter(c => c.dias && c.dias.includes(dow));
+    let materiaStyle = '';
+    if (clasesHoy.length) {
+      // Filtrar solo las que tienen materia con período vigente
+      const matsHoy = clasesHoy.map(c => userMaterias && c.materiaId ? userMaterias.find(m => m.id === c.materiaId) : null)
+        .filter(m => m && (!m.desde || key >= m.desde) && (!m.hasta || key <= m.hasta));
+      if (matsHoy.length === 1) {
+        materiaStyle = ` style="background:${matsHoy[0].color}35;border-bottom:2px solid ${matsHoy[0].color};"`;
+      } else if (matsHoy.length > 1) {
+        const stops = matsHoy.map((m, i) => {
+          const p1 = Math.round(i * 100 / matsHoy.length);
+          const p2 = Math.round((i+1) * 100 / matsHoy.length);
+          return `${m.color}50 ${p1}%, ${m.color}50 ${p2}%`;
+        }).join(', ');
+        materiaStyle = ` style="background:linear-gradient(to right, ${stops});border-bottom:2px solid ${matsHoy[0].color};"`;
+      }
+    }
+    h+=`<div class="day ${cls}${hasEvtsClass}${hasTareasClass}"${tipAttr}${materiaStyle} onclick="event.stopPropagation();abrirModalEvento('${key}',${d})"><span class="day-num">${d}</span>${dotsHTML}</div>`;
   }
   return h+`</div></div>`;
 }
@@ -4056,6 +4079,34 @@ function moverTarea(idx, nuevaFechaStr) {
   showToast(`📌 Movida al ${d} de ${MESES[m-1]}`);
 }
 
+// Eliminar tarea desde el modal global de tareas
+function eliminarTareaGlobal(key, idx) {
+  if (!userTareas[key] || !userTareas[key][idx]) return;
+  userTareas[key].splice(idx, 1);
+  if (!userTareas[key].length) delete userTareas[key];
+  guardarTareasStorage();
+  refreshDayDot(key);
+  if (_eventModalKey === key) renderTareasDia(key);
+  renderTareasModal();
+}
+
+// Mover tarea desde el modal global de tareas a otra fecha
+function moverTareaGlobal(key, idx, nuevaFechaStr) {
+  if (!nuevaFechaStr || !userTareas[key] || !userTareas[key][idx]) return;
+  const tarea = userTareas[key][idx];
+  userTareas[key].splice(idx, 1);
+  if (!userTareas[key].length) delete userTareas[key];
+  if (!userTareas[nuevaFechaStr]) userTareas[nuevaFechaStr] = [];
+  userTareas[nuevaFechaStr].push(tarea);
+  guardarTareasStorage();
+  refreshDayDot(key);
+  refreshDayDot(nuevaFechaStr);
+  if (_eventModalKey === key) renderTareasDia(key);
+  renderTareasModal();
+  const [y,m,d] = nuevaFechaStr.split('-').map(Number);
+  showToast(`📌 Movida al ${d} de ${MESES[m-1]}`);
+}
+
 function abrirModalEvento(key, dayNum) {
   _eventModalKey = key;
   const [y,m,d] = key.split('-').map(Number);
@@ -4378,16 +4429,21 @@ function guardarMaterias() {
 function agregarMateria() {
   const nombre = document.getElementById('materia-nombre-input').value.trim();
   const color  = document.getElementById('materia-color-input').value;
+  const desde  = document.getElementById('materia-desde-input').value;
+  const hasta  = document.getElementById('materia-hasta-input').value;
   if (!nombre) { document.getElementById('materia-nombre-input').focus(); return; }
   const id = 'mat-' + Date.now();
-  userMaterias.push({ id, nombre, color });
+  userMaterias.push({ id, nombre, color, desde: desde||null, hasta: hasta||null });
   guardarMaterias();
   document.getElementById('materia-nombre-input').value = '';
+  document.getElementById('materia-desde-input').value = '';
+  document.getElementById('materia-hasta-input').value = '';
   // cycle color
   const nextColor = MATERIA_COLORES_DEFAULT[userMaterias.length % MATERIA_COLORES_DEFAULT.length];
   document.getElementById('materia-color-input').value = nextColor;
   renderMateriasManager();
   renderFiltrroMaterias();
+  renderCalendario();
   showToast('✓ Materia agregada');
 }
 
@@ -4397,19 +4453,45 @@ function eliminarMateria(id) {
   if (filtromateria === id) filtromateria = null;
   renderMateriasManager();
   renderFiltrroMaterias();
+  renderCalendario();
+}
+
+function actualizarPeriodoMateria(id, campo, valor) {
+  const m = userMaterias.find(m => m.id === id);
+  if (!m) return;
+  m[campo] = valor || null;
+  guardarMaterias();
+  renderMateriasManager();
+  renderCalendario();
+  showToast('✓ Período actualizado');
 }
 
 function renderMateriasManager() {
   const el = document.getElementById('materias-list-mgr');
   if (!el) return;
   if (!userMaterias.length) { el.innerHTML = '<span style="font-size:0.72rem;color:var(--muted);">Aún no tenés materias. Agregá una arriba.</span>'; return; }
-  el.innerHTML = userMaterias.map(m => `
-    <div class="materia-pill" style="background:${m.color}20;color:${m.color};border-color:${m.color}40;" title="Eliminar ${m.nombre}">
-      <span class="materia-pill-dot" style="background:${m.color};"></span>
-      ${escapeHtml(m.nombre)}
-      <span onclick="eliminarMateria('${m.id}')" style="cursor:pointer;margin-left:0.25rem;opacity:0.7;" title="Eliminar">✕</span>
-    </div>
-  `).join('');
+  el.innerHTML = userMaterias.map(m => {
+    const desde = m.desde || '';
+    const hasta = m.hasta || '';
+    const rangoLabel = (desde && hasta)
+      ? `<span style="font-size:0.65rem;color:var(--muted);margin-left:0.3rem;">${desde.slice(5).replace('-','/')} → ${hasta.slice(5).replace('-','/')}</span>`
+      : `<span style="font-size:0.65rem;color:var(--muted);margin-left:0.3rem;">sin período</span>`;
+    return `
+    <div style="display:flex;flex-direction:column;gap:0.2rem;background:${m.color}12;border:1px solid ${m.color}40;border-radius:8px;padding:0.4rem 0.6rem;width:100%;">
+      <div style="display:flex;align-items:center;gap:0.4rem;">
+        <span style="width:10px;height:10px;border-radius:50%;background:${m.color};flex-shrink:0;"></span>
+        <span style="font-size:0.82rem;font-weight:600;color:${m.color};flex:1;">${escapeHtml(m.nombre)}</span>
+        ${rangoLabel}
+        <span onclick="eliminarMateria('${m.id}')" style="cursor:pointer;color:var(--muted);font-size:0.85rem;padding:0 0.2rem;" title="Eliminar">✕</span>
+      </div>
+      <div style="display:flex;gap:0.3rem;align-items:center;">
+        <span style="font-size:0.65rem;color:var(--muted);white-space:nowrap;">Desde:</span>
+        <input type="date" value="${desde}" style="flex:1;font-size:0.72rem;padding:0.15rem 0.3rem;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--ink);" onchange="actualizarPeriodoMateria('${m.id}','desde',this.value)">
+        <span style="font-size:0.65rem;color:var(--muted);white-space:nowrap;">Hasta:</span>
+        <input type="date" value="${hasta}" style="flex:1;font-size:0.72rem;padding:0.15rem 0.3rem;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--ink);" onchange="actualizarPeriodoMateria('${m.id}','hasta',this.value)">
+      </div>
+    </div>`;
+  }).join('');
 }
 
 function renderFiltrroMaterias() {
@@ -5581,9 +5663,15 @@ function renderTareasModal() {
         const doneClass = t.done ? 'done' : '';
         const vencidaTag = esPasada ? ` <span style="color:#e05555;font-size:0.68rem">vencida</span>` : '';
         return `
-          <div class="tareas-modal-item ${prioClass} ${doneClass}">
-            <span class="tareas-modal-fecha">${fechaStr}${vencidaTag}</span>
-            <span class="tareas-modal-text">${escapeHtml(t.text)}${t.prio ? ` <span style="font-size:0.7rem">${t.prio==='alta'?'🔴':t.prio==='media'?'🟡':'🟢'}</span>` : ''}</span>
+          <div class="tareas-modal-item ${prioClass} ${doneClass}" style="display:flex;align-items:center;gap:0.4rem;">
+            <div style="flex:1;min-width:0;">
+              <span class="tareas-modal-fecha">${fechaStr}${vencidaTag}</span>
+              <span class="tareas-modal-text">${escapeHtml(t.text)}${t.prio ? ` <span style="font-size:0.7rem">${t.prio==='alta'?'🔴':t.prio==='media'?'🟡':'🟢'}</span>` : ''}</span>
+            </div>
+            <label title="Reagendar" style="cursor:pointer;color:var(--muted);font-size:0.85rem;position:relative;flex-shrink:0;">
+              📅<input type="date" style="position:absolute;opacity:0;width:1px;height:1px;top:0;left:0;" onchange="moverTareaGlobal('${t.key}',${t.idx},this.value);this.value='';">
+            </label>
+            <button onclick="eliminarTareaGlobal('${t.key}',${t.idx})" title="Eliminar" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:0.9rem;padding:0.1rem 0.3rem;border-radius:4px;flex-shrink:0;">✕</button>
           </div>`;
       }).join('')}`;
   }
