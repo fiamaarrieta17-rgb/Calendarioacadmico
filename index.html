@@ -4282,6 +4282,14 @@ function renderResumen() {
   Object.entries(userEvents).forEach(([key, evts]) => {
     evts.forEach((ev, idx) => allEvents.push({key, idx, ...ev}));
   });
+
+  // Ocultar eventos de días anteriores al de hoy (siguen guardados en el calendario)
+  const hoy = new Date();
+  const hoyKey = `${hoy.getFullYear()}-${String(hoy.getMonth()+1).padStart(2,'0')}-${String(hoy.getDate()).padStart(2,'0')}`;
+  for (let i = allEvents.length - 1; i >= 0; i--) {
+    if (allEvents[i].key < hoyKey) allEvents.splice(i, 1);
+  }
+
   allEvents.sort((a,b) => {
     if (a.key !== b.key) return a.key.localeCompare(b.key);
     if (a.time && b.time) return a.time.localeCompare(b.time);
